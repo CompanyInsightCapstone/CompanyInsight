@@ -66,7 +66,6 @@ router.post('/login', async (req, res) => {
         }
 
         const isValidPassword = await argon2.verify(user.password, password)
-
         req.session.userId = user.id
         req.session.username = user.username
         res.json({ id: user.id, username: user.username, email: user.email })
