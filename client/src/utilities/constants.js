@@ -1,10 +1,5 @@
 export const SALT_ROUNDS = 10;
 
-export const SIGNINUP_PAGE_STATES = {
-  SIGNIN: 0,
-  SIGNUP: 1,
-};
-
 export const SIGNUP_PAGE_PROP = {
   h2: "Sign Up",
   usernameText: "Create a username:",
