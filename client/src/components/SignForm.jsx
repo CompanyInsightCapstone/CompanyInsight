@@ -1,9 +1,9 @@
 import { Link } from "react-router";
 
-export default function SForm({props, onSubmit}) {
+export default function SignForm({props, onSubmit}) {
   return (
     <>
-      <section className="form-container">
+      <main className="form-container">
         <form className="sign-form">
           <h2 className="form-typography-h2">{props.h2}</h2>
           <p className="form-typography">{props.usernameText}</p>
@@ -23,7 +23,7 @@ export default function SForm({props, onSubmit}) {
             {props.accountText}
           </button>
         </form>
-      </section>
+      </main>
     </>
   );
 }
