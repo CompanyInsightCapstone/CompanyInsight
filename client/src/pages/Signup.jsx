@@ -2,9 +2,10 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useState } from "react";
 import { METHOD_ENUM, options, SERVER_ADDRESS } from "../api/util";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function Signup() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -25,7 +26,7 @@ export default function Signup() {
       const data = await response.json();
       if (response.ok) {
         setMessage({ type: "success", text: "Signup successful!" });
-
+        navigate("/login");
       } else {
         setMessage({ type: "error", text: data.error || "Signup failed." });
       }
@@ -37,8 +38,9 @@ export default function Signup() {
   return (
     <>
       <Header />
-        <h2>Create an account </h2>
-        <form className="signup-form" onSubmit={handleSubmit}>
+      <main className="auth-form-container" >
+        <h2 className="auth-form-header">Create an account </h2>
+        <form className="auth-form" onSubmit={handleSubmit}>
             <label htmlFor="username">Username</label>
             <input
                 type="text"
@@ -74,6 +76,7 @@ export default function Signup() {
                 </div>
             )}
         </form>
+        </main>
       <Footer />
     </>
   );

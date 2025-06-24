@@ -11,11 +11,11 @@ const WithAuth = (WrappedComponent) => {
 
         useEffect(() => {
             if (!user) {
-                fetch(`${SERVER_ADDRESS}/check-session`,   {...options(METHOD_ENUM.GET), credentials: "include"})
+                fetch(`${SERVER_ADDRESS}/check-session`, {...options(METHOD_ENUM.POST), credentials: "include"})
                     .then((response) => response.json())
                     .then((data) => {
                         if (data.id) {
-                            setUser(data); 
+                            setUser(data);
                         } else {
                             navigate("/login");
                         }
