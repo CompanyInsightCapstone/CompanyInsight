@@ -10,7 +10,7 @@ export default function Header() {
     const handleLogout= (event) => {
         event.preventDefault();
         try {
-            const response = fetch(`${SERVER_ADDRESS}/logout`, {...options(METHOD_ENUM.GET), credentials: "include"})
+            const response = fetch(`${SERVER_ADDRESS}/logout`, {...options(METHOD_ENUM.POST), credentials: "include"})
             if (response.ok) {
                 setUser(null);
                 navigate("/login");
