@@ -14,7 +14,6 @@ router.post('/signup', async (req, res) => {
             return res.status(400).json({ error: "Password must be at least 8 characters long." })
         }
 
-
         const existingUser = await database.scan(database.TABLE_NAMES_ENUM.USER,
             { where: { username: username } }
         )
@@ -31,8 +30,7 @@ router.post('/signup', async (req, res) => {
             return res.status(400).json({ error: "Email already exists" })
         }
 
-        const hashedPassword = await argon2.hash(plainPassword, {
-            type: argon2.argon2id,
+        const hashedPassword = await argon2.hash(password, {
             memoryCost: 2 ** 16,
             timeCost: 3,
             parallelism: 1,
@@ -67,21 +65,18 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ error: "Invalid username or password" })
         }
 
-        const isValidPassword = await argon2.verify(hash, plainPassword)
-        if (!isValidPassword) {
-            return res.status(401).json({ error: "Invalid username or password" })
-        }
+        const isValidPassword = await argon2.verify(user.password, password)
+
         req.session.userId = user.id
         req.session.username = user.username
         res.json({ id: user.id, username: user.username, email: user.email })
     } catch (error) {
-        res.status(500).json({ error: "Something went wrong during login" })
+        res.status(500).json({ error: "Something went wrong during login"  })
     }
 })
 
-
 // Check Session Route
-router.get('/me', async (req, res) => {
+router.get('/check-session', async (req, res) => {
     if (!req.session.userId) {
         return res.status(401).json({ message: "Not logged in" })
     }
