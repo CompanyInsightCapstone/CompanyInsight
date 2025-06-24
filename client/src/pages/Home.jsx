@@ -1,3 +1,3 @@
 export default function Home() {
-    return (<p>placeholder</p>)
+  return <p>placeholder</p>;
 }
