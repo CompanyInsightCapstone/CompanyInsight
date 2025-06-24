@@ -11,7 +11,7 @@ const WithAuth = (WrappedComponent) => {
 
         useEffect(() => {
             if (!user) {
-                fetch(`${SERVER_ADDRESS}/check-session`, {...options(METHOD_ENUM.POST), credentials: "include"})
+                fetch(`${SERVER_ADDRESS}/check-session`, {...options(METHOD_ENUM.GET), credentials: "include"})
                     .then((response) => response.json())
                     .then((data) => {
                         if (data.id) {
