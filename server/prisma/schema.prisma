@@ -22,3 +22,14 @@ model User {
   email      String   @unique
   password   String
 }
+
+model Company {
+  id        Int   @id @default(autoincrement())
+  name      String
+  symbol    String
+  exchange  String?
+  assetType String?
+  ipoDate   String?
+  delistingDate String?
+  status    String?
+}
