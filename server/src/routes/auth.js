@@ -65,12 +65,15 @@ router.post("/login", async (req, res) => {
     }
 
     const user = await database.scan("user", { where: { username: username } });
+    const isValidPassword = await argon2.verify(user.password, password);
 
-    if (!user) {
+    if (!user || !isValidPassword) {
       return res.status(401).json({ error: "Invalid username or password" });
     }
 
-    const isValidPassword = await argon2.verify(user.password, password);
+
+
+
     req.session.userId = user.id;
     req.session.username = user.username;
     res.json({ id: user.id, username: user.username, email: user.email });
