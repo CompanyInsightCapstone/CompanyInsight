@@ -69,7 +69,7 @@ export default function Login() {
             onChange={handleChange}
             required
           />
-  
+
           <button className="auth-form-submit" type="submit">
             Log In
           </button>
