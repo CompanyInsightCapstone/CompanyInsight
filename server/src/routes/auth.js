@@ -71,9 +71,6 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid username or password" });
     }
 
-
-
-
     req.session.userId = user.id;
     req.session.username = user.username;
     res.json({ id: user.id, username: user.username, email: user.email });
