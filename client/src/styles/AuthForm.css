@@ -1,0 +1,22 @@
+.auth-form-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-form {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-form-header {
+  text-align: center;
+}
+
+.auth-form-submit {
+  margin: auto;
+}
+
+.auth-form-typography {
+  font-family: "Times New Roman", Times, serif;
+}

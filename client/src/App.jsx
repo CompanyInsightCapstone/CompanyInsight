@@ -2,7 +2,7 @@ import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { useContext, useEffect } from "react";
 import { SERVER_ADDRESS } from "./api/util";
-import WithAuth from './components/WithAuth';
+import WithAuth from "./components/WithAuth";
 import { UserContext } from "./contexts/UserContext";
 import { METHOD_ENUM, options } from "./api/util";
 import Login from "./pages/Login";
@@ -13,9 +13,12 @@ const ProtectedHome = WithAuth(Home);
 
 export default function App() {
   const { user, setUser } = useContext(UserContext);
-  
+
   useEffect(() => {
-    fetch(`${SERVER_ADDRESS}/check-session`, {...options(METHOD_ENUM.GET), credentials: "include"})
+    fetch(`${SERVER_ADDRESS}/check-session`, {
+      ...options(METHOD_ENUM.GET),
+      credentials: "include",
+    })
       .then((response) => response.json())
       .then((data) => {
         if (data.id) {

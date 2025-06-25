@@ -5,33 +5,36 @@ import { UserContext } from "../contexts/UserContext";
 import { options, METHOD_ENUM, SERVER_ADDRESS } from "../api/util";
 
 const WithAuth = (WrappedComponent) => {
-    return function ProtectedComponent(props) {
-        const { user, setUser } = useContext(UserContext);
-        const navigate = useNavigate();
+  return function ProtectedComponent(props) {
+    const { user, setUser } = useContext(UserContext);
+    const navigate = useNavigate();
 
-        useEffect(() => {
-            if (!user) {
-                fetch(`${SERVER_ADDRESS}/check-session`, {...options(METHOD_ENUM.GET), credentials: "include"})
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data.id) {
-                            setUser(data);
-                        } else {
-                            navigate("/login");
-                        }
-                    })
-                    .catch(() => {
-                        navigate("/login");
-                    });
+    useEffect(() => {
+      if (!user) {
+        fetch(`${SERVER_ADDRESS}/check-session`, {
+          ...options(METHOD_ENUM.GET),
+          credentials: "include",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.id) {
+              setUser(data);
+            } else {
+              navigate("/login");
             }
-        }, [user, setUser, navigate]);
+          })
+          .catch(() => {
+            navigate("/login");
+          });
+      }
+    }, [user, setUser, navigate]);
 
-        if (!user) {
-            return <p>Loading...</p>;
-        }
+    if (!user) {
+      return <p>Loading...</p>;
+    }
 
-        return <WrappedComponent {...props} />;
-    };
+    return <WrappedComponent {...props} />;
+  };
 };
 
 export default WithAuth;

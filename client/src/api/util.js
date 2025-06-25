@@ -1,15 +1,13 @@
 export const SERVER_ADDRESS = import.meta.env.VITE_SERVER_ADDRESS;
 
-
 export const METHOD_ENUM = {
-    GET: "GET",
-    POST: "POST",
-    PUT: "PUT",
-    DELETE: "DELETE",
-    PATCH: "PATCH",
-  };
+  GET: "GET",
+  POST: "POST",
+  PUT: "PUT",
+  DELETE: "DELETE",
+  PATCH: "PATCH",
+};
 
-  
 export const options = (methodType, data) => {
   switch (methodType) {
     case METHOD_ENUM.GET:
