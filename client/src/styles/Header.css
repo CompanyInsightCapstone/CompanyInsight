@@ -1,0 +1,13 @@
+header {
+  align-items: center;
+  background-image: url("NYSETradingFloor.jpg");
+  display: flex;
+  justify-content: center;
+  padding: 10px 15px;
+}
+
+header h1 {
+  color: #ffffff;
+  margin: 0;
+  padding: 0;
+}
