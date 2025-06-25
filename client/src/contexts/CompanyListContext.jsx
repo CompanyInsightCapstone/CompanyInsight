@@ -20,6 +20,8 @@ export default function CompanyListProvider({ children }) {
               credentials: "include",
             });
         const data = await response.json();
+        console.log(data)
+        console.log(data.companies[0])
         setCompanies(data.companies);
     };
     fetchCompanies();
