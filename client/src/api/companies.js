@@ -1,2 +1,2 @@
-const companiesM ={}
-export default companiesM
+const companiesM = {};
+export default companiesM;

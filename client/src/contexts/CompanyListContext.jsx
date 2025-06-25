@@ -1,34 +1,40 @@
 import { useEffect, useState, createContext } from "react";
-import { SERVER_ADDRESS, options, METHOD_ENUM  } from "../api/util";
+import { SERVER_ADDRESS, options, METHOD_ENUM } from "../api/util";
 
 export const CompanyListContext = createContext();
 
 export default function CompanyListProvider({ children }) {
-
-  const [companies, setCompanies] = useState([]);
-
+  const [companies, setCompanies] = useState(new Map());
+  const [currentPageNumber, setCurrentPageNumber] = useState(0)
 
   const updateCompanyList = (newList) => {
     setCompanies(newList);
+  };
+
+  const updateCurrentPageNumber = (n) => {
+    setCurrentPageNumber(n)
   }
 
+  const fetchCompanies = async () => {
+    const url = `${SERVER_ADDRESS}/api/companies?page=${currentPageNumber}`
+    const response = await (
+      await fetch(url, {
+        ...options(METHOD_ENUM.GET),
+        credentials: "include",
+      })
+    ).json();
+    const pages = response.pages;
+    pages.forEach(
+        page => companies.set(page.pageNumber, page.companiesData))
+    setCompanies(new Map(companies));
+  };
 
   useEffect(() => {
-    const fetchCompanies = async () => {
-       const response = await fetch(`${SERVER_ADDRESS}/api/companies`, {
-              ...options(METHOD_ENUM.GET),
-              credentials: "include",
-            });
-        const data = await response.json();
-        console.log(data)
-        console.log(data.companies[0])
-        setCompanies(data.companies);
-    };
     fetchCompanies();
   }, []);
 
   return (
-    <CompanyListContext.Provider value={{ companies, updateCompanyList }}>
+    <CompanyListContext.Provider value={{ companies, updateCompanyList, currentPageNumber, updateCurrentPageNumber}}>
       {children}
     </CompanyListContext.Provider>
   );

@@ -30,6 +30,6 @@ model Company {
   exchange  String?
   assetType String?
   ipoDate   String?
-  delistingDate String?
+  delistingDate String @default("N/A")
   status    String?
 }

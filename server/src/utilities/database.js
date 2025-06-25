@@ -1,4 +1,4 @@
-const { PrismaClient } = require("../generated/prisma");
+const { PrismaClient, Prisma } = require("../generated/prisma");
 const prisma = new PrismaClient();
 
 const TABLE_NAMES_ENUM = {
@@ -27,6 +27,14 @@ async function getAll(tableName) {
   return await model.findMany();
 }
 
+async function getPage(tableName, pageSize) {
+  const model = formatTableName(tableName);
+  return await model.findMany({
+    skip: pageSize,
+    take: pageSize,
+    orderBy: { id: 'asc' }, 
+  });
+}
 async function tableCardinality(tableName) {
   const model = formatTableName(tableName);
   return await model.count();
@@ -44,6 +52,7 @@ module.exports = {
   scan,
   create,
   getAll,
+  getPage,
   tableCardinality,
   executeQuery,
   executeRawQuery,
