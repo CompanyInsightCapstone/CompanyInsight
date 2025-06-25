@@ -1,0 +1,38 @@
+{
+  "dependencies": {
+    "@prisma/client": "^6.9.0",
+    "argon2": "^0.43.0",
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.2",
+    "chalk": "^4.1.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "morgan": "^1.10.0",
+    "pg": "^8.16.0"
+  },
+  "scripts": {
+    "dev": "node --watch index.js",
+    "start": "npx prisma migrate deploy && node index.js",
+    "build": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:reset": "prisma migrate reset --force",
+    "db:seed": "node prisma/seed.js",
+    "db:init": "npm run db:reset && npm run db:migrate && npm run db:seed"
+  },
+  "name": "server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@eslint/js": "^9.29.0",
+    "eslint": "^9.29.0",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^16.2.0",
+    "prisma": "^6.10.1"
+  }
+}
