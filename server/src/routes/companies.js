@@ -2,9 +2,9 @@ const express = require("express");
 const database = require("../utilities/database");
 const router = express.Router();
 
-// the number of pages
+
 const BLOCK_SIZE = 4
-// the number of entries per page
+
 const PAGE_SIZE = 20
 
 router.get("/api/companies", async (req, res) => {
