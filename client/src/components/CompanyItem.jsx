@@ -1,9 +1,6 @@
 import "../styles/Item.css";
 
 export default function CompanyItem({ company }) {
-  if (!company) {
-    return <p>loading...</p>;
-  }
   return (
     <article className="list-item">
       <h2 className="list-item-header">{company.name} </h2>
