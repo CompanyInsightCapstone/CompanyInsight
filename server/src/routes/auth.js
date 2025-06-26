@@ -64,7 +64,9 @@ router.post("/login", async (req, res) => {
         .json({ error: "Username and password are required" });
     }
 
-    const user = await database.scan(database.TABLE_NAMES_ENUM.USER, { where: { username: username } });
+    const user = await database.scan(database.TABLE_NAMES_ENUM.USER, {
+      where: { username: username },
+    });
     const isValidPassword = await argon2.verify(user.password, password);
 
     if (!user || !isValidPassword) {
