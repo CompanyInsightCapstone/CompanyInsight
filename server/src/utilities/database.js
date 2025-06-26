@@ -41,8 +41,6 @@ async function tableCardinality(tableName) {
   return await model.count();
 }
 
-
-
 module.exports = {
   scan,
   create,
