@@ -27,34 +27,27 @@ async function getAll(tableName) {
   return await model.findMany();
 }
 
-async function getPage(tableName, pageSize) {
+async function getPages(tableName, currentPageNumber, pageSize, blockSize) {
   const model = formatTableName(tableName);
   return await model.findMany({
-    skip: pageSize,
-    take: pageSize,
-    orderBy: { id: 'asc' }, 
+    skip: (currentPageNumber*pageSize*blockSize),
+    take: (pageSize*blockSize),
+    orderBy: { id: 'asc' },
   });
 }
+
 async function tableCardinality(tableName) {
   const model = formatTableName(tableName);
   return await model.count();
 }
 
-async function executeQuery(query) {
-  return await prisma.$queryRaw`${query}`;
-}
 
-async function executeRawQuery(query) {
-  return await prisma.$executeRaw`${query}`;
-}
 
 module.exports = {
   scan,
   create,
   getAll,
-  getPage,
+  getPages,
   tableCardinality,
-  executeQuery,
-  executeRawQuery,
   TABLE_NAMES_ENUM,
 };
