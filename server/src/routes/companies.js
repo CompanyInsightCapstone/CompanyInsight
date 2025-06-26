@@ -4,7 +4,6 @@ const router = express.Router();
 
 
 const BLOCK_SIZE = 4
-
 const PAGE_SIZE = 20
 
 router.get("/api/companies", async (req, res) => {

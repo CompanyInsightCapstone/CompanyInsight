@@ -5,7 +5,12 @@ import "../styles/List.css";
 
 export default function CompanyList() {
   const { companies, updateCompanyLists, currentPageNumber, updateCurrentPageNumber } = useContext(CompanyListContext);
-  
+
+  function loadPage(event) {
+    event.preventDefault();
+    updateCurrentPageNumber(parseInt(event.target.value));
+  }
+
   if (!companies || !companies.get(0)) {
     return <p>loading or none</p>;
   } else {
@@ -17,6 +22,14 @@ export default function CompanyList() {
             <CompanyItem key={company.id} company={company} />
           ))}
         </div>
+
+        {currentPageNumber !== 0 && <button value={-1} onClick={loadPage}>
+          PREVIOUS PAGE
+        </button>}
+
+        <button value={1} onClick={loadPage}>
+          NEXT PAGE
+        </button>
       </section>
     );
   }
