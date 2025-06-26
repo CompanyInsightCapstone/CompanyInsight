@@ -4,6 +4,7 @@ const cors = require("cors");
 const { ValidationError } = require("./src/middleware/CustomErrors");
 
 const authRouter = require("./src/routes/auth");
+const companiesRouter = require("./src/routes/companies");
 const server = express();
 const dotenv = require("dotenv");
 dotenv.config();
@@ -29,6 +30,7 @@ server.use(
 );
 
 server.use(authRouter);
+server.use(companiesRouter);
 
 server.use((err, req, res, next) => {
   if (err instanceof ValidationError) {
