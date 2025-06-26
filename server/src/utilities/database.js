@@ -46,7 +46,6 @@ async function getAll(tableName) {
   return await model.findMany();
 }
 
-
 /**
  * Get a page of records in the table named tableName
  * @param {*} tableName - name of the table
@@ -58,9 +57,9 @@ async function getAll(tableName) {
 async function getPages(tableName, currentPageNumber, pageSize, blockSize) {
   const model = formatTableName(tableName);
   return await model.findMany({
-    skip: (currentPageNumber*pageSize*blockSize),
-    take: (pageSize*blockSize),
-    orderBy: { id: 'asc' },
+    skip: currentPageNumber * pageSize * blockSize,
+    take: pageSize * blockSize,
+    orderBy: { id: "asc" },
   });
 }
 
