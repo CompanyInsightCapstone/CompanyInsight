@@ -2,7 +2,7 @@ import "../styles/Item.css";
 
 export default function CompanyItem({ company }) {
   if (!company) {
-    return <p>loading...</p>
+    return <p>loading...</p>;
   }
   return (
     <article className="list-item">
