@@ -8,23 +8,20 @@ const { ValidationError } = require("./src/middleware/CustomErrors");
 const dotenv = require("dotenv");
 dotenv.config();
 
-
-const redisClient = require('./src/utilities/rediscache');
+const redisClient = require("./src/utilities/rediscache");
 redisClient.connect((err) => {
   if (err) {
-    console.log('Error connecting to Redis:', err);
+    console.log("Error connecting to Redis:", err);
   } else {
-    console.log('Connected to Redis');
+    console.log("Connected to Redis");
   }
 });
-
-
 
 const PORT = process.env.PORT || 3000;
 
 server.use(
   cors({
-    origin: "http://localhost:5173", 
+    origin: "http://localhost:5173",
     credentials: true,
   }),
 );

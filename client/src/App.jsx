@@ -7,9 +7,11 @@ import { UserContext } from "./contexts/UserContext";
 import { METHOD_ENUM, options } from "./api/util";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import CompanyDetails from "./pages/CompanyDetails";
 import Home from "./pages/Home";
 
 const ProtectedHome = WithAuth(Home);
+const ProtectedDetails = WithAuth(CompanyDetails);
 
 export default function App() {
   const { user, setUser } = useContext(UserContext);
@@ -37,6 +39,10 @@ export default function App() {
           <Route path="/" element={<ProtectedHome />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
+          <Route
+            path="/company-details/:id/:symbol"
+            element={<ProtectedDetails />}
+          />
         </Routes>
       </Router>
     </>

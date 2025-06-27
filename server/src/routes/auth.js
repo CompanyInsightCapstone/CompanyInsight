@@ -2,7 +2,7 @@ const express = require("express");
 const database = require("../utilities/database");
 const argon2 = require("argon2");
 const router = express.Router();
-const cache  = require("../utilities/rediscache");
+const cache = require("../utilities/rediscache");
 
 // Signup Route
 router.post("/signup", async (req, res) => {
@@ -76,7 +76,11 @@ router.post("/login", async (req, res) => {
 
     req.session.userId = user.id;
     req.session.username = user.username;
-    const response = { id: user.id, username: user.username, email: user.email }
+    const response = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+    };
 
     cache.set(`user:${user.id}`, JSON.stringify(response));
     res.json(response);
@@ -90,10 +94,10 @@ router.get("/check-session", async (req, res) => {
   if (!req.session.userId) {
     return res.status(401).json({ message: "Not logged in" });
   }
-
   try {
-    //if not in cache, get from database
-    const cachedUser = JSON.parse(await cache.get(`user:${req.session.userId}`));
+    const cachedUser = JSON.parse(
+      await cache.get(`user:${req.session.userId}`),
+    );
     if (cachedUser) {
       return res.json(cachedUser);
     }
@@ -101,6 +105,14 @@ router.get("/check-session", async (req, res) => {
       where: { id: req.session.userId },
       select: { username: true },
     });
+
+    const HOUR_TIME_LIMIT = 3600;
+    cache.set(
+      `user:${req.session.userId}`,
+      JSON.stringify(user),
+      HOUR_TIME_LIMIT,
+    );
+
     res.json({
       id: req.session.userId,
       username: user.username,
