@@ -12,7 +12,7 @@ export default function Home() {
       <h2> Home Page - View a list of companies & associated fin-data </h2>
       <CompanyListProvider>
         <Filter />
-      
+
         <ListView />
         <PageButtons />
       </CompanyListProvider>

@@ -16,6 +16,7 @@ export const options = (methodType, data) => {
         headers: {
           Accept: "application/json",
         },
+        body: JSON.stringify(data),
       };
     case METHOD_ENUM.POST:
     case METHOD_ENUM.PUT:
