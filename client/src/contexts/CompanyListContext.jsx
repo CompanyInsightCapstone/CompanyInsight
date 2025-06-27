@@ -7,10 +7,13 @@ export default function CompanyListProvider({ children }) {
   const [companiesList, setCompaniesList] = useState([]);
 
   const [companiesPageTable, setCompaniesPageTable] = useState(new Map());
-  const [filteredCompaniesPageTable, setFilteredCompaniesPageTable] = useState(new Map());
+  const [filteredCompaniesPageTable, setFilteredCompaniesPageTable] = useState(
+    new Map(),
+  );
 
   const [companiesPageNumber, setCompaniesPageNumber] = useState(0);
-  const [filteredCompaniesPageNumber, setFilteredCompaniesPageNumber] = useState(0);
+  const [filteredCompaniesPageNumber, setFilteredCompaniesPageNumber] =
+    useState(0);
   const [filterRequest, setFilterRequest] = useState(null);
 
   const updateCompaniesList = (newList) => {
@@ -25,7 +28,7 @@ export default function CompanyListProvider({ children }) {
     setCompaniesPageTable(new Map(companiesPageTable));
     setCompaniesList(companiesPageTable.get(companiesPageNumber));
   }
-  
+
   async function fetchFilteredPage() {
     const data = await Companies.fetchFilteredPage(
       filteredCompaniesPageNumber,

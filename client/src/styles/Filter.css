@@ -1,6 +1,133 @@
-.error-message {
-  color: #d32f2f;
-  background-color: #ffebee;
+.filter {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin: 20px 0;
+  padding: 20px;
+}
+
+.filter-controls-container {
+  width: 100%;
+}
+
+.filter-controls {
+  display: grid;
+  gap: 15px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  width: 100%;
+}
+
+.filter-control {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.filter-control label {
+  color: #2c3e50;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.filter-control input,
+.filter-control select {
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 14px;
   padding: 8px 12px;
+  transition: border-color 0.2s;
+}
+
+.filter-control input:focus,
+.filter-control select:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+  outline: none;
+}
+
+.filter-buttons {
+  align-items: flex-end;
+  display: flex;
+  gap: 10px;
+}
+
+.filter-button {
+  background-color: #3498db;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 16px;
+  transition: background-color 0.2s;
+}
+
+.filter-button:hover {
+  background-color: #2980b9;
+}
+
+.clear-button {
+  background-color: #f0f0f0;
+  border: none;
+  border-radius: 6px;
+  color: #7f8c8d;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 16px;
+  transition: background-color 0.2s;
+}
+
+.clear-button:hover {
+  background-color: #e0e0e0;
+}
+
+.error-message {
+  background-color: #ffebee;
   border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  color: #d32f2f;
+  margin-bottom: 15px;
+  padding: 10px 15px;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .filter {
+    padding: 15px;
+  }
+
+  .filter-controls {
+    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+
+  .filter-buttons {
+    grid-column: 1 / -1;
+    justify-content: center;
+  }
+
+  .filter-button,
+  .clear-button {
+    font-size: 13px;
+    padding: 7px 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .filter-controls {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .filter-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .filter-button,
+  .clear-button {
+    width: 100%;
+  }
 }

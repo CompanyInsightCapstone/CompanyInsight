@@ -44,12 +44,13 @@ export default function Login() {
     <>
       <Header />
       <main className="auth-form-container">
-        <h2 className="auth-form-header">Log in</h2>
         <form className="auth-form" onSubmit={handleSubmit}>
-          <label className="auth-form-typography" htmlFor="username">
+          <h2 className="auth-form-header">Log in</h2>
+          <label className="form-label auth-form-typography" htmlFor="username">
             Enter your username:
           </label>
           <input
+            className="form-input"
             type="text"
             name="username"
             id="username"
@@ -58,10 +59,11 @@ export default function Login() {
             required
           />
 
-          <label className="auth-form-typography" htmlFor="password">
+          <label className="form-label auth-form-typography" htmlFor="password">
             Enter your password:
           </label>
           <input
+            className="form-input"
             type="password"
             name="password"
             id="password"
@@ -70,14 +72,18 @@ export default function Login() {
             required
           />
 
-          <button className="auth-form-submit" type="submit">
-            Log In
-          </button>
+          <div className="btn-group">
+            <button className="btn btn-primary auth-form-submit" type="submit">
+              Log In
+            </button>
+          </div>
           <p className="auth-form-typography">
             Don't have an account? <Link to="/signup"> Sign up here</Link>
           </p>
           {message && (
-            <p className={`message ${message.type}`}>{message.text}</p>
+            <p className={`message ${message.type} auth-form-typography`}>
+              {message.text}
+            </p>
           )}
         </form>
       </main>

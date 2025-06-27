@@ -1,5 +1,6 @@
 import { useContext, useState } from "react";
 import { CompanyListContext } from "../contexts/CompanyListContext";
+import "../styles/Filter.css";
 
 const FILTER_FIELDS = {
   NAME: "name",
