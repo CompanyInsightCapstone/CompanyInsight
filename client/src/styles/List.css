@@ -4,49 +4,11 @@
   font-weight: 700;
 }
 
-/* Option 1: Fixed 5 columns layout (will show 20 cards in 4 rows) */
 .list-container {
   display: grid;
   gap: 15px;
-  grid-template-columns: repeat(5, 1fr); /* Fixed 5 columns */
+  grid-template-columns: repeat(5, 1fr);
   margin: 15px 0;
   width: 100%;
   max-width: 100%;
-}
-
-/* Option 2: Responsive layout with smaller cards */
-/* Uncomment this and comment out the above .list-container to use
-.list-container {
-    display: grid;
-    gap: 15px;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    margin: 15px 0;
-    width: 100%;
-    max-width: 100%;
-}
-*/
-
-/* Responsive adjustments */
-@media (max-width: 1200px) {
-  .list-container {
-    grid-template-columns: repeat(4, 1fr); /* 4 columns on medium screens */
-  }
-}
-
-@media (max-width: 900px) {
-  .list-container {
-    grid-template-columns: repeat(3, 1fr); /* 3 columns on smaller screens */
-  }
-}
-
-@media (max-width: 600px) {
-  .list-container {
-    grid-template-columns: repeat(2, 1fr); /* 2 columns on mobile */
-  }
-}
-
-@media (max-width: 400px) {
-  .list-container {
-    grid-template-columns: 1fr; /* 1 column on very small screens */
-  }
 }
