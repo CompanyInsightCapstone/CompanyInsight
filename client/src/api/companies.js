@@ -1,4 +1,4 @@
-import { SERVER_ADDRESS, options, METHOD_ENUM } from "./util";
+import { SERVER_ADDRESS, options, METHOD_ENUM, POLYGON_API_KEY, ALPHA_VANTAGE_KEY } from "./util";
 
 const Companies = {
   /**
@@ -41,6 +41,21 @@ const Companies = {
       return { pages: [] };
     }
   },
+
+  async fetchCompanyDetails(id, symbol) {
+    const url = `${SERVER_ADDRESS}/api/companies/${id}?${new URLSearchParams({symbol: symbol})}`
+    try {
+      const response = await fetch(url, {
+        ...options(METHOD_ENUM.GET),
+        credentials: "include",
+      });
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return null;
+    }
+  }
+
 };
 
 export { Companies };
