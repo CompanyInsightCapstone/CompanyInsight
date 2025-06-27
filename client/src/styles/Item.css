@@ -1,11 +1,96 @@
+/* Company Item Styles */
+
 .list-item {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  padding: 15px;
+  position: relative;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  width: 100%;
+}
+
+.list-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .list-item-header {
+  color: #2c3e50;
+  display: -webkit-box;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  line-height: 1.2;
+  margin: 0 0 10px 0;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .list-item-symbol {
+  color: #3498db;
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 10px 0;
+  text-align: center;
 }
 
 .list-item-typography {
+  color: #7f8c8d;
+  font-size: 14px;
+  margin: 5px 0;
+  text-align: center;
+}
+
+.list-item-link {
+  background-color: #3498db;
+  border-radius: 4px;
+  color: white;
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 15px auto 5px;
+  padding: 8px 16px;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.2s;
+  width: fit-content;
+}
+
+.list-item-link:hover {
+  background-color: #2980b9;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .list-item {
+    padding: 10px;
+  }
+
+  .list-item-header {
+    font-size: 16px;
+  }
+
+  .list-item-symbol {
+    font-size: 14px;
+  }
+
+  .list-item-typography {
+    font-size: 12px;
+  }
+
+  .list-item-link {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
 }

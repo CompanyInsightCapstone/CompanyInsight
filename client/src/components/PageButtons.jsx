@@ -7,10 +7,18 @@ export default function PageButtons() {
 
   return (
     <div className="page-buttons-container">
-      <button className="page-button page-button-prev" value={-1} onClick={handleLoadPage}>
+      <button
+        className="page-button page-button-prev"
+        value={-1}
+        onClick={handleLoadPage}
+      >
         PREVIOUS PAGE
       </button>
-      <button className="page-button page-button-next" value={1} onClick={handleLoadPage}>
+      <button
+        className="page-button page-button-next"
+        value={1}
+        onClick={handleLoadPage}
+      >
         NEXT PAGE
       </button>
     </div>
