@@ -43,9 +43,8 @@ export default function Signup() {
     <>
       <Header />
       <main className="auth-form-container">
-
         <form className="auth-form" onSubmit={handleSubmit}>
-        <h2 className="auth-form-header">Create an account </h2>
+          <h2 className="auth-form-header">Create an account </h2>
           <label className="form-label auth-form-typography" htmlFor="username">
             Create a username
           </label>
@@ -90,7 +89,9 @@ export default function Signup() {
             Already have an account? <Link to="/login"> Sign in here</Link>
           </p>
           {message && (
-            <p className={`message ${message.type} auth-form-typography`}>{message.text}</p>
+            <p className={`message ${message.type} auth-form-typography`}>
+              {message.text}
+            </p>
           )}
         </form>
       </main>

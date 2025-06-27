@@ -1,12 +1,17 @@
 .auth-form-container {
   display: flex;
   flex-direction: column;
+  background-image: url("../assets/NYSETradingFloor.jpg");
 }
 
 .auth-form {
   margin: auto;
   display: flex;
   flex-direction: column;
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  border: rounded;
 }
 
 .auth-form-header {
@@ -20,7 +25,6 @@
 .auth-form-typography {
   font-family: "Times New Roman", Times, serif;
 }
-
 
 .form-container {
   display: flex;

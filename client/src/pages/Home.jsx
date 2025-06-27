@@ -11,7 +11,7 @@ export default function Home() {
     <>
       <Header />
       <main className="home-container">
-        <h2 className="home-title"> Home Page - View a list of companies & associated fin-data </h2>
+        <h2 className="home-title"> Catalog (WIP)</h2>
         <CompanyListProvider>
           <Filter />
           <ListView />
