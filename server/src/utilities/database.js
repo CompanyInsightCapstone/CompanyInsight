@@ -54,13 +54,43 @@ async function getAll(tableName) {
  * @param {*} blockSize - number of pages to fetch at a time
  * @returns
  */
-async function getPages(tableName, currentPageNumber, pageSize, blockSize) {
+/**
+ * Get a page of records in the table named tableName with optional filter clauses
+ * @param {*} tableName - name of the table
+ * @param {*} currentPageNumber - 0 based
+ * @param {*} pageSize - number of records per page
+ * @param {*} blockSize - number of pages to fetch at a time
+ * @param {*} clauses - optional Prisma filter clauses (where, orderBy, etc.)
+ * @returns
+ */
+async function getPages(
+  tableName,
+  currentPageNumber,
+  pageSize,
+  blockSize,
+  clauses = {},
+) {
   const model = formatTableName(tableName);
-  return await model.findMany({
+
+  const queryOptions = {
     skip: currentPageNumber * pageSize * blockSize,
     take: pageSize * blockSize,
     orderBy: { id: "asc" },
-  });
+  };
+
+  if (clauses.where) {
+    queryOptions.where = clauses.where;
+  }
+
+  if (clauses.orderBy) {
+    queryOptions.orderBy = clauses.orderBy;
+  }
+
+  if (clauses.include) {
+    queryOptions.include = clauses.include;
+  }
+
+  return await model.findMany(queryOptions);
 }
 
 /**
