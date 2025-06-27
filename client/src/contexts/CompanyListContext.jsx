@@ -1,4 +1,4 @@
-import { useEffect, useState, createContext } from "react";
+import { useEffect, useState, createContext, useRef} from "react";
 import { Companies } from "../api/companies";
 
 export const CompanyListContext = createContext();
@@ -44,6 +44,7 @@ export default function CompanyListProvider({ children }) {
   }
 
   useEffect(() => {
+    // if its the same filter req otherwise restart
     if (filterRequest) {
       if (filteredCompaniesPageTable.has(filteredCompaniesPageNumber)) {
         setCompaniesList(
@@ -69,13 +70,21 @@ export default function CompanyListProvider({ children }) {
     inc((prev) => Math.max(0, prev + parseInt(event.target.value)));
   }
 
+
+  const handleNewFilterRequest = (newFilterRequest) => {
+      setFilterRequest(null);
+      setFilteredCompaniesPageTable(new Map());
+      setFilteredCompaniesPageNumber(0);
+      setFilterRequest(newFilterRequest);
+  }
+
   return (
     <CompanyListContext.Provider
       value={{
         companiesList,
         updateCompaniesList,
         handleLoadPage,
-        setFilterRequest,
+        setNewFilterRequest: handleNewFilterRequest
       }}
     >
       {children}

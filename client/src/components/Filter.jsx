@@ -10,12 +10,12 @@ const FILTER_FIELDS = {
 };
 
 export default function Filter() {
-  const { setFilterRequest } = useContext(CompanyListContext);
+  const { setNewFilterRequest } = useContext(CompanyListContext);
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleClear = (event) => {
     event.preventDefault();
-    setFilterRequest(null);
+    setNewFilterRequest(null);
     document.getElementById("filter-form").reset();
   };
 
@@ -45,7 +45,7 @@ export default function Filter() {
     setErrorMessage("");
     const formData = new FormData(event.target);
     if (isValidFilterRequest(formData)) {
-      setFilterRequest(formData);
+      setNewFilterRequest(formData);
     } else {
       setErrorMessage(
         "Please select at least one filter option before searching.",
