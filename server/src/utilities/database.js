@@ -47,14 +47,6 @@ async function getAll(tableName) {
 }
 
 /**
- * Get a page of records in the table named tableName
- * @param {*} tableName - name of the table
- * @param {*} currentPageNumber - 0 based
- * @param {*} pageSize - number of records per page
- * @param {*} blockSize - number of pages to fetch at a time
- * @returns
- */
-/**
  * Get a page of records in the table named tableName with optional filter clauses
  * @param {*} tableName - name of the table
  * @param {*} currentPageNumber - 0 based
