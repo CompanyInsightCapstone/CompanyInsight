@@ -4,18 +4,20 @@ import CompanyListProvider from "../contexts/CompanyListContext";
 import Filter from "../components/Filter";
 import ListView from "../components/ListView";
 import PageButtons from "../components/PageButtons";
+import "../styles/Home.css";
 
 export default function Home() {
   return (
     <>
       <Header />
-      <h2> Home Page - View a list of companies & associated fin-data </h2>
-      <CompanyListProvider>
-        <Filter />
-
-        <ListView />
-        <PageButtons />
-      </CompanyListProvider>
+      <main className="home-container">
+        <h2 className="home-title"> Home Page - View a list of companies & associated fin-data </h2>
+        <CompanyListProvider>
+          <Filter />
+          <ListView />
+          <PageButtons />
+        </CompanyListProvider>
+      </main>
       <Footer />
     </>
   );

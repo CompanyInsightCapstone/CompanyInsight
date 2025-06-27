@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
 import { options, METHOD_ENUM, SERVER_ADDRESS } from "../api/util";
+import "../styles/WithAuth.css";
 
 const WithAuth = (WrappedComponent) => {
   return function ProtectedComponent(props) {
@@ -30,7 +31,7 @@ const WithAuth = (WrappedComponent) => {
     }, [user, setUser, navigate]);
 
     if (!user) {
-      return <p>Loading...</p>;
+      return <p className="auth-loading">Loading...</p>;
     }
 
     return <WrappedComponent {...props} />;

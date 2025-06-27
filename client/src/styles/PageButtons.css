@@ -1,0 +1,17 @@
+/* PageButtons Component Styles */
+
+.page-buttons-container {
+  /* Container for the pagination buttons */
+}
+
+.page-button {
+  /* Base styles for all pagination buttons */
+}
+
+.page-button-prev {
+  /* Specific styles for the previous page button */
+}
+
+.page-button-next {
+  /* Specific styles for the next page button */
+}
