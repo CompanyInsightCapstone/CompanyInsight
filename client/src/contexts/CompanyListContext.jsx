@@ -1,32 +1,91 @@
-import { useEffect, useState, createContext } from "react";
+import { useEffect, useState, createContext, useRef} from "react";
 import { Companies } from "../api/companies";
 
 export const CompanyListContext = createContext();
 
 export default function CompanyListProvider({ children }) {
-  const [companies, setCompanies] = useState(new Map());
-  const [currentPageNumber, setCurrentPageNumber] = useState(0);
+  const [companiesList, setCompaniesList] = useState([]);
 
-  const updateCurrentPageNumber = (v) => {
-    setCurrentPageNumber(v);
+  const [companiesPageTable, setCompaniesPageTable] = useState(new Map());
+  const [filteredCompaniesPageTable, setFilteredCompaniesPageTable] = useState(
+    new Map(),
+  );
+
+  const [companiesPageNumber, setCompaniesPageNumber] = useState(0);
+  const [filteredCompaniesPageNumber, setFilteredCompaniesPageNumber] =
+    useState(0);
+
+  const [filterRequest, setFilterRequest] = useState(null);
+
+  const updateCompaniesList = (newList) => {
+    setCompaniesList(newList);
   };
 
+  async function fetchDefaultPage() {
+    const data = await Companies.fetchPage(companiesPageNumber);
+    data.pages.forEach((page) =>
+      companiesPageTable.set(page.pageNumber, page.companiesData),
+    );
+    setCompaniesPageTable(new Map(companiesPageTable));
+    setCompaniesList(companiesPageTable.get(companiesPageNumber));
+  }
+  async function fetchFilteredPage() {
+    const data = await Companies.fetchFilteredPage(
+      filteredCompaniesPageNumber,
+      filterRequest,
+    );
+    data.pages.forEach((page) =>
+      filteredCompaniesPageTable.set(page.pageNumber, page.companiesData),
+    );
+    setFilteredCompaniesPageTable(new Map(filteredCompaniesPageTable));
+    setCompaniesList(
+      filteredCompaniesPageTable.get(filteredCompaniesPageNumber),
+    );
+  }
+
   useEffect(() => {
-    if (!companies.has(currentPageNumber)) {
-      async function fetchData() {
-        const data = await Companies.fetchPage(currentPageNumber);
-        data.pages.forEach((page) =>
-          companies.set(page.pageNumber, page.companiesData),
+    // if its the same filter req otherwise restart
+    if (filterRequest) {
+      if (filteredCompaniesPageTable.has(filteredCompaniesPageNumber)) {
+        setCompaniesList(
+          filteredCompaniesPageTable.get(filteredCompaniesPageNumber),
         );
-        setCompanies(new Map(companies));
+      } else {
+        fetchFilteredPage();
       }
-      fetchData();
+    } else {
+      if (companiesPageTable.has(companiesPageNumber)) {
+        setCompaniesList(companiesPageTable.get(companiesPageNumber));
+      } else {
+        fetchDefaultPage();
+      }
     }
-  }, [currentPageNumber]);
+  }, [companiesPageNumber, filteredCompaniesPageNumber, filterRequest]);
+
+  function handleLoadPage(event) {
+    event.preventDefault();
+    const inc = !filterRequest
+      ? setCompaniesPageNumber
+      : setFilteredCompaniesPageNumber;
+    inc((prev) => Math.max(0, prev + parseInt(event.target.value)));
+  }
+
+
+  const handleNewFilterRequest = (newFilterRequest) => {
+      setFilterRequest(null);
+      setFilteredCompaniesPageTable(new Map());
+      setFilteredCompaniesPageNumber(0);
+      setFilterRequest(newFilterRequest);
+  }
 
   return (
     <CompanyListContext.Provider
-      value={{ companies, currentPageNumber, updateCurrentPageNumber }}
+      value={{
+        companiesList,
+        updateCompaniesList,
+        handleLoadPage,
+        setNewFilterRequest: handleNewFilterRequest
+      }}
     >
       {children}
     </CompanyListContext.Provider>
