@@ -1,19 +1,30 @@
 const express = require("express");
 const session = require("express-session");
 const cors = require("cors");
-const { ValidationError } = require("./src/middleware/CustomErrors");
-
 const authRouter = require("./src/routes/auth");
 const companiesRouter = require("./src/routes/companies");
 const server = express();
+const { ValidationError } = require("./src/middleware/CustomErrors");
 const dotenv = require("dotenv");
 dotenv.config();
+
+
+const redisClient = require('./src/utilities/rediscache');
+redisClient.connect((err) => {
+  if (err) {
+    console.log('Error connecting to Redis:', err);
+  } else {
+    console.log('Connected to Redis');
+  }
+});
+
+
 
 const PORT = process.env.PORT || 3000;
 
 server.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "http://localhost:5173", 
     credentials: true,
   }),
 );

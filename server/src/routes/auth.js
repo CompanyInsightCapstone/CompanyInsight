@@ -2,6 +2,7 @@ const express = require("express");
 const database = require("../utilities/database");
 const argon2 = require("argon2");
 const router = express.Router();
+const cache  = require("../utilities/rediscache");
 
 // Signup Route
 router.post("/signup", async (req, res) => {
@@ -75,7 +76,10 @@ router.post("/login", async (req, res) => {
 
     req.session.userId = user.id;
     req.session.username = user.username;
-    res.json({ id: user.id, username: user.username, email: user.email });
+    const response = { id: user.id, username: user.username, email: user.email }
+
+    cache.set(`user:${user.id}`, JSON.stringify(response));
+    res.json(response);
   } catch (error) {
     res.status(500).json({ error: "Something went wrong during login" });
   }
@@ -88,6 +92,11 @@ router.get("/check-session", async (req, res) => {
   }
 
   try {
+    //if not in cache, get from database
+    const cachedUser = JSON.parse(await cache.get(`user:${req.session.userId}`));
+    if (cachedUser) {
+      return res.json(cachedUser);
+    }
     const user = await database.scan("user", {
       where: { id: req.session.userId },
       select: { username: true },
