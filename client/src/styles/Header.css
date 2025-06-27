@@ -1,13 +1,84 @@
-header {
+/* Header styles */
+.header {
   align-items: center;
-  background-image: url("NYSETradingFloor.jpg");
   display: flex;
-  justify-content: center;
-  padding: 10px 15px;
+  justify-content: space-between;
+  padding: 20px 15px;
+  color: #ffffff;
+  margin: 0;
+  /* Background image setup */
+  background-color: #1d212c; /* Fallback color if image doesn't load */
+  background-image: url("../assets/NYSETradingFloor.jpg"); /* Correct path to image */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
 }
 
-header h1 {
+/* Add an overlay to make text more readable over the image */
+.header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(29, 33, 44, 0.7); /* Semi-transparent overlay */
+  z-index: 1;
+}
+
+/* Make sure all header content is above the overlay */
+.header > * {
+  position: relative;
+  z-index: 2;
+}
+
+.header-title {
   color: #ffffff;
   margin: 0;
   padding: 0;
+  font-size: 1.8rem;
 }
+
+.header-logout-button {
+  background-color: #e74c3c;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  cursor: pointer;
+  padding: 8px 16px;
+  transition: background-color 0.3s;
+}
+
+.header-logout-button:hover {
+  background-color: #c0392b;
+}
+
+.header-icon {
+  margin-right: 5px;
+}
+
+.header-message {
+  margin-left: 15px;
+}
+
+/* Style for the back link */
+.back-link {
+  display: flex;
+  align-items: center;
+  color: #ffffff;
+  text-decoration: none;
+  margin-right: 15px;
+  transition: color 0.3s;
+}
+
+.back-link:hover {
+  color: #e0e0e0;
+}
+
+/* Note: To make the background image work, you need to:
+1. Create an assets folder in src if it doesn't exist
+2. Add the NYSETradingFloor.jpg image to that folder
+3. If you don't have the image, find a suitable stock image of a trading floor
+   and save it as NYSETradingFloor.jpg in the assets folder
+*/

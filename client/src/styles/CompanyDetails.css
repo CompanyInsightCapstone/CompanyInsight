@@ -1,0 +1,21 @@
+/* CompanyDetails Page Styles */
+
+.company-details {
+  /* Container for the company details section */
+}
+
+.company-details-loading {
+  /* Styles for the loading message */
+}
+
+.company-details-title {
+  /* Styles for the company name heading */
+}
+
+.company-details-info {
+  /* Base styles for all company information paragraphs */
+}
+
+.company-details-description {
+  /* Specific styles for the company description paragraph */
+}

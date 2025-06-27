@@ -43,33 +43,37 @@ export default function Signup() {
     <>
       <Header />
       <main className="auth-form-container">
-        <h2 className="auth-form-header">Create an account </h2>
+
         <form className="auth-form" onSubmit={handleSubmit}>
-          <label className="auth-form-typography" htmlFor="username">
+        <h2 className="auth-form-header">Create an account </h2>
+          <label className="form-label auth-form-typography" htmlFor="username">
             Create a username
           </label>
           <input
+            className="form-input"
             type="text"
             id="username"
             name="username"
             value={formData.username}
             onChange={handleChange}
           />
-          <label className="auth-form-typography" htmlFor="password">
+          <label className="form-label auth-form-typography" htmlFor="password">
             Set a password
           </label>
 
           <input
+            className="form-input"
             type="password"
             id="password"
             name="password"
             value={formData.password}
             onChange={handleChange}
           />
-          <label className="auth-form-typography" htmlFor="email">
+          <label className="form-label auth-form-typography" htmlFor="email">
             Set your email
           </label>
           <input
+            className="form-input"
             type="email"
             id="email"
             name="email"
@@ -77,15 +81,16 @@ export default function Signup() {
             onChange={handleChange}
           />
 
-          <button className="auth-form-submit" type="submit">
-            Sign Up
-          </button>
-
+          <div className="btn-group">
+            <button className="btn btn-primary auth-form-submit" type="submit">
+              Sign Up
+            </button>
+          </div>
           <p className="auth-form-typography">
             Already have an account? <Link to="/login"> Sign in here</Link>
           </p>
           {message && (
-            <p className={`message ${message.type}`}>{message.text}</p>
+            <p className={`message ${message.type} auth-form-typography`}>{message.text}</p>
           )}
         </form>
       </main>

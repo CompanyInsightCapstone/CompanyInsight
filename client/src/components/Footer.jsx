@@ -2,16 +2,16 @@ import "../styles/Footer.css";
 
 export default function Footer() {
   return (
-    <footer>
-      <section>
-        <h3>About</h3>
-        <p>
+    <footer className="footer">
+      <section className="footer-about">
+        <h3 className="footer-heading">About</h3>
+        <p className="footer-text">
           Company Insights is a web-app that allows you to research companies
           that are publicly traded, in order to help you informed decisions when
           trading.
         </p>
       </section>
-      <p>© 2025 Company Insights</p>
+      <p className="footer-copyright">© 2025 Company Insights</p>
     </footer>
   );
 }
