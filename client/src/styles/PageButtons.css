@@ -1,0 +1,41 @@
+.page-buttons-container {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin: 30px 0;
+  width: 100%;
+}
+
+.page-button {
+  background-color: #3498db;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 20px;
+  transition:
+    background-color 0.2s,
+    transform 0.1s;
+}
+
+.page-button:hover {
+  background-color: #2980b9;
+}
+
+.page-button:active {
+  transform: scale(0.98);
+}
+
+.page-button-prev {
+  background-color: #7f8c8d;
+}
+
+.page-button-prev:hover {
+  background-color: #6c7a7d;
+}
+
+.page-button-next {
+  background-color: #3498db;
+}

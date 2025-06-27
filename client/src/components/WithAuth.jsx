@@ -30,7 +30,7 @@ const WithAuth = (WrappedComponent) => {
     }, [user, setUser, navigate]);
 
     if (!user) {
-      return <p>Loading...</p>;
+      return <p className="auth-loading">Loading...</p>;
     }
 
     return <WrappedComponent {...props} />;

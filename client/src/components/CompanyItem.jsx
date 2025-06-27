@@ -11,6 +11,7 @@ export default function CompanyItem({ company }) {
       <p className="list-item-typography">{company.exchange}</p>
       <p className="list-item-typography">{company.status}</p>
       <Link
+        className="list-item-link"
         state={company}
         to={`/company-details/${company.id}/${company.symbol}`}
       >

@@ -37,12 +37,12 @@ router.post("/signup", async (req, res) => {
     }
 
     const hashedPassword = await argon2.hash(password, {
-      memoryCost: 2 ** 16,
+      memoryCost: 1 << 16, 
       timeCost: 3,
       parallelism: 1,
     });
 
-    const newUser = await database.create(database.TABLE_NAMES_ENUM.USER, {
+    await database.create(database.TABLE_NAMES_ENUM.USER, {
       username,
       email,
       password: hashedPassword,

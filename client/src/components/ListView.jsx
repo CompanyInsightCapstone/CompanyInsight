@@ -7,7 +7,7 @@ export default function ListView() {
   const { companiesList } = useContext(CompanyListContext);
 
   if (!companiesList) {
-    return <p>loading...</p>;
+    return <p className="list-loading">loading...</p>;
   } else {
     return (
       <section className="list-container">

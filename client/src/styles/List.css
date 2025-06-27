@@ -1,0 +1,14 @@
+.list-loading {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.list-container {
+  display: grid;
+  gap: 15px;
+  grid-template-columns: repeat(5, 1fr);
+  margin: 15px 0;
+  width: 100%;
+  max-width: 100%;
+}
