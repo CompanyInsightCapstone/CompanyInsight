@@ -2,8 +2,14 @@ const express = require("express");
 const database = require("../utilities/database");
 const cache = require("../utilities/rediscache");
 const router = express.Router();
+
 const BLOCK_SIZE = 4;
 const PAGE_SIZE = 20;
+
+const MAX_PAGE = (async () => {
+    const n = await database.tableCardinality(database.TABLE_NAMES_ENUM.COMPANIES)
+    return Math.ceil(n/PAGE_SIZE)
+})()
 
 const ALPHA_VANTAGE_URLS = {
   OVERVIEW: (symbol) =>
@@ -14,29 +20,60 @@ const POLYGON_URLS = {
     `https://api.polygon.io/v3/reference/tickers/${symbol}?apiKey=${process.env.VITE_POLYGON_API}`,
 };
 
+
+function paginate(arr, pages, PAGE_SIZE, startingPageId) {
+  if (!arr || arr.length == 0) {
+    return pages
+  }
+
+  const n = arr.length;
+  const j = Math.ceil(n / PAGE_SIZE);
+  for (let i = 0; i < j; i++) {
+    const k = (i * PAGE_SIZE)
+    pages.push({
+      pageNumber: startingPageId + i,
+      pageEntries: arr.slice(k, k + PAGE_SIZE)
+    })
+  }
+  return pages
+}
+
 router.get("/api/companies", async (req, res) => {
   try {
-    const page = parseInt(req.query.page);
-    const pages = new Array(BLOCK_SIZE);
-    const companiesChunk = await database.getPages(
-      database.TABLE_NAMES_ENUM.COMPANIES,
-      page,
-      PAGE_SIZE,
-      BLOCK_SIZE,
-    );
-    for (let idx = 0; idx < BLOCK_SIZE; idx++) {
-      const k = idx * PAGE_SIZE;
-      pages[idx] = {
-        pageNumber: page + idx,
-        companiesData: companiesChunk.slice(k, k + PAGE_SIZE),
-      };
+    const pageId = parseInt(req.query.page, 10);
+
+    if (pageId > MAX_PAGE) {
+      return res.status(202).json({
+        currentPageNumber: 0,
+        pages: [],
+        pageSize: PAGE_SIZE,
+        blockSize: BLOCK_SIZE,
+      });
     }
-    res.status(200).json({
-      currentPageNumber: page,
-      pages,
+
+    const pages = paginate((await database.getPages(
+        database.TABLE_NAMES_ENUM.COMPANIES,
+        pageId,
+        PAGE_SIZE,
+        BLOCK_SIZE,
+      )), [], PAGE_SIZE, pageId)
+
+    let statusCode = 200
+    if (pages.length === 0 && pageId !== 0) {
+      statusCode = 201
+    }
+    
+    if (pages.length === 0) {
+      statusCode = 202
+    }
+
+    res.status(statusCode).json({
+      currentPageNumber: pageId,
+      pages: pages,
       pageSize: PAGE_SIZE,
       blockSize: BLOCK_SIZE,
     });
+
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -45,8 +82,6 @@ router.get("/api/companies", async (req, res) => {
 router.get("/api/companies/filter", async (req, res) => {
   try {
     const { page, name, ipoDate, exchange, assetType, status } = req.query;
-    const pageId = parseInt(page) || 0;
-    const pages = new Array(BLOCK_SIZE);
     const where = {};
     if (name && name.trim() !== "") {
       where.name = {
@@ -90,6 +125,7 @@ router.get("/api/companies/filter", async (req, res) => {
       orderBy: orderBy,
     };
 
+    const pageId = parseInt(page, 10) || 0;
     const companiesChunk = await database.getPages(
       database.TABLE_NAMES_ENUM.COMPANIES,
       pageId,
@@ -97,22 +133,21 @@ router.get("/api/companies/filter", async (req, res) => {
       BLOCK_SIZE,
       clauses,
     );
-
-    for (let idx = 0; idx < BLOCK_SIZE; idx++) {
-      const k = idx * PAGE_SIZE;
-      pages[idx] = {
-        pageNumber: pageId + idx,
-        companiesData: companiesChunk.slice(k, k + PAGE_SIZE),
-      };
+    const pages = paginate(companiesChunk, [], PAGE_SIZE, pageId)
+    let statusCode = 200
+    if (pages.length === 0 && pageId !== 0) {
+      statusCode = 201
     }
-
-    res.status(200).json({
+    if (pages.length === 0) {
+      statusCode = 202
+    }
+    res.status(statusCode).json({
       currentPageNumber: pageId,
-      pages,
+      pages: pages,
       pageSize: PAGE_SIZE,
       blockSize: BLOCK_SIZE,
-      filters: { name, ipoDate, exchange, assetType, status },
     });
+
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

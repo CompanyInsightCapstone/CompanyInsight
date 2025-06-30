@@ -13,13 +13,24 @@ const Companies = {
    */
   async fetchPage(pageNumber) {
     const url = `${SERVER_ADDRESS}/api/companies?page=${pageNumber}`;
-    const response = await (
-      await fetch(url, {
+    try {
+      const response = await fetch(url, {
         ...options(METHOD_ENUM.GET),
         credentials: "include",
-      })
-    ).json();
-    return response;
+      });
+
+      const data = await response.json();
+      return {
+        ...data,
+        statusCode: response.status
+      };
+    } catch (error) {
+      return {
+        pages: [],
+        statusCode: 500,
+        error: error.message
+      };
+    }
   },
 
   async fetchFilteredPage(pageNumber, filterRequest) {
@@ -41,10 +52,18 @@ const Companies = {
         ...options(METHOD_ENUM.GET),
         credentials: "include",
       });
+
       const data = await response.json();
-      return data;
+      return {
+        ...data,
+        statusCode: response.status
+      };
     } catch (error) {
-      return { pages: [] };
+      return {
+        pages: [],
+        statusCode: 500,
+        error: error.message
+      };
     }
   },
 

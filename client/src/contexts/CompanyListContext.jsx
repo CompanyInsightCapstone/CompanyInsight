@@ -1,10 +1,22 @@
 import { useEffect, useState, createContext } from "react";
 import { Companies } from "../api/companies";
 
+export const FETCH_STATUS = {
+  IDLE: 'idle',
+  LOADING: 'loading',
+  SUCCESS: 'success',
+  NO_RESULTS: 'no_results',
+  NO_MORE_RESULTS: 'no_more_results',
+  ERROR: 'error'
+};
+
 export const CompanyListContext = createContext();
 
 export default function CompanyListProvider({ children }) {
   const [companiesList, setCompaniesList] = useState([]);
+  const [pageNumberUI, setPageNumberUI] = useState(0);
+  const [fetchStatus, setFetchStatus] = useState(FETCH_STATUS.IDLE);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const [companiesPageTable, setCompaniesPageTable] = useState(new Map());
   const [filteredCompaniesPageTable, setFilteredCompaniesPageTable] = useState(
@@ -20,59 +32,109 @@ export default function CompanyListProvider({ children }) {
     setCompaniesList(newList);
   };
 
-  async function fetchDefaultPage() {
-    const data = await Companies.fetchPage(companiesPageNumber);
-    data.pages.forEach((page) =>
-      companiesPageTable.set(page.pageNumber, page.companiesData),
-    );
-    setCompaniesPageTable(new Map(companiesPageTable));
-    setCompaniesList(companiesPageTable.get(companiesPageNumber));
+  async function fetchPaginatedData(fetchFn, specificPageNumber, pageTable, setPageTable, additionalParams) {
+    try {
+      setFetchStatus(FETCH_STATUS.LOADING);
+      const data = additionalParams
+        ? await fetchFn(specificPageNumber, additionalParams)
+        : await fetchFn(specificPageNumber);
+
+      switch (data.statusCode) {
+        case 200:
+          if (data && data.pages) {
+            const newPageTable = new Map(pageTable);
+            data.pages.forEach((page) => {
+              newPageTable.set(page.pageNumber, page.pageEntries);
+            });
+            setPageTable(newPageTable);
+
+            const currentPageEntries = data.pages.find(page => page.pageNumber === specificPageNumber)?.pageEntries;
+
+            if (currentPageEntries && currentPageEntries.length > 0) {
+              setFetchStatus(FETCH_STATUS.SUCCESS);
+              return currentPageEntries;
+            } else {
+
+              setFetchStatus(FETCH_STATUS.NO_RESULTS);
+              return [];
+            }
+          }
+          break;
+
+        case 201:
+          setFetchStatus(FETCH_STATUS.NO_RESULTS);
+          return [];
+
+        case 202:
+          setFetchStatus(FETCH_STATUS.NO_MORE_RESULTS);
+          return [];
+
+        default:
+          setFetchStatus(FETCH_STATUS.ERROR);
+          setErrorMessage(`Unexpected response status: ${data.statusCode}`);
+          return [];
+      }
+
+      setFetchStatus(FETCH_STATUS.NO_RESULTS);
+      return [];
+    } catch (error) {
+      setFetchStatus(FETCH_STATUS.ERROR);
+      setErrorMessage(error.message || 'An error occurred while fetching data');
+      return [];
+    }
   }
 
-  async function fetchFilteredPage() {
-    const data = await Companies.fetchFilteredPage(
-      filteredCompaniesPageNumber,
-      filterRequest,
-    );
-    data.pages.forEach((page) =>
-      filteredCompaniesPageTable.set(page.pageNumber, page.companiesData),
-    );
-    setFilteredCompaniesPageTable(new Map(filteredCompaniesPageTable));
-    setCompaniesList(
-      filteredCompaniesPageTable.get(filteredCompaniesPageNumber),
-    );
-  }
-
-  useEffect(() => {
+  const loadData = async () => {
+    let entries = [];
     if (filterRequest) {
       if (filteredCompaniesPageTable.has(filteredCompaniesPageNumber)) {
-        setCompaniesList(
-          filteredCompaniesPageTable.get(filteredCompaniesPageNumber),
-        );
+        entries = filteredCompaniesPageTable.get(filteredCompaniesPageNumber);
+        setFetchStatus(entries && entries.length > 0 ? FETCH_STATUS.SUCCESS : FETCH_STATUS.NO_RESULTS);
       } else {
-        fetchFilteredPage();
+        entries = await fetchPaginatedData(
+          Companies.fetchFilteredPage,
+          filteredCompaniesPageNumber,
+          filteredCompaniesPageTable,
+          setFilteredCompaniesPageTable,
+          filterRequest
+        );
       }
     } else {
       if (companiesPageTable.has(companiesPageNumber)) {
-        setCompaniesList(companiesPageTable.get(companiesPageNumber));
+        entries = companiesPageTable.get(companiesPageNumber);
+        setFetchStatus(entries && entries.length > 0 ? FETCH_STATUS.SUCCESS : FETCH_STATUS.NO_RESULTS);
       } else {
-        fetchDefaultPage();
+        entries = await fetchPaginatedData(
+          Companies.fetchPage,
+          companiesPageNumber,
+          companiesPageTable,
+          setCompaniesPageTable
+        );
       }
     }
+
+    setCompaniesList(entries || []);
+    setPageNumberUI(filterRequest ? filteredCompaniesPageNumber : companiesPageNumber);
+  };
+
+  useEffect(() => {
+    loadData();
   }, [companiesPageNumber, filteredCompaniesPageNumber, filterRequest]);
 
-  function handleLoadPage(event) {
+  function handleLoadPage(event, jumpPageNumber) {
     event.preventDefault();
-    const inc = !filterRequest
-      ? setCompaniesPageNumber
-      : setFilteredCompaniesPageNumber;
-    inc((prev) => Math.max(0, prev + parseInt(event.target.value)));
+    const setPageNumberType = !filterRequest ? setCompaniesPageNumber : setFilteredCompaniesPageNumber;
+    if (!jumpPageNumber) {
+      setPageNumberType(Math.max(0, ((!filterRequest ? companiesPageNumber : filteredCompaniesPageNumber) + parseInt(event.target.value))));
+    } else {
+      setPageNumberType(Math.max(0, jumpPageNumber));
+    }
   }
 
   const handleNewFilterRequest = (newFilterRequest) => {
-    setFilterRequest(null);
     setFilteredCompaniesPageTable(new Map());
     setFilteredCompaniesPageNumber(0);
+    setPageNumberUI(0);
     setFilterRequest(newFilterRequest);
   };
 
@@ -80,9 +142,13 @@ export default function CompanyListProvider({ children }) {
     <CompanyListContext.Provider
       value={{
         companiesList,
+        pageNumberUI,
+        fetchStatus,
+        errorMessage,
         updateCompaniesList,
         handleLoadPage,
         setNewFilterRequest: handleNewFilterRequest,
+        FETCH_STATUS,
       }}
     >
       {children}
