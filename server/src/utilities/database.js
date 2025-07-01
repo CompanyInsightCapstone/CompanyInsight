@@ -13,7 +13,7 @@ const TABLE_NAMES_ENUM = {
  */
 function formatTableName(tableName) {
   return typeof tableName === "string"
-    ? prisma[tableName] // Don't convert to lowercase to preserve camelCase
+    ? prisma[tableName] 
     : prisma[tableName];
 }
 

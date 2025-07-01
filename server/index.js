@@ -45,7 +45,6 @@ const sessionValidation = (req, res, next) => {
       .status(401)
       .json({ error: "You must be logged in to perform this action." });
   }
-  console.log("Session validated", req.session.userId);
   next();
 };
 
