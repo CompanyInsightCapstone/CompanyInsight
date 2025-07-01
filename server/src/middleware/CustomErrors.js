@@ -1,5 +1,3 @@
-const express = require("express");
-
 class ValidationError extends Error {
   constructor(message) {
     super(message);

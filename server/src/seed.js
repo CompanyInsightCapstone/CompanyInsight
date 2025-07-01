@@ -10,9 +10,9 @@ dotenv.config();
  */
 function makeObject(headers, row) {
   const newObject = {};
-  headers.reduce((acc, header, index) => {
-    acc[header] = row[index];
-  }, newObject);
+  headers.forEach((header, index) => {
+    newObject[header] = row[index];
+  });
   return newObject;
 }
 /**
