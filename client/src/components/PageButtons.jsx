@@ -17,9 +17,13 @@ export default function PageButtons() {
 
       <div>
         <p>Current Page Number: {pageNumberUI} </p>
-        <form onSubmit={(event) =>handleLoadPage(event, parseInt(event.target.pageNumber.value, 10)) }>
+        <form
+          onSubmit={(event) =>
+            handleLoadPage(event, parseInt(event.target.pageNumber.value, 10))
+          }
+        >
           <label htmlFor="pageNumber">Jump to Page:</label>
-          <input type="number" id="pageNumber" name="pageNumber" className=""/>
+          <input type="number" id="pageNumber" name="pageNumber" className="" />
         </form>
       </div>
 

@@ -4,7 +4,8 @@ import { useContext } from "react";
 import "../styles/List.css";
 
 export default function ListView() {
-  const { companiesList, fetchStatus, errorMessage, FETCH_STATUS } = useContext(CompanyListContext);
+  const { companiesList, fetchStatus, errorMessage, FETCH_STATUS } =
+    useContext(CompanyListContext);
 
   const renderContent = () => {
     switch (fetchStatus) {
@@ -40,7 +41,10 @@ export default function ListView() {
           <section className="list-container">
             <div className="list-error">
               <h3>Error loading companies</h3>
-              <p>{errorMessage || "An unexpected error occurred. Please try again."}</p>
+              <p>
+                {errorMessage ||
+                  "An unexpected error occurred. Please try again."}
+              </p>
             </div>
           </section>
         );

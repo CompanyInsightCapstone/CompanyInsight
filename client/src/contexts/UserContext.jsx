@@ -6,9 +6,7 @@ export const UserContext = createContext();
 const responseMessage = {
   SAVED: "Saved",
   UNSAVED: "Unsaved",
-}
-
-
+};
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -16,7 +14,7 @@ export const UserProvider = ({ children }) => {
 
   const savedCompanyMap = useMemo(() => {
     const map = new Map();
-    savedCompanies.forEach(company => {
+    savedCompanies.forEach((company) => {
       map.set(company.companyId, company);
     });
     return map;
@@ -28,10 +26,10 @@ export const UserProvider = ({ children }) => {
 
   async function fetchUserSavedCompanies() {
     if (user && user.id) {
-        const response = await User.getSavedCompanies(user.id);
-        if (response && response.savedCompanies) {
-          setSavedCompanies(response.savedCompanies);
-        }
+      const response = await User.getSavedCompanies();
+      if (response && response.savedCompanies) {
+        setSavedCompanies(response.savedCompanies);
+      }
     }
   }
 
@@ -39,7 +37,7 @@ export const UserProvider = ({ children }) => {
     if (!user || !user.id) return;
 
     try {
-      const response = await User.saveCompany(user.id, companyId, companySymbol);
+      const response = await User.saveCompany(companyId, companySymbol);
       if (response && response.message === responseMessage.SAVED) {
         fetchUserSavedCompanies();
       }
@@ -52,7 +50,7 @@ export const UserProvider = ({ children }) => {
   async function unsaveCompany(companyId) {
     if (!user || !user.id) return;
     try {
-      const response = await User.unsaveCompany(user.id, companyId);
+      const response = await User.unsaveCompany(companyId);
       if (response && response.message === responseMessage.UNSAVED) {
         fetchUserSavedCompanies();
       }
@@ -69,16 +67,17 @@ export const UserProvider = ({ children }) => {
   }, [user]);
 
   return (
-    <UserContext.Provider value={{
-      user,
-      setUser,
-      savedCompanies,
-      isCompanySaved,
-      saveCompany,
-      unsaveCompany
-    }}>
+    <UserContext.Provider
+      value={{
+        user,
+        setUser,
+        savedCompanies,
+        isCompanySaved,
+        saveCompany,
+        unsaveCompany,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );
 };
-
