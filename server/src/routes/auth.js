@@ -37,12 +37,12 @@ router.post("/signup", async (req, res) => {
     }
 
     const hashedPassword = await argon2.hash(password, {
-      memoryCost: 1 << 16, 
+      memoryCost: 1 << 16,
       timeCost: 3,
       parallelism: 1,
     });
 
-    await database.create(database.TABLE_NAMES_ENUM.USER, {
+    await database.createRecord(database.TABLE_NAMES_ENUM.USER, {
       username,
       email,
       password: hashedPassword,
@@ -119,7 +119,6 @@ router.get("/check-session", async (req, res) => {
       email: user.email,
     });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ error: "Error fetching user session data" });
   }
 });
