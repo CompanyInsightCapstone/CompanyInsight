@@ -2,12 +2,12 @@ import { useEffect, useState, createContext } from "react";
 import { Companies } from "../api/companies";
 
 export const FETCH_STATUS = {
-  IDLE: 'idle',
-  LOADING: 'loading',
-  SUCCESS: 'success',
-  NO_RESULTS: 'no_results',
-  NO_MORE_RESULTS: 'no_more_results',
-  ERROR: 'error'
+  IDLE: "idle",
+  LOADING: "loading",
+  SUCCESS: "success",
+  NO_RESULTS: "no_results",
+  NO_MORE_RESULTS: "no_more_results",
+  ERROR: "error",
 };
 
 export const CompanyListContext = createContext();
@@ -16,7 +16,7 @@ export default function CompanyListProvider({ children }) {
   const [companiesList, setCompaniesList] = useState([]);
   const [pageNumberUI, setPageNumberUI] = useState(0);
   const [fetchStatus, setFetchStatus] = useState(FETCH_STATUS.IDLE);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [companiesPageTable, setCompaniesPageTable] = useState(new Map());
   const [filteredCompaniesPageTable, setFilteredCompaniesPageTable] = useState(
@@ -32,7 +32,13 @@ export default function CompanyListProvider({ children }) {
     setCompaniesList(newList);
   };
 
-  async function fetchPaginatedData(fetchFn, specificPageNumber, pageTable, setPageTable, additionalParams) {
+  async function fetchPaginatedData(
+    fetchFn,
+    specificPageNumber,
+    pageTable,
+    setPageTable,
+    additionalParams,
+  ) {
     try {
       setFetchStatus(FETCH_STATUS.LOADING);
       const data = additionalParams
@@ -48,12 +54,13 @@ export default function CompanyListProvider({ children }) {
             });
             setPageTable(newPageTable);
 
-            const currentPageEntries = data.pages.find(page => page.pageNumber === specificPageNumber)?.pageEntries;
+            const currentPageEntries = data.pages.find(
+              (page) => page.pageNumber === specificPageNumber,
+            )?.pageEntries;
             if (currentPageEntries && currentPageEntries.length > 0) {
               setFetchStatus(FETCH_STATUS.SUCCESS);
               return currentPageEntries;
             } else {
-
               setFetchStatus(FETCH_STATUS.NO_RESULTS);
               return [];
             }
@@ -78,7 +85,7 @@ export default function CompanyListProvider({ children }) {
       return [];
     } catch (error) {
       setFetchStatus(FETCH_STATUS.ERROR);
-      setErrorMessage(error.message || 'An error occurred while fetching data');
+      setErrorMessage(error.message || "An error occurred while fetching data");
       return [];
     }
   }
@@ -88,32 +95,42 @@ export default function CompanyListProvider({ children }) {
     if (filterRequest) {
       if (filteredCompaniesPageTable.has(filteredCompaniesPageNumber)) {
         entries = filteredCompaniesPageTable.get(filteredCompaniesPageNumber);
-        setFetchStatus(entries && entries.length > 0 ? FETCH_STATUS.SUCCESS : FETCH_STATUS.NO_RESULTS);
+        setFetchStatus(
+          entries && entries.length > 0
+            ? FETCH_STATUS.SUCCESS
+            : FETCH_STATUS.NO_RESULTS,
+        );
       } else {
         entries = await fetchPaginatedData(
           Companies.fetchFilteredPage,
           filteredCompaniesPageNumber,
           filteredCompaniesPageTable,
           setFilteredCompaniesPageTable,
-          filterRequest
+          filterRequest,
         );
       }
     } else {
       if (companiesPageTable.has(companiesPageNumber)) {
         entries = companiesPageTable.get(companiesPageNumber);
-        setFetchStatus(entries && entries.length > 0 ? FETCH_STATUS.SUCCESS : FETCH_STATUS.NO_RESULTS);
+        setFetchStatus(
+          entries && entries.length > 0
+            ? FETCH_STATUS.SUCCESS
+            : FETCH_STATUS.NO_RESULTS,
+        );
       } else {
         entries = await fetchPaginatedData(
           Companies.fetchPage,
           companiesPageNumber,
           companiesPageTable,
-          setCompaniesPageTable
+          setCompaniesPageTable,
         );
       }
     }
 
     setCompaniesList(entries || []);
-    setPageNumberUI(filterRequest ? filteredCompaniesPageNumber : companiesPageNumber);
+    setPageNumberUI(
+      filterRequest ? filteredCompaniesPageNumber : companiesPageNumber,
+    );
   };
 
   useEffect(() => {
@@ -122,9 +139,17 @@ export default function CompanyListProvider({ children }) {
 
   function handleLoadPage(event, jumpPageNumber) {
     event.preventDefault();
-    const setPageNumberType = !filterRequest ? setCompaniesPageNumber : setFilteredCompaniesPageNumber;
+    const setPageNumberType = !filterRequest
+      ? setCompaniesPageNumber
+      : setFilteredCompaniesPageNumber;
     if (!jumpPageNumber) {
-      setPageNumberType(Math.max(0, ((!filterRequest ? companiesPageNumber : filteredCompaniesPageNumber) + parseInt(event.target.value))));
+      setPageNumberType(
+        Math.max(
+          0,
+          (!filterRequest ? companiesPageNumber : filteredCompaniesPageNumber) +
+            parseInt(event.target.value),
+        ),
+      );
     } else {
       setPageNumberType(Math.max(0, jumpPageNumber));
     }

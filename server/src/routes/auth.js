@@ -2,7 +2,7 @@ const express = require("express");
 const database = require("../utilities/database");
 const argon2 = require("argon2");
 const router = express.Router();
-const cache = require("../utilities/rediscache");
+const cache = require("../utilities/cache");
 
 // Signup Route
 router.post("/signup", async (req, res) => {
@@ -68,6 +68,7 @@ router.post("/login", async (req, res) => {
     const user = await database.scan(database.TABLE_NAMES_ENUM.USER, {
       where: { username: username },
     });
+
     const isValidPassword = await argon2.verify(user.password, password);
 
     if (!user || !isValidPassword) {
@@ -76,14 +77,13 @@ router.post("/login", async (req, res) => {
 
     req.session.userId = user.id;
     req.session.username = user.username;
-    const response = {
+    req.session.email = user.email;
+
+    res.json({
       id: user.id,
       username: user.username,
       email: user.email,
-    };
-
-    cache.set(`user:${user.id}`, JSON.stringify(response));
-    res.json(response);
+    });
   } catch (error) {
     res.status(500).json({ error: "Something went wrong during login" });
   }
@@ -95,24 +95,10 @@ router.get("/check-session", async (req, res) => {
     return res.status(401).json({ message: "Not logged in" });
   }
   try {
-    const cachedUser = JSON.parse(
-      await cache.get(`user:${req.session.userId}`),
-    );
-    if (cachedUser) {
-      return res.json(cachedUser);
-    }
-    const user = await database.scan("user", {
+    const user = await database.scan(database.TABLE_NAMES_ENUM.USER, {
       where: { id: req.session.userId },
-      select: { username: true },
+      select: { username: true, email: true, password: false },
     });
-
-    const HOUR_TIME_LIMIT = 3600;
-    cache.set(
-      `user:${req.session.userId}`,
-      JSON.stringify(user),
-      HOUR_TIME_LIMIT,
-    );
-
     res.json({
       id: req.session.userId,
       username: user.username,

@@ -22,13 +22,13 @@ const Companies = {
       const data = await response.json();
       return {
         ...data,
-        statusCode: response.status
+        statusCode: response.status,
       };
     } catch (error) {
       return {
         pages: [],
         statusCode: 500,
-        error: error.message
+        error: error.message,
       };
     }
   },
@@ -56,13 +56,13 @@ const Companies = {
       const data = await response.json();
       return {
         ...data,
-        statusCode: response.status
+        statusCode: response.status,
       };
     } catch (error) {
       return {
         pages: [],
         statusCode: 500,
-        error: error.message
+        error: error.message,
       };
     }
   },
