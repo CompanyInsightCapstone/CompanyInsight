@@ -49,7 +49,6 @@ export default function CompanyListProvider({ children }) {
             setPageTable(newPageTable);
 
             const currentPageEntries = data.pages.find(page => page.pageNumber === specificPageNumber)?.pageEntries;
-
             if (currentPageEntries && currentPageEntries.length > 0) {
               setFetchStatus(FETCH_STATUS.SUCCESS);
               return currentPageEntries;

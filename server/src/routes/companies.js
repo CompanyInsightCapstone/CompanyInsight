@@ -15,28 +15,11 @@ const ALPHA_VANTAGE_URLS = {
   OVERVIEW: (symbol) =>
     `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${symbol}&apikey=${process.env.VITE_ALPHA_VANTAGE_API}`,
 };
+
 const POLYGON_URLS = {
   OVERVIEW: (symbol) =>
     `https://api.polygon.io/v3/reference/tickers/${symbol}?apiKey=${process.env.VITE_POLYGON_API}`,
 };
-
-
-function paginate(arr, pages, PAGE_SIZE, startingPageId) {
-  if (!arr || arr.length == 0) {
-    return pages
-  }
-
-  const n = arr.length;
-  const j = Math.ceil(n / PAGE_SIZE);
-  for (let i = 0; i < j; i++) {
-    const k = (i * PAGE_SIZE)
-    pages.push({
-      pageNumber: startingPageId + i,
-      pageEntries: arr.slice(k, k + PAGE_SIZE)
-    })
-  }
-  return pages
-}
 
 router.get("/api/companies", async (req, res) => {
   try {
@@ -51,7 +34,7 @@ router.get("/api/companies", async (req, res) => {
       });
     }
 
-    const pages = paginate((await database.getPages(
+    const pages = database.paginate((await database.getPages(
         database.TABLE_NAMES_ENUM.COMPANIES,
         pageId,
         PAGE_SIZE,
@@ -62,7 +45,7 @@ router.get("/api/companies", async (req, res) => {
     if (pages.length === 0 && pageId !== 0) {
       statusCode = 201
     }
-    
+
     if (pages.length === 0) {
       statusCode = 202
     }
@@ -133,7 +116,7 @@ router.get("/api/companies/filter", async (req, res) => {
       BLOCK_SIZE,
       clauses,
     );
-    const pages = paginate(companiesChunk, [], PAGE_SIZE, pageId)
+    const pages = database.paginate(companiesChunk, [], PAGE_SIZE, pageId)
     let statusCode = 200
     if (pages.length === 0 && pageId !== 0) {
       statusCode = 201

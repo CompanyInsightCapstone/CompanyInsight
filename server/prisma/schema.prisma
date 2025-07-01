@@ -14,22 +14,32 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
-  id         String   @id @default(cuid())
-  createdAt  DateTime @default(now())
-  username   String   @unique
-  email      String   @unique
-  password   String
+  id            String          @id @default(cuid())
+  createdAt     DateTime        @default(now())
+  username      String
+  email         String
+  password      String
+  savedCompanies UserSavedCompany[]
 }
 
 model Company {
-  id        Int   @id @default(autoincrement())
-  name      String
-  symbol    String
-  exchange  String?
-  assetType String?
-  ipoDate   String?
-  delistingDate String @default("N/A")
-  status    String?
+  id            Int             @id @default(autoincrement())
+  symbol        String
+  name          String
+  exchange      String?
+  assetType     String?
+  ipoDate       String?
+  delistingDate String          @default("N/A")
+  status        String?
+  userSavedCompany UserSavedCompany[]
+}
+
+model UserSavedCompany {
+  id            Int     @id @default(autoincrement())
+  userId        String
+  companyId     Int
+  companySymbol String
+  company       Company @relation(fields: [companyId], references: [id])
+  user          User    @relation(fields: [userId], references: [id])
 }
