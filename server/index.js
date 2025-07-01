@@ -1,23 +1,20 @@
 const express = require("express");
 const session = require("express-session");
 const cors = require("cors");
+
 const authRouter = require("./src/routes/auth");
 const companiesRouter = require("./src/routes/companies");
 const userRouter = require("./src/routes/user");
 
 const server = express();
 const { ValidationError } = require("./src/middleware/CustomErrors");
+
 const dotenv = require("dotenv");
 dotenv.config();
 
-const redisClient = require("./src/utilities/rediscache");
-redisClient.connect((err) => {
-  if (err) {
-    console.log("Error connecting to Redis:", err);
-  } else {
-    console.log("Connected to Redis");
-  }
-});
+const { redisClient } = require("./src/utilities/cache");
+
+redisClient.connect();
 
 const PORT = process.env.PORT || 3000;
 
@@ -32,17 +29,29 @@ server.use(express.json());
 
 server.use(
   session({
+    session: redisClient,
     secret: "ci",
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false, httpOnly: true, maxAge: 1000 * 60 * 60 },
+    cookie: { secure: false, httpOnly: true, maxAge: 3600000 },
   }),
 );
 
 server.use(authRouter);
+
+const sessionValidation = (req, res, next) => {
+  if (!req.session.userId) {
+    return res
+      .status(401)
+      .json({ error: "You must be logged in to perform this action." });
+  }
+  next();
+};
+
+server.use(sessionValidation);
+
 server.use(companiesRouter);
 server.use(userRouter);
-
 
 server.use((err, req, res, next) => {
   if (err instanceof ValidationError) {
