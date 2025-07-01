@@ -25,6 +25,8 @@ export default function Footer() {
       setMessage("Error logging out, try again.");
     }
   };
+
+  
   return (
     <footer className="footer">
       <section className="footer-about">

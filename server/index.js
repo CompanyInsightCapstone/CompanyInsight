@@ -3,6 +3,8 @@ const session = require("express-session");
 const cors = require("cors");
 const authRouter = require("./src/routes/auth");
 const companiesRouter = require("./src/routes/companies");
+const userRouter = require("./src/routes/user");
+
 const server = express();
 const { ValidationError } = require("./src/middleware/CustomErrors");
 const dotenv = require("dotenv");
@@ -39,6 +41,8 @@ server.use(
 
 server.use(authRouter);
 server.use(companiesRouter);
+server.use(userRouter);
+
 
 server.use((err, req, res, next) => {
   if (err instanceof ValidationError) {
