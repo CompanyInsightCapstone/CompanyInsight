@@ -1,15 +1,17 @@
 const express = require("express");
 const database = require("../utilities/database");
-const cache = require("../utilities/rediscache");
+const cache = require("../utilities/cache");
 const router = express.Router();
 
 const BLOCK_SIZE = 4;
 const PAGE_SIZE = 20;
 
 const MAX_PAGE = (async () => {
-    const n = await database.tableCardinality(database.TABLE_NAMES_ENUM.COMPANIES)
-    return Math.ceil(n/PAGE_SIZE)
-})()
+  const n = await database.tableCardinality(
+    database.TABLE_NAMES_ENUM.COMPANIES,
+  );
+  return Math.ceil(n / PAGE_SIZE);
+})();
 
 const ALPHA_VANTAGE_URLS = {
   OVERVIEW: (symbol) =>
@@ -34,20 +36,25 @@ router.get("/api/companies", async (req, res) => {
       });
     }
 
-    const pages = database.paginate((await database.getPages(
+    const pages = database.paginate(
+      await database.getPages(
         database.TABLE_NAMES_ENUM.COMPANIES,
         pageId,
         PAGE_SIZE,
         BLOCK_SIZE,
-      )), [], PAGE_SIZE, pageId)
+      ),
+      [],
+      PAGE_SIZE,
+      pageId,
+    );
 
-    let statusCode = 200
+    let statusCode = 200;
     if (pages.length === 0 && pageId !== 0) {
-      statusCode = 201
+      statusCode = 201;
     }
 
     if (pages.length === 0) {
-      statusCode = 202
+      statusCode = 202;
     }
 
     res.status(statusCode).json({
@@ -56,7 +63,6 @@ router.get("/api/companies", async (req, res) => {
       pageSize: PAGE_SIZE,
       blockSize: BLOCK_SIZE,
     });
-
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -116,13 +122,13 @@ router.get("/api/companies/filter", async (req, res) => {
       BLOCK_SIZE,
       clauses,
     );
-    const pages = database.paginate(companiesChunk, [], PAGE_SIZE, pageId)
-    let statusCode = 200
+    const pages = database.paginate(companiesChunk, [], PAGE_SIZE, pageId);
+    let statusCode = 200;
     if (pages.length === 0 && pageId !== 0) {
-      statusCode = 201
+      statusCode = 201;
     }
     if (pages.length === 0) {
-      statusCode = 202
+      statusCode = 202;
     }
     res.status(statusCode).json({
       currentPageNumber: pageId,
@@ -130,30 +136,24 @@ router.get("/api/companies/filter", async (req, res) => {
       pageSize: PAGE_SIZE,
       blockSize: BLOCK_SIZE,
     });
-
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
 router.get("/api/companies/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { symbol } = req.query;
-    const cacheKey = `(${id},${symbol})`;
-    const cachedData = JSON.parse(await cache.get(cacheKey));
-    if (cachedData) {
-      res.status(200).json({ data: cachedData, cacheHit: true });
-    } else {
-      const url = POLYGON_URLS.OVERVIEW(symbol);
-      const response = await fetch(url);
-      const data = await response.json();
-      await cache.set(cacheKey, JSON.stringify(data));
-      res.status(200).json({ data, cacheHit: false });
-    }
-  } catch (error) {
-    console.error("Error fetching company details:", error);
-    res.status(500).json({ error: error.message });
+  const { id } = req.params;
+  const { symbol } = req.query;
+  const cacheKey = `(${id},${symbol})`;
+  const cachedData = await cache.get(cacheKey);
+  if (cachedData) {
+    res.status(200).json({ data: cachedData, cacheHit: true });
+  } else {
+    const url = POLYGON_URLS.OVERVIEW(symbol);
+    const response = await fetch(url);
+    const data = await response.json();
+    await cache.set(cacheKey, data);
+    res.status(200).json({ data, cacheHit: false });
   }
 });
 
