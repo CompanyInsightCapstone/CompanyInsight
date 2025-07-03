@@ -31,6 +31,13 @@ async function percentDropMailerCallback(emailer, decodedMessage) {
       JOIN "UserSavedCompany" usc ON u.id = usc."userId"
       WHERE usc."companyId" = ${decodedMessage.companyId}
     `;
+    if (
+      decodedMessage.data.c === 0 &&
+      decodedMessage.data.d === null &&
+      decodedMessage.data.dp == null
+    ) {
+      return;
+    }
     const userMailingList = await database.executeQuery(sqlQuery);
     userMailingList.forEach(async (user) => {
       if (
@@ -40,13 +47,7 @@ async function percentDropMailerCallback(emailer, decodedMessage) {
       ) {
         return;
       }
-      if (
-        decodedMessage.data.c === 0 &&
-        decodedMessage.data.d === null &&
-        decodedMessage.data.dp == null
-      ) {
-        return;
-      }
+
       const delta = 100 * (decodedMessage.data.c / user.previousPrice - 1);
       const deltaPercent = Math.abs(delta);
       if (delta > 0 || deltaPercent < user.percentChangeThreshold) {
