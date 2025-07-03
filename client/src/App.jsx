@@ -9,9 +9,11 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import CompanyDetails from "./pages/CompanyDetails";
 import Home from "./pages/Home";
+import Watchlist from "./pages/Watchlist";
 
 const ProtectedHome = WithAuth(Home);
 const ProtectedDetails = WithAuth(CompanyDetails);
+const ProtectedWatchlist = WithAuth(Watchlist);
 
 export default function App() {
   const { user, setUser } = useContext(UserContext);
@@ -37,6 +39,7 @@ export default function App() {
       <Router>
         <Routes>
           <Route path="/" element={<ProtectedHome />} />
+          <Route path="/watchlist" element={<ProtectedWatchlist />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route

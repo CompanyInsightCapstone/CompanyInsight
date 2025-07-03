@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "UserSavedCompany" ADD COLUMN     "percentChangeThreshold" DOUBLE PRECISION NOT NULL DEFAULT 5.0,
+ADD COLUMN     "previousPrice" DOUBLE PRECISION NOT NULL DEFAULT 5.0;

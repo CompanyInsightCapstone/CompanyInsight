@@ -1,3 +1,4 @@
+import { UserProvider } from "../contexts/UserContext";
 import { SERVER_ADDRESS, options, METHOD_ENUM } from "./util";
 
 const User = {
@@ -17,11 +18,21 @@ const User = {
       credentials: "include",
     }).then((res) => res.json());
   },
+
   async unsaveCompany(companyId) {
     const url = `${SERVER_ADDRESS}/api/user/companies/save`;
     const urlParams = new URLSearchParams({ companyId: companyId });
     return await fetch(url + "?" + urlParams, {
       ...options(METHOD_ENUM.DELETE),
+      credentials: "include",
+    }).then((res) => res.json());
+  },
+
+  async updatePriceDropThreshold(id, priceDropThreshold) {
+    const url = `${SERVER_ADDRESS}/api/user/companies/save`;
+    const urlParams = new URLSearchParams({ id: id });
+    return await fetch(url + "?" + urlParams, {
+      ...options(METHOD_ENUM.PATCH, { priceDropThreshold }),
       credentials: "include",
     }).then((res) => res.json());
   },

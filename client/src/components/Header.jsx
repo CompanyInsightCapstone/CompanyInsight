@@ -38,7 +38,12 @@ export default function Header() {
         <h1 className="header-title">CompanyInsights </h1>
         {user && <p className="header-user">Welcome back, {user.username}</p>}
       </div>
-      <div className="header-controls">{showHomeLink()}</div>
+      <div className="header-controls">
+        {showHomeLink()}
+        <Link className="back-link" to="/watchlist">
+          VIEW WATCHLIST
+        </Link>
+      </div>
     </header>
   );
 }
