@@ -1,6 +1,7 @@
 const express = require("express");
 const session = require("express-session");
 const cors = require("cors");
+const { RedisStore } = require("connect-redis");
 
 const authRouter = require("./src/routes/auth");
 const companiesRouter = require("./src/routes/companies");
@@ -16,7 +17,7 @@ const { redisClient } = require("./src/utilities/cache");
 
 redisClient.connect();
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 server.use(
   cors({
@@ -29,7 +30,7 @@ server.use(express.json());
 
 server.use(
   session({
-    session: redisClient,
+    store: new RedisStore({ client: redisClient }),
     secret: "ci",
     resave: false,
     saveUninitialized: false,

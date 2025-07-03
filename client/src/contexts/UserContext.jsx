@@ -35,7 +35,6 @@ export const UserProvider = ({ children }) => {
 
   async function saveCompany(companyId, companySymbol) {
     if (!user || !user.id) return;
-
     try {
       const response = await User.saveCompany(companyId, companySymbol);
       if (response && response.message === responseMessage.SAVED) {
