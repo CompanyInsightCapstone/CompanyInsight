@@ -4,7 +4,11 @@ const argon2 = require("argon2");
 const router = express.Router();
 const cache = require("../utilities/cache");
 
-// Signup Route
+/**
+ * Handles user registration with username, password, and email validation.
+ * Creates new user account with hashed password and checks for existing users.
+ * @route POST /signup
+ */
 router.post("/signup", async (req, res) => {
   const { username, password, email } = req.body;
   try {
@@ -55,7 +59,11 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-// Login Route
+/**
+ * Handles user authentication with username and password verification.
+ * Creates user session upon successful login and returns user data.
+ * @route POST /login
+ */
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
   try {
@@ -89,7 +97,11 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Check Session Route
+/**
+ * Validates current user session and returns user information.
+ * Checks if user is logged in and retrieves their profile data from database.
+ * @route GET /check-session
+ */
 router.get("/check-session", async (req, res) => {
   if (!req.session.userId) {
     return res.status(401).json({ message: "Not logged in" });
@@ -109,7 +121,11 @@ router.get("/check-session", async (req, res) => {
   }
 });
 
-// Logout Route
+/**
+ * Handles user logout by destroying session and clearing cookies.
+ * Terminates the current user session and removes authentication data.
+ * @route POST /logout
+ */
 router.post("/logout", (req, res) => {
   req.session.destroy((err) => {
     if (err) {

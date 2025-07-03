@@ -23,6 +23,11 @@ const POLYGON_URLS = {
     `https://api.polygon.io/v3/reference/tickers/${symbol}?apiKey=${process.env.VITE_POLYGON_API}`,
 };
 
+/**
+ * Retrieves paginated list of companies with block-based pagination.
+ * Returns companies in pages with configurable page size and block size.
+ * @route GET /api/companies
+ */
 router.get("/api/companies", async (req, res) => {
   try {
     const pageId = parseInt(req.query.page, 10);
@@ -68,6 +73,11 @@ router.get("/api/companies", async (req, res) => {
   }
 });
 
+/**
+ * Filters companies based on search criteria with pagination support.
+ * Supports filtering by name, exchange, asset type, status, and IPO date sorting.
+ * @route GET /api/companies/filter
+ */
 router.get("/api/companies/filter", async (req, res) => {
   try {
     const { page, name, ipoDate, exchange, assetType, status } = req.query;
@@ -141,6 +151,11 @@ router.get("/api/companies/filter", async (req, res) => {
   }
 });
 
+/**
+ * Retrieves detailed company information by ID with caching support.
+ * Fetches company overview data from Polygon API and caches results for performance.
+ * @route GET /api/companies/:id
+ */
 router.get("/api/companies/:id", async (req, res) => {
   const { id } = req.params;
   const { symbol } = req.query;
