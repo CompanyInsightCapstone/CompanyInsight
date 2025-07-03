@@ -40,6 +40,8 @@ model UserSavedCompany {
   userId        String
   companyId     Int
   companySymbol String
+  percentChangeThreshold Float @default(5.0)
+  previousPrice Float?
   company       Company @relation(fields: [companyId], references: [id])
   user          User    @relation(fields: [userId], references: [id])
 }

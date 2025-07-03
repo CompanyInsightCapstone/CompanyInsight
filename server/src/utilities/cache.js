@@ -3,8 +3,10 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const redisClient = redis.createClient({
-  host: "localhost",
-  port: 6379,
+  socket: {
+    host: "localhost",
+    port: 6379,
+  },
 });
 
 async function set(key, value) {
@@ -24,4 +26,4 @@ async function del(key) {
   return redisClient.del(key);
 }
 
-module.exports = { set, get, del, has, redisClient };
+module.exports = { set, get, del, has, redisClient, redisModule: redis };

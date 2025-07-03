@@ -12,9 +12,7 @@ const TABLE_NAMES_ENUM = {
  * @param {*} tableName - name of the table
  */
 function formatTableName(tableName) {
-  return typeof tableName === "string"
-    ? prisma[tableName] 
-    : prisma[tableName];
+  return typeof tableName === "string" ? prisma[tableName] : prisma[tableName];
 }
 
 /**
@@ -48,6 +46,11 @@ async function createRecord(tableName, creationData) {
 async function deleteRecord(tableName, id) {
   const model = formatTableName(tableName);
   return model.delete({ where: { id: id } });
+}
+
+async function updateRecord(tableName, id, updateData) {
+  const model = formatTableName(tableName);
+  return model.update({ where: { id: id }, data: updateData });
 }
 
 /**
@@ -124,6 +127,16 @@ async function tableCardinality(tableName) {
   return await model.count();
 }
 
+/**
+ * Execute a raw SQL query
+ * @param {string} query - The SQL query to execute
+ * @param {Array} params - Optional parameters for the query
+ * @returns {Promise} - The result of the query
+ */
+async function executeQuery(query, params = []) {
+  return await prisma.$queryRawUnsafe(query, ...params);
+}
+
 module.exports = {
   scan,
   createRecord,
@@ -133,5 +146,7 @@ module.exports = {
   paginate,
   tableCardinality,
   formatTableName,
+  executeQuery,
+  updateRecord,
   TABLE_NAMES_ENUM,
 };
