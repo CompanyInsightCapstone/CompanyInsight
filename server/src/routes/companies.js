@@ -16,15 +16,15 @@ const MAX_PAGE = (async () => {
 
 const ALPHA_VANTAGE_URLS = {
   OVERVIEW: (symbol) =>
-    `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${symbol}&apikey=${process.env.VITE_ALPHA_VANTAGE_API}`,
+    `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${symbol}&apikey=${process.env.VITE_ALPHA_VANTAGE_API_KEY}`,
 };
 
 const POLYGON_URLS = {
   OVERVIEW: (symbol) =>
-  `https://api.polygon.io/v3/reference/tickers/${symbol}?apiKey=${process.env.VITE_POLYGON_API}`,
+  `https://api.polygon.io/v3/reference/tickers/${symbol}?apiKey=${process.env.VITE_POLYGON_API_KEY}`,
 
   TIMESERIES: (symbol, multiplier, from, to, limit) =>
- `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/${multiplier}/${from}/${to}/limit=${limit}&apiKey=${process.env.VITE_POLYGON_API}`,
+ `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/${multiplier}/${from}/${to}/limit=${limit}&apiKey=${process.env.VITE_POLYGON_API_KEY}`,
 };
 
 /**

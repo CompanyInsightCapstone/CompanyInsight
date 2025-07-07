@@ -45,7 +45,7 @@ const main = async () => {
     return 0;
   } else {
     seeding(
-      `https://www.alphavantage.co/query?function=LISTING_STATUS&apikey=${process.env.VITE_ALPHA_VANTAGE_API}`,
+      `https://www.alphavantage.co/query?function=LISTING_STATUS&apikey=${process.env.VITE_ALPHA_VANTAGE_API_KEY}`,
     );
   }
 };
