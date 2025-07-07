@@ -1,10 +1,10 @@
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { useContext, useEffect } from "react";
-import { SERVER_ADDRESS } from "./api/util";
-import WithAuth from "./components/WithAuth";
 import { UserContext } from "./contexts/UserContext";
-import { METHOD_ENUM, options } from "./api/util";
+import { API_ENDPOINTS, formatUrl, formatRequest, METHOD_ENUM } from "./api/util";
+import { useQuery } from "@tanstack/react-query";
+import WithAuth from "./components/WithAuth";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import CompanyDetails from "./pages/CompanyDetails";
@@ -15,24 +15,35 @@ const ProtectedHome = WithAuth(Home);
 const ProtectedDetails = WithAuth(CompanyDetails);
 const ProtectedWatchlist = WithAuth(Watchlist);
 
+
 export default function App() {
-  const { user, setUser } = useContext(UserContext);
+  const { setUser } = useContext(UserContext);
+
+  const { data: sessionData, isLoading, error } = useQuery({
+    queryKey: ['check-session'],
+    queryFn: async () => await formatRequest(formatUrl(API_ENDPOINTS.CHECK_SESSION), METHOD_ENUM.GET),
+    retry: 1,
+    refetchOnWindowFocus: false,
+    staleTime: 5 * 60 * 1000,
+  });
 
   useEffect(() => {
-    fetch(`${SERVER_ADDRESS}/check-session`, {
-      ...options(METHOD_ENUM.GET),
-      credentials: "include",
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.id) {
-          setUser(data);
-        }
-      })
-      .catch((error) => {
-        console.error("Error checking authentication:", error);
-      });
-  }, [setUser]);
+    if (sessionData?.id) {
+      setUser(sessionData);
+    } else if (sessionData && !sessionData.id) {
+      setUser(null);
+    }
+  }, [sessionData, setUser]);
+
+  useEffect(() => {
+    if (error) {
+      setUser(null);
+    }
+  }, [error, setUser]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
