@@ -99,7 +99,6 @@ export default function Filter() {
                 name={FILTER_FIELDS.ASSET_TYPE}
                 defaultValue="all"
               >
-                ex
                 <option value="all">All</option>
                 <option value="Stock">Stock</option>
                 <option value="ETF">ETF</option>

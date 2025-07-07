@@ -1,5 +1,7 @@
-const dotenv = require("dotenv");
+
 const database = require("./utilities/database");
+const process = require("process");
+const dotenv = require("dotenv");
 dotenv.config();
 
 /**
@@ -36,9 +38,6 @@ async function seeding(url) {
 }
 
 const main = async () => {
-  while (process.env.VITE_ALPHA_VANTAGE_API == undefined) {
-    0;
-  }
   const tableCardinality = await database.tableCardinality(
     database.TABLE_NAMES_ENUM.COMPANIES,
   );

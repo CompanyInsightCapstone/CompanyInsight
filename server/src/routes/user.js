@@ -2,6 +2,8 @@ const express = require("express");
 const database = require("../utilities/database");
 const cache = require("../utilities/cache");
 const router = express.Router();
+const { UserError } = require("../middleware/CustomErrors");
+
 const process = require("process");
 
 /**
@@ -9,14 +11,12 @@ const process = require("process");
  * Checks for existing saves to prevent duplicates and creates new saved company record.
  * @route POST /api/user/companies/save
  */
-router.post("/api/user/companies/save", async (req, res) => {
+router.post("/api/user/companies/save", async (req, res, next) => {
   try {
     const { companyId, companySymbol, percentChangeThreshold } = req.body;
     const userId = req.session.userId;
     if (!userId || !companyId || !companySymbol) {
-      return res
-        .status(400)
-        .json({ error: "userId, companyId, and companySymbol are required" });
+      return next(new UserError("userId, companyId, and companySymbol are required", 400));
     }
 
     const existingSave = await database.scan(database.TABLE_NAMES_ENUM.SAVED, {
@@ -27,14 +27,12 @@ router.post("/api/user/companies/save", async (req, res) => {
     });
 
     if (existingSave) {
-      return res
-        .status(409)
-        .json({ error: "Company already saved by this user" });
+      return next(new UserError("Company already saved by this user", 409));
     }
 
     let prevPrice;
     try {
-      const url = `https://finnhub.io/api/v1/quote?symbol=${this.companySymbol}`;
+      const url = `https://finnhub.io/api/v1/quote?symbol=${companySymbol}`;
       const result = await fetch(url, {
         method: "GET",
         headers: {
@@ -57,7 +55,7 @@ router.post("/api/user/companies/save", async (req, res) => {
 
     res.status(200).json({ message: "Saved" });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(new UserError("Error saving company", 500));
   }
 });
 
@@ -66,15 +64,13 @@ router.post("/api/user/companies/save", async (req, res) => {
  * Finds and deletes the saved company record for the specified user and company.
  * @route DELETE /api/user/companies/save
  */
-router.delete("/api/user/companies/save", async (req, res) => {
+router.delete("/api/user/companies/save", async (req, res, next) => {
   try {
     const companyId = req.query.companyId;
     const userId = req.session.userId;
 
     if (!userId || !companyId) {
-      return res
-        .status(400)
-        .json({ error: "userId and companyId are required" });
+      return next(new UserError("userId and companyId are required", 400));
     }
 
     const savedCompany = await database.scan(database.TABLE_NAMES_ENUM.SAVED, {
@@ -85,7 +81,7 @@ router.delete("/api/user/companies/save", async (req, res) => {
     });
 
     if (!savedCompany) {
-      return res.status(404).json({ error: "Saved company not found" });
+      return next(new UserError("Saved company not found", 404));
     }
 
     await database.deleteRecord(
@@ -94,7 +90,7 @@ router.delete("/api/user/companies/save", async (req, res) => {
     );
     res.status(200).json({ message: "Unsaved" });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(new UserError("Error removing saved company", 500));
   }
 });
 
@@ -103,11 +99,11 @@ router.delete("/api/user/companies/save", async (req, res) => {
  * Returns saved companies with their associated company details.
  * @route GET /api/user/companies/save
  */
-router.get("/api/user/companies/save", async (req, res) => {
+router.get("/api/user/companies/save", async (req, res, next) => {
   try {
     const userId = req.session.userId;
     if (!userId) {
-      return res.status(400).json({ error: "userId is required" });
+      return next(new UserError("userId is required", 400));
     }
     const model = database.formatTableName(database.TABLE_NAMES_ENUM.SAVED);
     const savedCompanies = await model.findMany({
@@ -119,18 +115,32 @@ router.get("/api/user/companies/save", async (req, res) => {
 
     res.status(200).json({ savedCompanies });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(new UserError("Error retrieving saved companies", 500));
   }
 });
 
-router.patch("/api/user/companies/save", async (req, res) => {
+/**
+ * Updates the price drop threshold for a saved company.
+ * Modifies the percentage change threshold that triggers email notifications.
+ * @route PATCH /api/user/companies/save
+ */
+router.patch("/api/user/companies/save", async (req, res, next) => {
   try {
     const userId = req.session.userId;
     if (!userId) {
-      return res.status(400).json({ error: "userId is required" });
+      return next(new UserError("userId is required", 400));
     }
     const { id } = req.query;
     const updatedDelta = parseFloat(req.body.priceDropThreshold);
+
+    if (!id) {
+      return next(new UserError("Record ID is required", 400));
+    }
+
+    if (isNaN(updatedDelta) || updatedDelta < 0 || updatedDelta > 100) {
+      return next(new UserError("Price drop threshold must be a number between 0 and 100", 400));
+    }
+
     const newRecord = await database.updateRecord(
       database.TABLE_NAMES_ENUM.SAVED,
       parseInt(id, 10),
@@ -138,7 +148,7 @@ router.patch("/api/user/companies/save", async (req, res) => {
     );
     res.status(200).json({ newRecord });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(new UserError("Error updating price drop threshold", 500));
   }
 });
 

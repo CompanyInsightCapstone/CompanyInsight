@@ -5,8 +5,7 @@ import { Link } from "react-router";
 import { UserContext } from "../contexts/UserContext";
 
 export default function CompanyItem({ company }) {
-  const { isCompanySaved, saveCompany, unsaveCompany } =
-    useContext(UserContext);
+  const { isCompanySaved, saveCompany, unsaveCompany } = useContext(UserContext);
 
   const isSaved = isCompanySaved(company.id);
 

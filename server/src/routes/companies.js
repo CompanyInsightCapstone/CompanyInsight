@@ -2,6 +2,7 @@ const express = require("express");
 const database = require("../utilities/database");
 const cache = require("../utilities/cache");
 const router = express.Router();
+const { CompaniesError} = require("../middleware/CustomErrors");
 
 const BLOCK_SIZE = 4;
 const PAGE_SIZE = 20;
@@ -20,7 +21,10 @@ const ALPHA_VANTAGE_URLS = {
 
 const POLYGON_URLS = {
   OVERVIEW: (symbol) =>
-    `https://api.polygon.io/v3/reference/tickers/${symbol}?apiKey=${process.env.VITE_POLYGON_API}`,
+  `https://api.polygon.io/v3/reference/tickers/${symbol}?apiKey=${process.env.VITE_POLYGON_API}`,
+
+  TIMESERIES: (symbol, multiplier, from, to, limit) =>
+ `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/${multiplier}/${from}/${to}/limit=${limit}&apiKey=${process.env.VITE_POLYGON_API}`,
 };
 
 /**
@@ -28,9 +32,12 @@ const POLYGON_URLS = {
  * Returns companies in pages with configurable page size and block size.
  * @route GET /api/companies
  */
-router.get("/api/companies", async (req, res) => {
+router.get("/api/companies", async (req, res, next) => {
   try {
     const pageId = parseInt(req.query.page, 10);
+    if (isNaN(pageId) || pageId < 0) {
+      return next(new CompaniesError("Invalid page number", 400));
+    }
 
     if (pageId > MAX_PAGE) {
       return res.status(202).json({
@@ -69,7 +76,7 @@ router.get("/api/companies", async (req, res) => {
       blockSize: BLOCK_SIZE,
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(new CompaniesError("Error retrieving companies", 500));
   }
 });
 
@@ -78,7 +85,7 @@ router.get("/api/companies", async (req, res) => {
  * Supports filtering by name, exchange, asset type, status, and IPO date sorting.
  * @route GET /api/companies/filter
  */
-router.get("/api/companies/filter", async (req, res) => {
+router.get("/api/companies/filter", async (req, res, next) => {
   try {
     const { page, name, ipoDate, exchange, assetType, status } = req.query;
     const where = {};
@@ -99,7 +106,7 @@ router.get("/api/companies/filter", async (req, res) => {
         contains: assetType,
         mode: "insensitive",
       };
-    } 
+    }
     if (status && status !== "all") {
       where.status = {
         contains: status,
@@ -125,6 +132,10 @@ router.get("/api/companies/filter", async (req, res) => {
     };
 
     const pageId = parseInt(page, 10) || 0;
+    if (pageId < 0) {
+      return next(new CompaniesError("Invalid page number", 400));
+    }
+
     const companiesChunk = await database.getPages(
       database.TABLE_NAMES_ENUM.COMPANIES,
       pageId,
@@ -147,7 +158,7 @@ router.get("/api/companies/filter", async (req, res) => {
       blockSize: BLOCK_SIZE,
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(new CompaniesError("Error filtering companies", 500));
   }
 });
 
@@ -156,20 +167,67 @@ router.get("/api/companies/filter", async (req, res) => {
  * Fetches company overview data from Polygon API and caches results for performance.
  * @route GET /api/companies/:id
  */
-router.get("/api/companies/:id", async (req, res) => {
-  const { id } = req.params;
-  const { symbol } = req.query;
-  const cacheKey = `(${id},${symbol})`;
-  const cachedData = await cache.get(cacheKey);
-  if (cachedData) {
-    res.status(200).json({ data: cachedData, cacheHit: true });
-  } else {
-    const url = POLYGON_URLS.OVERVIEW(symbol);
-    const response = await fetch(url);
-    const data = await response.json();
-    await cache.set(cacheKey, data);
-    res.status(200).json({ data, cacheHit: false });
+router.get("/api/companies/:id", async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { symbol } = req.query;
+
+    if (!id || !symbol) {
+      return next(new CompaniesError("Company ID and symbol are required", 400));
+    }
+
+    const cacheKey = `(${id},${symbol})`;
+    const cachedData = await cache.get(cacheKey);
+    if (cachedData) {
+      res.status(200).json({ data: cachedData, cacheHit: true });
+    } else {
+      const url = POLYGON_URLS.OVERVIEW(symbol);
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        return next(new CompaniesError(`Failed to fetch company data: ${response.statusText}`, response.status));
+      }
+
+      const data = await response.json();
+      await cache.set(cacheKey, data);
+      res.status(200).json({ data, cacheHit: false });
+    }
+  } catch (error) {
+    next(new CompaniesError("Error retrieving company details", 500));
   }
 });
+
+/**
+ * Retrieves time series data for a company with caching support.
+ * Fetches historical stock price data from Polygon API with configurable parameters.
+ * @route GET /api/companies/timeseries
+ */
+router.get("/api/companies/timeseries",async (req, res, next) => {
+  try {
+    const { companyId, companySymbol, from, to, multiplier, limit } = req.query;
+
+    if (!companyId || !companySymbol || !from || !to) {
+      return next(new CompaniesError("Company ID, symbol, from date, and to date are required", 400));
+    }
+
+    const cacheKey = `(${companyId},${companySymbol},${from},${to},${multiplier},${limit})`;
+    if (cache.has(cacheKey)) {
+      res.status(200).json({ data: cache.get(cacheKey), cacheHit: true });
+    } else {
+      const url = POLYGON_URLS.TIMESERIES(companySymbol, multiplier, from, to, limit);
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        return next(new CompaniesError(`Failed to fetch time series data: ${response.statusText}`, response.status));
+      }
+
+      const data = await response.json();
+      cache.set(cacheKey, data);
+      res.status(200).json({ data, cacheHit: false });
+    }
+  } catch (error) {
+    next(new CompaniesError("Error retrieving time series data", 500));
+  }
+})
 
 module.exports = router;
