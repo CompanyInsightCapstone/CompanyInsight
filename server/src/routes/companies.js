@@ -99,7 +99,7 @@ router.get("/api/companies/filter", async (req, res) => {
         contains: assetType,
         mode: "insensitive",
       };
-    }
+    } 
     if (status && status !== "all") {
       where.status = {
         contains: status,
