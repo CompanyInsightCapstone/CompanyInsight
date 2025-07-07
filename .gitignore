@@ -6,6 +6,7 @@ client/.env
 
 # js third-party dependencies
 node_modules
+package-lock.json
 
 # VSCode settings
 .vscode

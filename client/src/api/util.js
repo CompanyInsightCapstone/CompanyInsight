@@ -1,6 +1,4 @@
-export const SERVER_ADDRESS = import.meta.env.VITE_SERVER_ADDRESS;
-export const POLYGON_API_KEY = import.meta.env.VITE_POLYGON_API;
-export const ALPHA_VANTAGE_KEY = import.meta.env.VITE_ALPHA_VANTAGE_API;
+const SERVER_ADDRESS = import.meta.env.VITE_SERVER_ADDRESS;
 
 export const METHOD_ENUM = {
   GET: "GET",
@@ -8,6 +6,81 @@ export const METHOD_ENUM = {
   PUT: "PUT",
   DELETE: "DELETE",
   PATCH: "PATCH",
+};
+
+export const API_ENDPOINTS = {
+  CHECK_SESSION: "/check-session",
+  LOGIN: "/login",
+  SIGNUP: "/signup",
+  LOGOUT: "/logout",
+  COMPANIES: "/api/companies",
+  COMPANIES_FILTER: "/api/companies/filter",
+  COMPANY_DETAILS: "/api/companies",
+  USER_SAVED_COMPANIES: "/api/user/companies/save",
+};
+
+/**
+ * Builds a complete URL with query parameters
+ * @param {string} endpoint - The API endpoint from API_ENDPOINTS
+ * @param {Object} params - Query parameters as key-value pairs
+ * @param {string|number} pathParam - Optional path parameter to append to endpoint
+ * @returns {string} Complete URL with query parameters
+ */
+export const formatUrl = (endpoint, params = null, pathParam = null) => {
+  let url = `${SERVER_ADDRESS}${endpoint}`;
+  if (pathParam !== null) {
+    url += `/${pathParam}`;
+  }
+  if (params !== null) {
+    const urlParams = new URLSearchParams(params);
+    const queryString = urlParams.toString();
+    if (queryString) {
+      url += `?${queryString}`;
+    }
+  }
+  return url;
+};
+
+/**
+ * Makes an API request with standardized options
+ * @param {string} url - Complete URL for the request
+ * @param {string} method - HTTP method from METHOD_ENUM
+ * @param {Object} data - Request body data (for POST, PUT, PATCH)
+ * @param {Object} additionalOptions - Additional fetch options
+ * @returns {Promise} Fetch promise
+ */
+export const formatRequest = async (url, method = METHOD_ENUM.GET, data = null, additionalOptions = {}) => {
+  const requestOptions = {
+    method,
+    headers: {
+      Accept: "application/json",
+      ...(data && { "Content-Type": "application/json" }),
+    },
+    credentials: "include",
+    ...additionalOptions,
+  };
+
+
+  if (data && [METHOD_ENUM.POST, METHOD_ENUM.PUT, METHOD_ENUM.PATCH].includes(method)) {
+    requestOptions.body = JSON.stringify(data);
+  }
+
+  try {
+    const response = await fetch(url, requestOptions);
+    const responseData = await response.json();
+
+    return {
+      ...responseData,
+      statusCode: response.status,
+      ok: response.ok,
+    };
+  } catch (error) {
+    return {
+      error: error.message,
+      statusCode: 500,
+      ok: false,
+    };
+  }
 };
 
 export const options = (methodType, data) => {
@@ -18,7 +91,6 @@ export const options = (methodType, data) => {
         headers: {
           Accept: "application/json",
         },
-        body: JSON.stringify(data),
       };
     case METHOD_ENUM.POST:
     case METHOD_ENUM.PUT:
@@ -47,3 +119,5 @@ export const options = (methodType, data) => {
       };
   }
 };
+
+export { SERVER_ADDRESS };

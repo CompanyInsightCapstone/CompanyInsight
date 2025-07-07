@@ -1,86 +1,41 @@
 import {
-  SERVER_ADDRESS,
-  options,
+  API_ENDPOINTS,
+  formatRequest,
+  formatUrl,
   METHOD_ENUM,
-  POLYGON_API_KEY,
-  ALPHA_VANTAGE_KEY,
 } from "./util";
 
 const Companies = {
   /**
    * Fetches a block of pages of companies starting from the given page number
-   * @param {*} pageNumber - the current page number
+   * @param {number} pageNumber - the current page number
    */
   async fetchPage(pageNumber) {
-    const url = `${SERVER_ADDRESS}/api/companies?page=${pageNumber}`;
-    try {
-      const response = await fetch(url, {
-        ...options(METHOD_ENUM.GET),
-        credentials: "include",
-      });
-
-      const data = await response.json();
-      return {
-        ...data,
-        statusCode: response.status,
-      };
-    } catch (error) {
-      return {
-        pages: [],
-        statusCode: 500,
-        error: error.message,
-      };
-    }
+    return await formatRequest(formatUrl(API_ENDPOINTS.COMPANIES, { page: pageNumber }), METHOD_ENUM.GET);
   },
 
+  /**
+   * Fetches filtered companies with pagination
+   * @param {number} pageNumber - the current page number
+   * @param {Map} filterRequest - Map containing filter parameters
+   */
   async fetchFilteredPage(pageNumber, filterRequest) {
-    const urlParams = new URLSearchParams();
-    urlParams.append("page", pageNumber);
+    const params = { page: pageNumber};
     for (const [key, value] of filterRequest.entries()) {
-      if (
-        value !== null &&
-        value !== undefined &&
-        value !== "" &&
-        value !== "all"
-      ) {
-        urlParams.append(key, value);
-      }
+      params[key] = value;
     }
-    const url = `${SERVER_ADDRESS}/api/companies/filter?${urlParams.toString()}`;
-    try {
-      const response = await fetch(url, {
-        ...options(METHOD_ENUM.GET),
-        credentials: "include",
-      });
-
-      const data = await response.json();
-      return {
-        ...data,
-        statusCode: response.status,
-      };
-    } catch (error) {
-      return {
-        pages: [],
-        statusCode: 500,
-        error: error.message,
-      };
-    }
+    return await formatRequest(formatUrl(API_ENDPOINTS.COMPANIES_FILTER, params), METHOD_ENUM.GET);
   },
 
+  /**
+   * Fetches detailed information for a specific company
+   * @param {string|number} id - Company ID
+   * @param {string} symbol - Company symbol
+   */
   async fetchCompanyDetails(id, symbol) {
-    const url = `${SERVER_ADDRESS}/api/companies/${id}?${new URLSearchParams({ symbol: symbol })}`;
-    try {
-      const response = await fetch(url, {
-        ...options(METHOD_ENUM.GET),
-        credentials: "include",
-      });
-      const data = await response.json();
-      return data.data.results;
-    } catch (error) {
-      return null;
-    }
+    const response = await formatRequest(formatUrl(API_ENDPOINTS.COMPANY_DETAILS, { symbol }, id), METHOD_ENUM.GET);
+    return response.data;
   },
-
 };
 
 export { Companies };

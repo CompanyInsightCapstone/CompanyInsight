@@ -1,40 +1,46 @@
-import { UserProvider } from "../contexts/UserContext";
-import { SERVER_ADDRESS, options, METHOD_ENUM } from "./util";
+import {
+  API_ENDPOINTS,
+  formatRequest,
+  formatUrl,
+  METHOD_ENUM
+} from "./util";
 
 const User = {
+  /**
+   * Fetches all saved companies for the current user
+   * @returns {Promise} Response containing saved companies data
+   */
   async getSavedCompanies() {
-    const url = `${SERVER_ADDRESS}/api/user/companies/save`;
-    return await fetch(url, {
-      ...options(METHOD_ENUM.GET),
-      credentials: "include",
-    }).then((res) => res.json());
+    return await formatRequest(formatUrl(API_ENDPOINTS.USER_SAVED_COMPANIES), METHOD_ENUM.GET);
   },
 
+  /**
+   * Saves a company to the user's watchlist
+   * @param {string|number} companyId - The company ID to save
+   * @param {string} companySymbol - The company symbol to save
+   * @returns {Promise} Response containing save operation result
+   */
   async saveCompany(companyId, companySymbol) {
-    const url = `${SERVER_ADDRESS}/api/user/companies/save`;
-    const data = { companyId, companySymbol };
-    return await fetch(url, {
-      ...options(METHOD_ENUM.POST, data),
-      credentials: "include",
-    }).then((res) => res.json());
+    return await formatRequest(formatUrl(API_ENDPOINTS.USER_SAVED_COMPANIES), METHOD_ENUM.POST, { companyId, companySymbol });
   },
 
+  /**
+   * Removes a company from the user's watchlist
+   * @param {string|number} companyId - The company ID to remove
+   * @returns {Promise} Response containing unsave operation result
+   */
   async unsaveCompany(companyId) {
-    const url = `${SERVER_ADDRESS}/api/user/companies/save`;
-    const urlParams = new URLSearchParams({ companyId: companyId });
-    return await fetch(url + "?" + urlParams, {
-      ...options(METHOD_ENUM.DELETE),
-      credentials: "include",
-    }).then((res) => res.json());
+    return await formatRequest(formatUrl(API_ENDPOINTS.USER_SAVED_COMPANIES, { companyId }), METHOD_ENUM.DELETE);
   },
 
+  /**
+   * Updates the price drop threshold for a saved company
+   * @param {string|number} id - The saved company record ID
+   * @param {number} priceDropThreshold - The new price drop threshold
+   * @returns {Promise} Response containing update operation result
+   */
   async updatePriceDropThreshold(id, priceDropThreshold) {
-    const url = `${SERVER_ADDRESS}/api/user/companies/save`;
-    const urlParams = new URLSearchParams({ id: id });
-    return await fetch(url + "?" + urlParams, {
-      ...options(METHOD_ENUM.PATCH, { priceDropThreshold }),
-      credentials: "include",
-    }).then((res) => res.json());
+    return await formatRequest(formatUrl(API_ENDPOINTS.USER_SAVED_COMPANIES, { id }), METHOD_ENUM.PATCH, { priceDropThreshold });
   },
 };
 
