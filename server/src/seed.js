@@ -27,7 +27,7 @@ async function seeding(url) {
   rawDatasetCSV.slice(1).forEach((line) => {
     const updatedLine = line.split(",").map((s) => s.replace(/\r/g, ""));
     if (updatedLine[0] !== "") {
-      database.create(
+      database.createRecord(
         database.TABLE_NAMES_ENUM.COMPANIES,
         makeObject(headers, updatedLine),
       );

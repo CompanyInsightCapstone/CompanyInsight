@@ -20,28 +20,33 @@ model User {
   username      String
   email         String
   password      String
-  savedCompanies UserSavedCompany[]
+  watchlist     Watchlist[]
+  @@index([id], type: Hash)
 }
 
 model Company {
   id            Int             @id @default(autoincrement())
-  symbol        String
+  symbol        String          @unique
   name          String
   exchange      String?
   assetType     String?
   ipoDate       String?
   delistingDate String          @default("N/A")
   status        String?
-  userSavedCompany UserSavedCompany[]
+  watchlist     Watchlist[]
+  @@index([symbol], type: Hash)
 }
 
-model UserSavedCompany {
+model Watchlist {
   id            Int     @id @default(autoincrement())
-  userId        String
-  companyId     Int
-  companySymbol String
+  savedAt       DateTime?
+  unsavedAt     DateTime?
   percentChangeThreshold Float @default(5.0)
   previousPrice Float?
-  company       Company @relation(fields: [companyId], references: [id])
+  userId        String
   user          User    @relation(fields: [userId], references: [id])
+  companyId     Int
+  companySymbol String
+  company       Company @relation(fields: [companyId], references: [id])
+  @@index([userId, companyId])
 }
