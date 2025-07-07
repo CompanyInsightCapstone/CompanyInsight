@@ -75,11 +75,12 @@ const Companies = {
         credentials: "include",
       });
       const data = await response.json();
-      return data;
+      return data.data.results;
     } catch (error) {
       return null;
     }
   },
+
 };
 
 export { Companies };

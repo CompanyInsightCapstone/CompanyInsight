@@ -13,9 +13,8 @@ export default function CompanyDetails() {
   const [companyDetails, setCompanyDetails] = useState(null);
 
   async function fetchCompanyDetails(companyId, symbol) {
-    const data = (await Companies.fetchCompanyDetails(companyId, symbol)).data
-      .results;
-    setCompanyDetails(data);
+    const details = (await Companies.fetchCompanyDetails(companyId, symbol));
+    setCompanyDetails(details);
   }
 
   useEffect(() => {
