@@ -28,7 +28,7 @@ async function percentDropMailerCallback(emailer, decodedMessage) {
   try {
     const sqlQuery = `
       SELECT DISTINCT u.email, u.id as "userId", usc."percentChangeThreshold", usc."previousPrice" FROM "User" u
-      JOIN "UserSavedCompany" usc ON u.id = usc."userId"
+      JOIN "Watchlist" usc ON u.id = usc."userId"
       WHERE usc."companyId" = ${decodedMessage.companyId}
     `;
     if (
@@ -64,7 +64,7 @@ async function percentDropMailerCallback(emailer, decodedMessage) {
         ),
       );
       await database.executeQuery(
-        `UPDATE "UserSavedCompany" SET "previousPrice" = ${decodedMessage.data.c} WHERE "companyId" = ${decodedMessage.companyId} AND "userId" = '${user.userId}'`,
+        `UPDATE "Watchlist" SET "previousPrice" = ${decodedMessage.data.c} WHERE "companyId" = ${decodedMessage.companyId} AND "userId" = '${user.userId}'`,
       );
     });
     return SUCCESS;
@@ -78,7 +78,7 @@ class StockPriceNotificationService {
     this.stageName = stageName;
     this.publisherStage = cache.redisModule.createClient();
     this.subscriberStage = cache.redisModule.createClient();
-    this.timeInterval = (30000 << 1) // 1 minute
+    this.timeInterval = (30000 << 1) 
     this.iteration = 0;
     this.emailer = new Emailer();
   }
@@ -91,7 +91,7 @@ class StockPriceNotificationService {
     await this.publisherStage.connect();
     await this.subscriberStage.connect();
     const records = await database.executeQuery(
-      `SELECT DISTINCT "companyId", "companySymbol" FROM "UserSavedCompany"`,
+      `SELECT DISTINCT "companyId", "companySymbol" FROM "Watchlist"`,
     );
     this.publishers = new PublisherQueue();
     this.publishers.batchEnqueue(
@@ -122,8 +122,9 @@ class StockPriceNotificationService {
    */
   async refreshQueue() {
     try {
+
       const currentCompanies = await database.executeQuery(
-        `SELECT DISTINCT "companyId", "companySymbol" FROM "UserSavedCompany"`,
+        `SELECT DISTINCT "companyId", "companySymbol" FROM "Watchlist"`,
       );
 
       const queueCompanyIds = this.publishers.getQueueCompanyIds();

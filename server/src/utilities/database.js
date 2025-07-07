@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 const TABLE_NAMES_ENUM = {
   USER: "user",
   COMPANIES: "company",
-  SAVED: "userSavedCompany", // Changed to camelCase to match Prisma's naming convention
+  SAVED: "Watchlist", // Changed to camelCase to match Prisma's naming convention
 };
 
 /**
