@@ -3,24 +3,21 @@ const database = require("../utilities/database");
 const argon2 = require("argon2");
 const router = express.Router();
 const cache = require("../utilities/cache");
+const { AuthError } = require("../middleware/CustomErrors");
 
 /**
  * Handles user registration with username, password, and email validation.
  * Creates new user account with hashed password and checks for existing users.
  * @route POST /signup
  */
-router.post("/signup", async (req, res) => {
+router.post("/signup", async (req, res, next) => {
   const { username, password, email } = req.body;
   try {
     if (!username || !password || !email) {
-      return res
-        .status(400)
-        .json({ error: "Username, password, email are required." });
+      return next(new AuthError("Username, password, email are required.", 400));
     }
     if (password.length < 8) {
-      return res
-        .status(400)
-        .json({ error: "Password must be at least 8 characters long." });
+      return next(new AuthError("Password must be at least 8 characters long.", 400));
     }
 
     const existingUser = await database.scan(database.TABLE_NAMES_ENUM.USER, {
@@ -28,7 +25,7 @@ router.post("/signup", async (req, res) => {
     });
 
     if (existingUser) {
-      return res.status(400).json({ error: "Username already exists" });
+      return next(new AuthError("Username already exists", 400));
     }
 
     const existingUserEmail = await database.scan(
@@ -37,7 +34,7 @@ router.post("/signup", async (req, res) => {
     );
 
     if (existingUserEmail) {
-      return res.status(400).json({ error: "Email already exists" });
+      return next(new AuthError("Email already exists", 400));
     }
 
     const hashedPassword = await argon2.hash(password, {
@@ -54,8 +51,7 @@ router.post("/signup", async (req, res) => {
 
     res.status(201).json({ message: "Signup successful!" });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Something went wrong during signup" });
+    next(new AuthError("Something went wrong during signup", 500));
   }
 });
 
@@ -64,13 +60,11 @@ router.post("/signup", async (req, res) => {
  * Creates user session upon successful login and returns user data.
  * @route POST /login
  */
-router.post("/login", async (req, res) => {
+router.post("/login", async (req, res, next) => {
   const { username, password } = req.body;
   try {
     if (!username || !password) {
-      return res
-        .status(400)
-        .json({ error: "Username and password are required" });
+      return next(new AuthError("Username and password are required", 400));
     }
 
     const user = await database.scan(database.TABLE_NAMES_ENUM.USER, {
@@ -80,7 +74,7 @@ router.post("/login", async (req, res) => {
     const isValidPassword = await argon2.verify(user.password, password);
 
     if (!user || !isValidPassword) {
-      return res.status(401).json({ error: "Invalid username or password" });
+      return next(new AuthError("Invalid username or password", 401));
     }
 
     req.session.userId = user.id;
@@ -93,7 +87,7 @@ router.post("/login", async (req, res) => {
       email: user.email,
     });
   } catch (error) {
-    res.status(500).json({ error: "Something went wrong during login" });
+    next(new AuthError("Something went wrong during login", 500));
   }
 });
 
@@ -102,9 +96,9 @@ router.post("/login", async (req, res) => {
  * Checks if user is logged in and retrieves their profile data from database.
  * @route GET /check-session
  */
-router.get("/check-session", async (req, res) => {
+router.get("/check-session", async (req, res, next) => {
   if (!req.session.userId) {
-    return res.status(401).json({ message: "Not logged in" });
+    return next(new AuthError("Not logged in", 401));
   }
   try {
     const user = await database.scan(database.TABLE_NAMES_ENUM.USER, {
@@ -117,7 +111,7 @@ router.get("/check-session", async (req, res) => {
       email: user.email,
     });
   } catch (error) {
-    res.status(500).json({ error: "Error fetching user session data" });
+    next(new AuthError("Error fetching user session data", 500));
   }
 });
 
