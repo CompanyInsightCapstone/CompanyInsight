@@ -9,6 +9,8 @@ const redisClient = redis.createClient({
   },
 });
 
+redisClient.connect();
+
 async function set(key, value) {
   return redisClient.set(key, JSON.stringify(value));
 }

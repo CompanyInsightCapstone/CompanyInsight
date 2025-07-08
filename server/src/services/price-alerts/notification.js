@@ -39,18 +39,23 @@ async function percentDropMailerCallback(emailer, decodedMessage) {
       return;
     }
     const userMailingList = await database.executeQuery(sqlQuery);
+    let emailsSent = 0;
+    let emailsNotSent = 0;
+
     userMailingList.forEach(async (user) => {
       if (
         !decodedMessage.data ||
         decodedMessage.data.c === undefined ||
         decodedMessage.data.c === null
       ) {
+        emailsNotSent++;
         return;
       }
 
       const delta = 100 * (decodedMessage.data.c / user.previousPrice - 1);
       const deltaPercent = Math.abs(delta);
       if (delta > 0 || deltaPercent < user.percentChangeThreshold) {
+        emailsNotSent++;
         return;
       }
       emailer.sendEmail(
@@ -63,13 +68,16 @@ async function percentDropMailerCallback(emailer, decodedMessage) {
           decodedMessage.data.c,
         ),
       );
+      emailsSent++;
       await database.executeQuery(
         `UPDATE "Watchlist" SET "previousPrice" = ${decodedMessage.data.c} WHERE "companyId" = ${decodedMessage.companyId} AND "userId" = '${user.userId}'`,
       );
     });
-    return SUCCESS;
+    return SUCCESS(
+      `Email notification stage successful, number of emails sent this round: ${emailsSent}, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): ${emailsNotSent}`,
+    );
   } catch (error) {
-    return FAILURE;
+    return FAILURE("Email notification failed", error);
   }
 }
 
@@ -148,9 +156,9 @@ class StockPriceNotificationService {
           this.publishers.removeCompanyFromQueue(companyId);
         });
       }
-      return SUCCESS;
+      return SUCCESS("Queue refreshed");
     } catch (error) {
-      return FAILURE;
+      return FAILURE("Queue refresh failed", error);
     }
   }
 

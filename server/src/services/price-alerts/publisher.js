@@ -33,9 +33,9 @@ class Publisher {
         data: data,
         timestamp: Date.now(),
       };
-      return SUCCESS;
+      return SUCCESS("Stock price polling");
     } catch (error) {
-      return FAILURE;
+      return FAILURE("Stock price polling failed", error);
     }
   }
 
@@ -54,9 +54,9 @@ class Publisher {
         ...this.eventData,
       };
       publisherStage.publish(stageName, JSON.stringify(eventMessage));
-      return SUCCESS;
+      return SUCCESS("Message published to Redis");
     } catch (error) {
-      return FAILURE;
+      return FAILURE("Message publish failed", error);
     }
   }
 }

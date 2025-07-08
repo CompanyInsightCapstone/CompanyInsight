@@ -54,31 +54,41 @@ class Websocket {
       }
 
       client.on("message", (message) => {
-          const decodedMsg = JSON.parse(message.toString());
-          this.handleClientMessage(decodedMsg, client);
+        const decodedMsg = JSON.parse(message.toString());
+        this.handleClientMessage(decodedMsg, client);
       });
     });
   }
 
-  handleClientMessage(message, client) {
+  async handleClientMessage(message, client) {
     switch (message.type) {
       case "request-trending-companies":
         if (this.prevCompanies) {
           client.send(this.prevCompanies);
         } else {
-          const cachedData = cache.get("prev-trending-companies");
-          if (cachedData) {
-            client.send(JSON.stringify(cachedData));
-          } else {
-            const noDataMessage = {
+          try {
+            const cachedData = await cache.get("prev-trending-companies");
+            if (cachedData) {
+              client.send(JSON.stringify(cachedData));
+            } else {
+              const noDataMessage = {
+                type: "trending-companies",
+                data: [],
+                dirtyBit: false,
+                message: "No data available",
+                timestamp: new Date().toISOString(),
+              };
+              client.send(JSON.stringify(noDataMessage));
+            }
+          } catch (error) {
+            const errorMessage = {
               type: "trending-companies",
               data: [],
               dirtyBit: false,
-              message:
-                "No data available",
+              message: "Error retrieving cached data",
               timestamp: new Date().toISOString(),
             };
-            client.send(JSON.stringify(noDataMessage));
+            client.send(JSON.stringify(errorMessage));
           }
         }
         break;
