@@ -16,7 +16,9 @@ router.post("/api/user/companies/save", async (req, res, next) => {
     const { companyId, companySymbol, percentChangeThreshold } = req.body;
     const userId = req.session.userId;
     if (!userId || !companyId || !companySymbol) {
-      return next(new UserError("userId, companyId, and companySymbol are required", 400));
+      return next(
+        new UserError("userId, companyId, and companySymbol are required", 400),
+      );
     }
 
     const existingSave = await database.scan(database.TABLE_NAMES_ENUM.SAVED, {
@@ -138,7 +140,12 @@ router.patch("/api/user/companies/save", async (req, res, next) => {
     }
 
     if (isNaN(updatedDelta) || updatedDelta < 0 || updatedDelta > 100) {
-      return next(new UserError("Price drop threshold must be a number between 0 and 100", 400));
+      return next(
+        new UserError(
+          "Price drop threshold must be a number between 0 and 100",
+          400,
+        ),
+      );
     }
 
     const newRecord = await database.updateRecord(

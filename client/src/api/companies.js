@@ -1,9 +1,5 @@
-import {
-  API_ENDPOINTS,
-  formatRequest,
-  formatUrl,
-  METHOD_ENUM,
-} from "./util";
+import TrendingCompanies from "../pages/TrendingCompanies";
+import { API_ENDPOINTS, formatRequest, formatUrl, METHOD_ENUM } from "./util";
 
 const Companies = {
   /**
@@ -11,7 +7,10 @@ const Companies = {
    * @param {number} pageNumber - the current page number
    */
   async fetchPage(pageNumber) {
-    return await formatRequest(formatUrl(API_ENDPOINTS.COMPANIES, { page: pageNumber }), METHOD_ENUM.GET);
+    return await formatRequest(
+      formatUrl(API_ENDPOINTS.COMPANIES, { page: pageNumber }),
+      METHOD_ENUM.GET,
+    );
   },
 
   /**
@@ -20,11 +19,14 @@ const Companies = {
    * @param {Map} filterRequest - Map containing filter parameters
    */
   async fetchFilteredPage(pageNumber, filterRequest) {
-    const params = { page: pageNumber};
+    const params = { page: pageNumber };
     for (const [key, value] of filterRequest.entries()) {
       params[key] = value;
     }
-    return await formatRequest(formatUrl(API_ENDPOINTS.COMPANIES_FILTER, params), METHOD_ENUM.GET);
+    return await formatRequest(
+      formatUrl(API_ENDPOINTS.COMPANIES_FILTER, params),
+      METHOD_ENUM.GET,
+    );
   },
 
   /**
@@ -33,9 +35,14 @@ const Companies = {
    * @param {string} symbol - Company symbol
    */
   async fetchCompanyDetails(id, symbol) {
-    const response = await formatRequest(formatUrl(API_ENDPOINTS.COMPANY_DETAILS, { symbol }, id), METHOD_ENUM.GET);
+    const response = await formatRequest(
+      formatUrl(API_ENDPOINTS.COMPANY_DETAILS, { symbol }, id),
+      METHOD_ENUM.GET,
+    );
     return response.data;
   },
+
+  async TrendingCompanies() {},
 };
 
 export { Companies };

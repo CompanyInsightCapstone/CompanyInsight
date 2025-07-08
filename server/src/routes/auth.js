@@ -14,10 +14,14 @@ router.post("/signup", async (req, res, next) => {
   const { username, password, email } = req.body;
   try {
     if (!username || !password || !email) {
-      return next(new AuthError("Username, password, email are required.", 400));
+      return next(
+        new AuthError("Username, password, email are required.", 400),
+      );
     }
     if (password.length < 8) {
-      return next(new AuthError("Password must be at least 8 characters long.", 400));
+      return next(
+        new AuthError("Password must be at least 8 characters long.", 400),
+      );
     }
 
     const existingUser = await database.scan(database.TABLE_NAMES_ENUM.USER, {

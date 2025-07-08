@@ -8,7 +8,11 @@ const companiesRouter = require("./src/routes/companies");
 const userRouter = require("./src/routes/user");
 
 const server = express();
-const  { AuthError, CompaniesError, UserError} = require("./src/middleware/CustomErrors");
+const {
+  AuthError,
+  CompaniesError,
+  UserError,
+} = require("./src/middleware/CustomErrors");
 
 const dotenv = require("dotenv");
 dotenv.config();
@@ -54,17 +58,20 @@ server.use(sessionValidation);
 server.use(companiesRouter);
 server.use(userRouter);
 
-
 server.use((err, req, res, next) => {
   try {
-    if (err instanceof AuthError || err instanceof CompaniesError || err instanceof UserError) {
+    if (
+      err instanceof AuthError ||
+      err instanceof CompaniesError ||
+      err instanceof UserError
+    ) {
       return res.status(err.status).json({
         error: err.message,
-        type: err.name
+        type: err.name,
       });
     }
     return res.status(err.status || 500).json({
-      error: err.message || "Internal Server Error"
+      error: err.message || "Internal Server Error",
     });
   } catch (error) {
     return res.status(500).json({ error: "Internal Server Error" });

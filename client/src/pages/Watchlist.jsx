@@ -3,20 +3,33 @@ import Footer from "../components/Footer";
 import { useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { API_ENDPOINTS, formatUrl, formatRequest, METHOD_ENUM } from "../api/util";
+import {
+  API_ENDPOINTS,
+  formatUrl,
+  formatRequest,
+  METHOD_ENUM,
+} from "../api/util";
 import User from "../api/user";
 
 export default function Watchlist() {
   const { user } = useContext(UserContext);
   const queryClient = useQueryClient();
 
-  const { data: savedCompanies = [], isLoading, error, refetch } = useQuery({
-    queryKey: ['saved-companies', user?.id],
+  const {
+    data: savedCompanies = [],
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["saved-companies", user?.id],
     queryFn: async () => {
-      const response = await formatRequest(formatUrl(API_ENDPOINTS.USER_SAVED_COMPANIES), METHOD_ENUM.GET);
+      const response = await formatRequest(
+        formatUrl(API_ENDPOINTS.USER_SAVED_COMPANIES),
+        METHOD_ENUM.GET,
+      );
 
       if (!response.ok) {
-        throw new Error('Failed to fetch saved companies');
+        throw new Error("Failed to fetch saved companies");
       }
 
       return response.savedCompanies || [];
@@ -28,9 +41,14 @@ export default function Watchlist() {
   });
 
   const updateThresholdMutation = useMutation({
-    mutationFn: async ({id, priceDropThreshold}) => await User.updatePriceDropThreshold(id, priceDropThreshold),
-    onSuccess: () => { queryClient.invalidateQueries(['saved-companies', user?.id])},
-    onError: (error) => { console.error('Error updating price drop threshold:', error); },
+    mutationFn: async ({ id, priceDropThreshold }) =>
+      await User.updatePriceDropThreshold(id, priceDropThreshold),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["saved-companies", user?.id]);
+    },
+    onError: (error) => {
+      console.error("Error updating price drop threshold:", error);
+    },
   });
 
   const handleSubmit = (event, savedCompanyId) => {
@@ -41,7 +59,7 @@ export default function Watchlist() {
     if (priceDropThreshold && 0 <= priceDropThreshold <= 100) {
       updateThresholdMutation.mutate({
         id: savedCompanyId,
-        priceDropThreshold: parseFloat(priceDropThreshold)
+        priceDropThreshold: parseFloat(priceDropThreshold),
       });
     }
   };
@@ -112,11 +130,13 @@ export default function Watchlist() {
                       type="submit"
                       disabled={updateThresholdMutation.isPending}
                     >
-                      {updateThresholdMutation.isPending ? 'Updating...' : 'Submit'}
+                      {updateThresholdMutation.isPending
+                        ? "Updating..."
+                        : "Submit"}
                     </button>
                   </form>
                   {updateThresholdMutation.isError && (
-                    <p style={{ color: 'red' }}>
+                    <p style={{ color: "red" }}>
                       Failed to update threshold. Please try again.
                     </p>
                   )}

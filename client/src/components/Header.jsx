@@ -2,10 +2,12 @@ import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import { useContext } from "react";
+import { TrendingCompaniesContext } from "../contexts/TrendingCompaniesContext";
 import "../styles/Header.css";
 
 export default function Header() {
   const { user, setUser } = useContext(UserContext);
+  const { requestTrendingData } = useContext(TrendingCompaniesContext);
   const location = useLocation();
 
   const showHomeLink = () => {
@@ -42,6 +44,13 @@ export default function Header() {
         {showHomeLink()}
         <Link className="back-link" to="/watchlist">
           VIEW WATCHLIST
+        </Link>
+        <Link
+          onClick={requestTrendingData}
+          className="back-link"
+          to="/trending-companies"
+        >
+          VIEW TRENDING
         </Link>
       </div>
     </header>

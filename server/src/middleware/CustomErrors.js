@@ -6,27 +6,27 @@ class APIError extends Error {
   }
 }
 
-const AuthErrorType = Symbol('AuthError');
-const CompaniesErrorType = Symbol('CompaniesError');
-const UserErrorType = Symbol('UserError');
+const AuthErrorType = Symbol("AuthError");
+const CompaniesErrorType = Symbol("CompaniesError");
+const UserErrorType = Symbol("UserError");
 
 class AuthError extends APIError {
   constructor(message, status) {
-    super(message, status, 'AuthError');
+    super(message, status, "AuthError");
     this[AuthErrorType] = true;
   }
 }
 
 class CompaniesError extends APIError {
   constructor(message, status) {
-    super(message, status, 'CompaniesError');
+    super(message, status, "CompaniesError");
     this[CompaniesErrorType] = true;
   }
 }
 
 class UserError extends APIError {
   constructor(message, status) {
-    super(message, status, 'UserError');
+    super(message, status, "UserError");
     this[UserErrorType] = true;
   }
 }
@@ -35,4 +35,4 @@ module.exports = {
   AuthError,
   CompaniesError,
   UserError,
-}
+};
