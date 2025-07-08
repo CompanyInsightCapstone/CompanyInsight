@@ -2,7 +2,7 @@ const express = require("express");
 const database = require("../utilities/database");
 const cache = require("../utilities/cache");
 const router = express.Router();
-const { CompaniesError} = require("../middleware/CustomErrors");
+const { CompaniesError } = require("../middleware/CustomErrors");
 
 const BLOCK_SIZE = 4;
 const PAGE_SIZE = 20;
@@ -21,10 +21,10 @@ const ALPHA_VANTAGE_URLS = {
 
 const POLYGON_URLS = {
   OVERVIEW: (symbol) =>
-  `https://api.polygon.io/v3/reference/tickers/${symbol}?apiKey=${process.env.VITE_POLYGON_API_KEY}`,
+    `https://api.polygon.io/v3/reference/tickers/${symbol}?apiKey=${process.env.VITE_POLYGON_API_KEY}`,
 
   TIMESERIES: (symbol, multiplier, from, to, limit) =>
- `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/${multiplier}/${from}/${to}/limit=${limit}&apiKey=${process.env.VITE_POLYGON_API_KEY}`,
+    `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/${multiplier}/${from}/${to}/limit=${limit}&apiKey=${process.env.VITE_POLYGON_API_KEY}`,
 };
 
 /**
@@ -173,7 +173,9 @@ router.get("/api/companies/:id", async (req, res, next) => {
     const { symbol } = req.query;
 
     if (!id || !symbol) {
-      return next(new CompaniesError("Company ID and symbol are required", 400));
+      return next(
+        new CompaniesError("Company ID and symbol are required", 400),
+      );
     }
 
     const cacheKey = `(${id},${symbol})`;
@@ -185,7 +187,12 @@ router.get("/api/companies/:id", async (req, res, next) => {
       const response = await fetch(url);
 
       if (!response.ok) {
-        return next(new CompaniesError(`Failed to fetch company data: ${response.statusText}`, response.status));
+        return next(
+          new CompaniesError(
+            `Failed to fetch company data: ${response.statusText}`,
+            response.status,
+          ),
+        );
       }
 
       const data = await response.json();
@@ -202,23 +209,39 @@ router.get("/api/companies/:id", async (req, res, next) => {
  * Fetches historical stock price data from Polygon API with configurable parameters.
  * @route GET /api/companies/timeseries
  */
-router.get("/api/companies/timeseries",async (req, res, next) => {
+router.get("/api/companies/timeseries", async (req, res, next) => {
   try {
     const { companyId, companySymbol, from, to, multiplier, limit } = req.query;
 
     if (!companyId || !companySymbol || !from || !to) {
-      return next(new CompaniesError("Company ID, symbol, from date, and to date are required", 400));
+      return next(
+        new CompaniesError(
+          "Company ID, symbol, from date, and to date are required",
+          400,
+        ),
+      );
     }
 
     const cacheKey = `(${companyId},${companySymbol},${from},${to},${multiplier},${limit})`;
     if (cache.has(cacheKey)) {
       res.status(200).json({ data: cache.get(cacheKey), cacheHit: true });
     } else {
-      const url = POLYGON_URLS.TIMESERIES(companySymbol, multiplier, from, to, limit);
+      const url = POLYGON_URLS.TIMESERIES(
+        companySymbol,
+        multiplier,
+        from,
+        to,
+        limit,
+      );
       const response = await fetch(url);
 
       if (!response.ok) {
-        return next(new CompaniesError(`Failed to fetch time series data: ${response.statusText}`, response.status));
+        return next(
+          new CompaniesError(
+            `Failed to fetch time series data: ${response.statusText}`,
+            response.status,
+          ),
+        );
       }
 
       const data = await response.json();
@@ -228,6 +251,6 @@ router.get("/api/companies/timeseries",async (req, res, next) => {
   } catch (error) {
     next(new CompaniesError("Error retrieving time series data", 500));
   }
-})
+});
 
 module.exports = router;

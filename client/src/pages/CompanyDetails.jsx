@@ -13,7 +13,7 @@ export default function CompanyDetails() {
   const [companyDetails, setCompanyDetails] = useState(null);
 
   async function fetchCompanyDetails(companyId, symbol) {
-    const details = (await Companies.fetchCompanyDetails(companyId, symbol));
+    const details = await Companies.fetchCompanyDetails(companyId, symbol);
     setCompanyDetails(details);
   }
 

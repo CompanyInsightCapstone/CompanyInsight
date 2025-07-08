@@ -1,5 +1,5 @@
 const process = require("process");
-const { SUCCESS, FAILURE } = require("../utilities/constants");
+const { SUCCESS, FAILURE } = require("../../utilities/constants");
 
 class Publisher {
   /**

@@ -49,7 +49,12 @@ export const formatUrl = (endpoint, params = null, pathParam = null) => {
  * @param {Object} additionalOptions - Additional fetch options
  * @returns {Promise} Fetch promise
  */
-export const formatRequest = async (url, method = METHOD_ENUM.GET, data = null, additionalOptions = {}) => {
+export const formatRequest = async (
+  url,
+  method = METHOD_ENUM.GET,
+  data = null,
+  additionalOptions = {},
+) => {
   const requestOptions = {
     method,
     headers: {
@@ -60,8 +65,10 @@ export const formatRequest = async (url, method = METHOD_ENUM.GET, data = null, 
     ...additionalOptions,
   };
 
-
-  if (data && [METHOD_ENUM.POST, METHOD_ENUM.PUT, METHOD_ENUM.PATCH].includes(method)) {
+  if (
+    data &&
+    [METHOD_ENUM.POST, METHOD_ENUM.PUT, METHOD_ENUM.PATCH].includes(method)
+  ) {
     requestOptions.body = JSON.stringify(data);
   }
 

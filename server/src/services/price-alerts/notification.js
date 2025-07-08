@@ -1,9 +1,9 @@
-const database = require("../utilities/database");
-const cache = require("../utilities/cache");
+const database = require("../../utilities/database");
+const cache = require("../../utilities/cache");
 const { Publisher, PublisherQueue } = require("./publisher");
 const Subscriber = require("./subscriber");
 const Emailer = require("./emailer");
-const { SUCCESS, FAILURE } = require("../utilities/constants");
+const { SUCCESS, FAILURE } = require("../../utilities/constants");
 
 const formatEmailSubject = (symbol, percentage) =>
   `Company Insights: ${symbol} has changed by ${percentage}%`;
@@ -78,7 +78,7 @@ class StockPriceNotificationService {
     this.stageName = stageName;
     this.publisherStage = cache.redisModule.createClient();
     this.subscriberStage = cache.redisModule.createClient();
-    this.timeInterval = (30000 << 1) 
+    this.timeInterval = 30000 << 1;
     this.iteration = 0;
     this.emailer = new Emailer();
   }
@@ -122,7 +122,6 @@ class StockPriceNotificationService {
    */
   async refreshQueue() {
     try {
-
       const currentCompanies = await database.executeQuery(
         `SELECT DISTINCT "companyId", "companySymbol" FROM "Watchlist"`,
       );
@@ -172,7 +171,6 @@ class StockPriceNotificationService {
 
 const main = () => {
   const stageName = "StockPriceNotifications";
-  console.log(`Starting ${stageName}...`);
   const service = new StockPriceNotificationService(stageName);
   service.run();
 };

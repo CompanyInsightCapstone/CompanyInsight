@@ -1,4 +1,3 @@
-
 const database = require("./utilities/database");
 const process = require("process");
 const dotenv = require("dotenv");

@@ -1,9 +1,4 @@
-import {
-  API_ENDPOINTS,
-  formatRequest,
-  formatUrl,
-  METHOD_ENUM
-} from "./util";
+import { API_ENDPOINTS, formatRequest, formatUrl, METHOD_ENUM } from "./util";
 
 const User = {
   /**
@@ -11,7 +6,10 @@ const User = {
    * @returns {Promise} Response containing saved companies data
    */
   async getSavedCompanies() {
-    return await formatRequest(formatUrl(API_ENDPOINTS.USER_SAVED_COMPANIES), METHOD_ENUM.GET);
+    return await formatRequest(
+      formatUrl(API_ENDPOINTS.USER_SAVED_COMPANIES),
+      METHOD_ENUM.GET,
+    );
   },
 
   /**
@@ -21,7 +19,11 @@ const User = {
    * @returns {Promise} Response containing save operation result
    */
   async saveCompany(companyId, companySymbol) {
-    return await formatRequest(formatUrl(API_ENDPOINTS.USER_SAVED_COMPANIES), METHOD_ENUM.POST, { companyId, companySymbol });
+    return await formatRequest(
+      formatUrl(API_ENDPOINTS.USER_SAVED_COMPANIES),
+      METHOD_ENUM.POST,
+      { companyId, companySymbol },
+    );
   },
 
   /**
@@ -30,7 +32,10 @@ const User = {
    * @returns {Promise} Response containing unsave operation result
    */
   async unsaveCompany(companyId) {
-    return await formatRequest(formatUrl(API_ENDPOINTS.USER_SAVED_COMPANIES, { companyId }), METHOD_ENUM.DELETE);
+    return await formatRequest(
+      formatUrl(API_ENDPOINTS.USER_SAVED_COMPANIES, { companyId }),
+      METHOD_ENUM.DELETE,
+    );
   },
 
   /**
@@ -40,7 +45,11 @@ const User = {
    * @returns {Promise} Response containing update operation result
    */
   async updatePriceDropThreshold(id, priceDropThreshold) {
-    return await formatRequest(formatUrl(API_ENDPOINTS.USER_SAVED_COMPANIES, { id }), METHOD_ENUM.PATCH, { priceDropThreshold });
+    return await formatRequest(
+      formatUrl(API_ENDPOINTS.USER_SAVED_COMPANIES, { id }),
+      METHOD_ENUM.PATCH,
+      { priceDropThreshold },
+    );
   },
 };
 
