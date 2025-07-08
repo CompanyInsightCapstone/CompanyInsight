@@ -19,8 +19,6 @@ dotenv.config();
 
 const { redisClient } = require("./src/utilities/cache");
 
-redisClient.connect();
-
 const PORT = process.env.PORT || 3001;
 
 server.use(

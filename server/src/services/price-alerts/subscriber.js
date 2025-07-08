@@ -1,3 +1,5 @@
+const { SUCCESS, FAILURE } = require("../../utilities/constants");
+
 class Subscriber {
   constructor(subscriberStage) {
     this.subscriberStage = subscriberStage;
@@ -11,8 +13,13 @@ class Subscriber {
    */
   subscribe(stageName, decodedMsgCallback) {
     this.subscriberStage.subscribe(stageName, async (message) => {
-      const decodedMessage = JSON.parse(message);
-      decodedMsgCallback(decodedMessage);
+      try {
+        const decodedMessage = JSON.parse(message);
+        await decodedMsgCallback(decodedMessage);
+        return SUCCESS("Subscriber successfully processed incoming message");
+      } catch (error) {
+        return FAILURE("Subscriber failed to process incoming message", error);
+      }
     });
   }
 }
