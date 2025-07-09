@@ -1,12 +1,15 @@
-import { useContext, useRef } from "react";
+import { useContext } from "react";
 import { TrendingCompaniesContext } from "../contexts/TrendingCompaniesContext";
 import { CONNECTION_STATUS_ENUM } from "../constants";
+import TrendingCompanyChart from "./TrendingCompanyChart";
 import "../styles/List.css";
 import "../styles/Item.css";
+import "../styles/CandleStickGraph.css";
 
 export default function TrendingCompaniesList() {
-  const { trendingCompanies, connectionStatus, requestTrendingData } =
-    useContext(TrendingCompaniesContext);
+  const { trendingCompanies, connectionStatus } = useContext(
+    TrendingCompaniesContext,
+  );
 
   if (connectionStatus === CONNECTION_STATUS_ENUM.CONNECTING) {
     return (
@@ -44,17 +47,15 @@ export default function TrendingCompaniesList() {
 
   return (
     <>
-      <div className="list-typography">Top Trending Companies</div>
+      <div className="list-typography">Top 5 Trending Companies</div>
 
-      <div className="list-container">
-        {trendingCompanies.map((company, index) => (
-          <div key={`${company.id}-${index}`} className="list-item">
-            <div className="list-item-header">#{index + 1} Trending</div>
-            <div className="list-item-symbol">{company.symbol}</div>
-            <div className="list-item-typography">
-              Watched by {company.count} users
-            </div>
-          </div>
+      <div className="trending-charts-grid">
+        {trendingCompanies.slice(0, 5).map((company, index) => (
+          <TrendingCompanyChart
+            key={`${company.id}-${index}`}
+            company={company}
+            rank={index + 1}
+          />
         ))}
       </div>
     </>

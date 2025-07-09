@@ -3,6 +3,7 @@ const database = require("../utilities/database");
 const cache = require("../utilities/cache");
 const router = express.Router();
 const { CompaniesError } = require("../middleware/CustomErrors");
+const process = require("process");
 
 const BLOCK_SIZE = 4;
 const PAGE_SIZE = 20;
@@ -24,8 +25,63 @@ const POLYGON_URLS = {
     `https://api.polygon.io/v3/reference/tickers/${symbol}?apiKey=${process.env.VITE_POLYGON_API_KEY}`,
 
   TIMESERIES: (symbol, multiplier, from, to, limit) =>
-    `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/${multiplier}/${from}/${to}/limit=${limit}&apiKey=${process.env.VITE_POLYGON_API_KEY}`,
+    `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/${multiplier}/${from}/${to}?limit=${limit}&apiKey=${process.env.VITE_POLYGON_API_KEY}`,
 };
+
+const FINNHUB_URLS = {
+  OVERVIEW: (symbol) =>
+    `https://finnhub.io/api/v1/stock/profile2?symbol=${symbol}&token=${process.env.VITE_FINNHUB_API_KEY}`,
+
+  TIMESERIES: (symbol, resolution, from, to) =>
+    `https://finnhub.io/api/v1/stock/candle?symbol=${symbol}&resolution=${resolution}&from=${from}&to=${to}&token=${process.env.VITE_FINNHUB_API_KEY}`,
+};
+
+/**
+ * Retrieves time series data for a company with caching support.
+ * Fetches historical stock price data from Polygon API with configurable parameters.
+ * @route GET /api/companies/time-series
+ */
+router.get("/api/companies/time-series", async (req, res, next) => {
+  try {
+    const {
+      companyId,
+      companySymbol,
+      from,
+      to,
+      multiplier = "1/day",
+      limit = 120,
+    } = req.query;
+    const cacheKey = `(${companyId},${companySymbol},${from},${to},${multiplier},${limit})`;
+    const cachedData = await cache.get(cacheKey);
+    if (cachedData) {
+      res.status(200).json({ data: cachedData, cacheHit: true });
+    } else {
+      const url = POLYGON_URLS.TIMESERIES(
+        companySymbol,
+        multiplier,
+        from,
+        to,
+        limit,
+      );
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        return next(
+          new CompaniesError(
+            `Failed to fetch time series data: ${response.statusText}`,
+            response.status,
+          ),
+        );
+      }
+
+      const data = await response.json();
+      await cache.set(cacheKey, data);
+      res.status(200).json({ data, cacheHit: false });
+    }
+  } catch (error) {
+    next(new CompaniesError("Error retrieving time series data", 500));
+  }
+});
 
 /**
  * Retrieves paginated list of companies with block-based pagination.
@@ -201,55 +257,6 @@ router.get("/api/companies/:id", async (req, res, next) => {
     }
   } catch (error) {
     next(new CompaniesError("Error retrieving company details", 500));
-  }
-});
-
-/**
- * Retrieves time series data for a company with caching support.
- * Fetches historical stock price data from Polygon API with configurable parameters.
- * @route GET /api/companies/timeseries
- */
-router.get("/api/companies/timeseries", async (req, res, next) => {
-  try {
-    const { companyId, companySymbol, from, to, multiplier, limit } = req.query;
-
-    if (!companyId || !companySymbol || !from || !to) {
-      return next(
-        new CompaniesError(
-          "Company ID, symbol, from date, and to date are required",
-          400,
-        ),
-      );
-    }
-
-    const cacheKey = `(${companyId},${companySymbol},${from},${to},${multiplier},${limit})`;
-    if (cache.has(cacheKey)) {
-      res.status(200).json({ data: cache.get(cacheKey), cacheHit: true });
-    } else {
-      const url = POLYGON_URLS.TIMESERIES(
-        companySymbol,
-        multiplier,
-        from,
-        to,
-        limit,
-      );
-      const response = await fetch(url);
-
-      if (!response.ok) {
-        return next(
-          new CompaniesError(
-            `Failed to fetch time series data: ${response.statusText}`,
-            response.status,
-          ),
-        );
-      }
-
-      const data = await response.json();
-      cache.set(cacheKey, data);
-      res.status(200).json({ data, cacheHit: false });
-    }
-  } catch (error) {
-    next(new CompaniesError("Error retrieving time series data", 500));
   }
 });
 

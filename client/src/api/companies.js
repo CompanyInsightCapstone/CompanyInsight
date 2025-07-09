@@ -1,4 +1,3 @@
-import TrendingCompanies from "../pages/TrendingCompanies";
 import { API_ENDPOINTS, formatRequest, formatUrl, METHOD_ENUM } from "./util";
 
 const Companies = {
@@ -12,7 +11,7 @@ const Companies = {
       METHOD_ENUM.GET,
     );
   },
-
+ 
   /**
    * Fetches filtered companies with pagination
    * @param {number} pageNumber - the current page number
@@ -42,7 +41,39 @@ const Companies = {
     return response.data;
   },
 
-  async TrendingCompanies() {},
+  /**
+   * Fetches time series data for a specific company with configurable parameters
+   * @param {string|number} companyId - Company ID
+   * @param {string} companySymbol - Company symbol
+   * @param {string} from - Start date (YYYY-MM-DD format)
+   * @param {string} to - End date (YYYY-MM-DD format)
+   * @param {string} multiplier - Time span multiplier (default: "1/day")
+   * @param {number} limit - Maximum number of results (default: 120)
+   */
+  async fetchCompanyTimeSeries(
+    companyId,
+    companySymbol,
+    from = new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().slice(0, 10),
+    to = new Date().toISOString().slice(0, 10),
+    multiplier = "1/day",
+    limit = 120,
+  ) {
+    const params = {
+      companyId,
+      companySymbol,
+      from,
+      to,
+      multiplier,
+      limit,
+    };
+
+    const response = await formatRequest(
+      formatUrl(API_ENDPOINTS.COMPANY_TIME_SERIES, params),
+      METHOD_ENUM.GET,
+    );
+
+    return response;
+  },
 };
 
 export { Companies };

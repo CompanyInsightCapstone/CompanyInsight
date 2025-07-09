@@ -37,19 +37,3 @@
   margin: 15px 0;
   padding: 10px 15px;
 }
-
-/* Responsive styles */
-@media (max-width: 768px) {
-  .company-details {
-    margin: 15px;
-    padding: 20px;
-  }
-
-  .company-details-title {
-    font-size: 20px;
-  }
-
-  .company-details-info {
-    font-size: 14px;
-  }
-}

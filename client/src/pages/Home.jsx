@@ -11,7 +11,7 @@ export default function Home() {
     <>
       <Header />
       <main className="home-container">
-        <h2 className="home-title"> Catalog (WIP)</h2>
+        <h2 className="home-title">Company Catalog</h2>
         <CompanyListProvider>
           <Filter />
           <ListView />

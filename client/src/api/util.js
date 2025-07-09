@@ -16,6 +16,7 @@ export const API_ENDPOINTS = {
   COMPANIES: "/api/companies",
   COMPANIES_FILTER: "/api/companies/filter",
   COMPANY_DETAILS: "/api/companies",
+  COMPANY_TIME_SERIES: "/api/companies/time-series",
   USER_SAVED_COMPANIES: "/api/user/companies/save",
 };
 
