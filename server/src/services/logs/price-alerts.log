@@ -117,10 +117,530 @@
 2025-07-08 16:15:27 [INFO] SUCCESS: Email notification stage successful, emails sent=0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API):1
 2025-07-08 16:15:27 [INFO] SUCCESS: Message processed
 2025-07-08 16:16:55 [INFO] SUCCESS: Stock price polling
-2025-07-08 16:16:55 [INFO] SUCCESS: Message published to Redis
-2025-07-08 16:16:55 [INFO] SUCCESS: Email notification stage successful, emails sent=0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API):1
-2025-07-08 16:16:55 [INFO] SUCCESS: Message processed
-2025-07-08 16:17:54 [INFO] SUCCESS: Stock price polling
-2025-07-08 16:17:54 [INFO] SUCCESS: Message published to Redis
-2025-07-08 16:17:54 [INFO] SUCCESS: Email notification stage successful, emails sent=0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API):1
-2025-07-08 16:17:54 [INFO] SUCCESS: Message processed
+2025-07-09 08:20:31 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:20:31 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:20:31 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:20:31 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:21:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:21:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:21:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:21:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:22:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:22:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:22:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:22:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:23:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:23:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:23:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:23:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:24:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:24:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:24:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:25:34 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:25:34 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:25:34 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:25:34 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:26:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:26:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:26:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:26:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:27:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:27:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:27:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:27:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:28:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:28:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:28:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:28:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:29:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:29:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:29:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:29:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:30:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:30:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:30:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:30:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:31:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:31:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:31:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:31:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:32:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:32:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:32:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:32:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:33:31 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:33:31 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:33:31 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:33:31 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:34:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:34:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:34:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:34:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:35:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:35:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:35:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:35:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:36:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:36:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:36:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:36:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:37:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:37:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:37:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:37:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:38:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:38:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:38:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:38:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:39:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:39:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:39:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:39:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:40:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:40:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:40:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:40:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:41:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:41:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:41:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:42:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:42:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:42:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:42:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:43:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:43:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:43:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:43:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:44:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:44:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:44:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:44:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:45:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:45:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:45:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:45:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:46:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:46:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:46:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:46:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:47:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:47:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:47:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:47:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:48:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:48:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:48:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:48:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:49:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:49:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:49:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:49:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:50:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:50:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:50:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:50:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:51:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:51:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:51:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:51:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:52:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:52:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:52:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:52:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:53:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:53:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:53:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:53:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:54:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:54:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:54:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:54:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:55:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:55:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:55:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:55:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:56:31 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:56:31 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:56:31 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:56:31 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:57:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:57:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:57:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:57:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:58:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:58:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:58:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 08:59:30 [INFO] SUCCESS: Queue refreshed
+2025-07-09 08:59:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 08:59:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 08:59:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 08:59:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:00:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:00:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:00:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:00:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:01:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:01:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:01:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:01:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:02:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:02:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:02:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:02:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:03:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:03:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:03:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:03:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:04:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:04:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:04:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:04:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:05:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:05:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:05:31 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:05:31 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:06:30 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:06:30 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:06:30 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:06:30 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:11:01 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:11:01 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:11:01 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:11:01 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:12:04 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:12:04 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:12:04 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:12:04 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:13:03 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:13:03 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:13:03 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:13:03 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:14:01 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:14:01 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:14:01 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:14:01 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:15:04 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:15:04 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:15:04 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:16:11 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:16:11 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:16:11 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:16:11 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:17:11 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:17:11 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:17:11 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:17:11 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:18:07 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:18:07 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:18:07 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:18:07 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:19:03 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:19:03 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:19:03 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:19:03 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:20:06 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:20:06 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:20:06 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:20:06 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:21:01 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:21:01 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:21:01 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:21:01 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:22:09 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:22:09 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:22:09 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:22:09 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:23:04 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:23:04 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:23:04 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:23:04 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:24:11 [ERROR] FAILURE: Stock price polling failed - fetch failed
+2025-07-09 09:24:11 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:24:11 [ERROR] FAILURE: Email notification failed - Cannot read properties of undefined (reading 'c')
+2025-07-09 09:24:11 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:25:05 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:25:05 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:25:05 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:25:05 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:26:05 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:26:05 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:26:05 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:26:05 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:27:04 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:27:04 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:27:04 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:27:04 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:28:04 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:28:04 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:28:04 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:28:04 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:29:05 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:29:05 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:29:05 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:29:05 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:30:04 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:30:04 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:30:04 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:30:04 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:31:01 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:31:01 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:31:01 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:31:01 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:32:01 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:32:01 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:32:01 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:33:00 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:33:00 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:33:00 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:33:00 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:34:00 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:34:00 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:34:01 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:34:01 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:35:01 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:35:01 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:35:01 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:35:01 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:36:01 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:36:01 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:36:01 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:36:01 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:37:01 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:37:01 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:37:01 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:37:01 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:38:01 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:38:01 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:38:01 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:38:01 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:39:03 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:39:03 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:39:03 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:39:03 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:40:03 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:40:03 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:40:03 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:40:03 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:41:00 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:41:00 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:41:00 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:41:00 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:42:13 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:42:13 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:42:13 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:42:13 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:43:11 [ERROR] FAILURE: Stock price polling failed - fetch failed
+2025-07-09 09:43:11 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:43:11 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:43:11 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:44:14 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:44:14 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:44:15 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:44:15 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:47:02 [ERROR] FAILURE: Stock price polling failed - fetch failed
+2025-07-09 09:47:02 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:47:02 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:47:02 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:58:40 [INFO] SUCCESS: Queue refreshed
+2025-07-09 09:58:40 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:58:40 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:58:40 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:58:40 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 09:59:40 [INFO] SUCCESS: Stock price polling
+2025-07-09 09:59:40 [INFO] SUCCESS: Message published to Redis
+2025-07-09 09:59:40 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 09:59:40 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:00:40 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:00:40 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:00:40 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:00:40 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:01:40 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:01:40 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:01:40 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:02:40 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:02:40 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:02:40 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:02:40 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:03:40 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:03:40 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:03:40 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:03:40 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:04:40 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:04:40 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:04:40 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:04:40 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:05:40 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:05:40 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:05:40 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:05:40 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:10:37 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:10:37 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:10:37 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:10:37 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:11:36 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:11:36 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:11:36 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:11:36 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:12:36 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:12:36 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:12:36 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:12:36 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:13:36 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:13:36 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:13:36 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:13:36 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:14:36 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:14:36 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:14:36 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:14:36 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:15:36 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:15:36 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:15:36 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:15:36 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:16:36 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:16:36 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:16:36 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:16:36 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:17:41 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:17:41 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:17:41 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:17:41 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:18:41 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:18:41 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:18:41 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:18:41 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:19:39 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:19:39 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:19:39 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:19:39 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:20:36 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:20:36 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:20:36 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:20:36 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:21:36 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:21:36 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:21:36 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:21:36 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:24:19 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:24:19 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:24:19 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:24:19 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:28:25 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:28:25 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:28:25 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:29:24 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:29:24 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:29:25 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:29:25 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:30:24 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:30:24 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:30:24 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:30:24 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:31:24 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:31:24 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:31:24 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:31:24 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:32:24 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:32:24 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:32:24 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:32:24 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:33:24 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:33:24 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:33:24 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:33:24 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:34:24 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:34:24 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:34:24 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:34:24 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:35:24 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:35:24 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:35:24 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:35:24 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:36:24 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:36:24 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:36:24 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:36:24 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:37:24 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:37:24 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:37:24 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:37:24 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:38:24 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:38:24 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:38:24 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:38:24 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:38:40 [INFO] SUCCESS: Queue refreshed
+2025-07-09 10:39:24 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:39:24 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:39:24 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:39:24 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:40:24 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:40:24 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:40:24 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:40:24 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:41:24 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:41:24 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:41:24 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:41:24 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:42:24 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:42:24 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:42:24 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:42:24 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:43:24 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:43:24 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:43:24 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:43:24 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:44:24 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:44:24 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:44:24 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:44:24 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:45:24 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:45:24 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:45:24 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:45:24 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:46:24 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:46:24 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:46:24 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:47:24 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:47:24 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:47:24 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:47:24 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:48:24 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:48:24 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:48:24 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:48:24 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:49:24 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:49:24 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:49:24 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:49:24 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:50:24 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:50:24 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:50:24 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:50:24 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:51:24 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:51:24 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:51:24 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:51:24 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:52:24 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:52:24 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:52:24 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:52:24 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:53:24 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:53:24 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:53:24 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:53:24 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:54:24 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:54:24 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:54:24 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:54:24 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:55:24 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:55:24 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:55:24 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:55:24 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:56:24 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:56:24 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:56:24 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:56:24 [INFO] SUCCESS: Subscriber successfully processed incoming message
+2025-07-09 10:57:24 [INFO] SUCCESS: Stock price polling
+2025-07-09 10:57:24 [INFO] SUCCESS: Message published to Redis
+2025-07-09 10:57:24 [INFO] SUCCESS: Email notification stage successful, number of emails sent this round: 0, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): 1
+2025-07-09 10:57:24 [INFO] SUCCESS: Subscriber successfully processed incoming message

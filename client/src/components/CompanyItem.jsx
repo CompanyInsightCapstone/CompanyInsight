@@ -1,8 +1,7 @@
 import { useContext } from "react";
-import "../styles/Item.css";
 import { Link } from "react-router";
-
 import { UserContext } from "../contexts/UserContext";
+import "../styles/Item.css";
 
 export default function CompanyItem({ company }) {
   const { isCompanySaved, saveCompany, unsaveCompany } =

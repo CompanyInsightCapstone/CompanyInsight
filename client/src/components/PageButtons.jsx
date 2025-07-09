@@ -4,7 +4,7 @@ import "../styles/PageButtons.css";
 
 export default function PageButtons() {
   const { handleLoadPage, pageNumberUI } = useContext(CompanyListContext);
-  
+
   return (
     <div className="page-buttons-container">
       <button

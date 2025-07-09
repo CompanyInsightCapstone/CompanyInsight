@@ -7,7 +7,7 @@ import "../styles/AuthForm.css";
 
 export default function Signup() {
   const navigate = useNavigate();
-  
+
   const [formData, setFormData] = useState({
     username: "",
     password: "",

@@ -12,7 +12,7 @@ class TrendingSocket {
 
     this.ws.onopen = () => {
       this.callbacks.onStatusChange?.(CONNECTION_STATUS_ENUM.CONNECTED);
-      this.send({ type: WEBSOCKET_MESSAGE_TYPE.REQUEST_TRENDING_COMPANIES});
+      this.send({ type: WEBSOCKET_MESSAGE_TYPE.REQUEST_TRENDING_COMPANIES });
     };
 
     this.ws.onmessage = (event) => {
@@ -46,6 +46,5 @@ class TrendingSocket {
     this.ws?.close();
   }
 }
-
 
 export const trendingSocket = new TrendingSocket();

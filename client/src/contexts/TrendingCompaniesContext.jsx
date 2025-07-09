@@ -6,6 +6,10 @@ export const TrendingCompaniesContext = createContext();
 
 const TRENDING_COMPANIES_CACHE_KEY = "trending-companies-cache";
 
+const requestTrendingData = () => {
+  trendingSocket.requestTrendingData();
+};
+
 const getCachedTrendingCompanies = () => {
   const cached = localStorage.getItem(TRENDING_COMPANIES_CACHE_KEY);
   if (cached) {
@@ -15,23 +19,23 @@ const getCachedTrendingCompanies = () => {
       return parsed.data || [];
     }
   }
-  return [];
 };
 
 const setCachedTrendingCompanies = (data) => {
   const cacheData = {
-      data,
-      timestamp: Date.now(),
+    data,
+    timestamp: Date.now(),
   };
-  localStorage.setItem(
-    TRENDING_COMPANIES_CACHE_KEY,
-    JSON.stringify(cacheData),
-  );
+  localStorage.setItem(TRENDING_COMPANIES_CACHE_KEY, JSON.stringify(cacheData));
 };
 
 export default function TrendingCompaniesContextProvider({ children }) {
-  const [trendingCompanies, setTrendingCompanies] = useState(() => getCachedTrendingCompanies());
-  const [connectionStatus, setConnectionStatus] = useState(CONNECTION_STATUS_ENUM.CONNECTING);
+  const [trendingCompanies, setTrendingCompanies] = useState(
+    () => getCachedTrendingCompanies() || requestTrendingData(),
+  );
+  const [connectionStatus, setConnectionStatus] = useState(
+    CONNECTION_STATUS_ENUM.CONNECTING,
+  );
 
   useEffect(() => {
     trendingSocket.connect({
@@ -55,15 +59,7 @@ export default function TrendingCompaniesContextProvider({ children }) {
         setConnectionStatus(CONNECTION_STATUS_ENUM.ERROR);
       },
     });
-
-    return () => {
-      trendingSocket.disconnect();
-    };
   }, []);
-
-  const requestTrendingData = () => {
-    trendingSocket.requestTrendingData();
-  };
 
   return (
     <TrendingCompaniesContext.Provider
