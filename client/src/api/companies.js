@@ -11,7 +11,7 @@ const Companies = {
       METHOD_ENUM.GET,
     );
   },
- 
+
   /**
    * Fetches filtered companies with pagination
    * @param {number} pageNumber - the current page number
@@ -53,7 +53,9 @@ const Companies = {
   async fetchCompanyTimeSeries(
     companyId,
     companySymbol,
-    from = new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().slice(0, 10),
+    from = new Date(new Date().setDate(new Date().getDate() - 30))
+      .toISOString()
+      .slice(0, 10),
     to = new Date().toISOString().slice(0, 10),
     multiplier = "1/day",
     limit = 120,
@@ -73,6 +75,13 @@ const Companies = {
     );
 
     return response;
+  },
+  async downloadCompanyData(companyId, companySymbol) {
+    const response = await formatRequest(
+      formatUrl(API_ENDPOINTS.COMPANY_DOWNLOAD, { companySymbol, companyId }),
+      METHOD_ENUM.GET,
+    );
+    return response.data;
   },
 };
 

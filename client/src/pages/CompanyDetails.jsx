@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Companies } from "../api/companies";
 import "../styles/CompanyDetails.css";
 import CandleStickGraph from "../components/CandleStickGraph";
+import Download from "../components/Download";
 
 export default function CompanyDetails() {
   const params = useParams();
@@ -39,7 +40,6 @@ export default function CompanyDetails() {
           companyId,
           companySymbol,
         );
-        console.log("Time series response:", response);
         return response;
       },
       enabled: !!(companyId && companySymbol),
@@ -139,6 +139,7 @@ export default function CompanyDetails() {
               </p>
             </section>
           )}
+          <Download companyId={companyId} companySymbol={companySymbol} />
         </section>
       )}
 

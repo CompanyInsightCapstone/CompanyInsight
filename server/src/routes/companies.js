@@ -219,6 +219,68 @@ router.get("/api/companies/filter", async (req, res, next) => {
 });
 
 /**
+ * Sends json object of overview, time series, and stock profile.
+ * @route GET /api/companies/download
+ */
+router.get("/api/companies/download", async (req, res, next) => {
+  try {
+    const { companyId, companySymbol } = req.query;
+
+    if (!companyId || !companySymbol) {
+      return next(
+        new CompaniesError("Company ID and symbol are required", 400),
+      );
+    }
+
+    const company = await database.scan(database.TABLE_NAMES_ENUM.COMPANIES, {
+      where: { id: parseInt(companyId) },
+    });
+
+    if (!company || company.length === 0) {
+      return next(new CompaniesError("Company not found", 404));
+    }
+
+    const overviewResponse = await fetch(POLYGON_URLS.OVERVIEW(companySymbol));
+    const overview = await overviewResponse.json();
+
+    const timeseriesResponse = await fetch(
+      POLYGON_URLS.TIMESERIES(
+        companySymbol,
+        "1/day",
+        new Date(Date.now() - 7 * (24 * 60 * 60 * 1000))
+          .toISOString()
+          .slice(0, 10),
+        new Date().toISOString().slice(0, 10),
+        7,
+      ),
+    );
+    const timeseries = await timeseriesResponse.json();
+
+    const stockProfileResponse = await fetch(
+      FINNHUB_URLS.OVERVIEW(companySymbol),
+      {
+        method: "GET",
+        headers: {
+          "X-Finnhub-Token": process.env.VITE_FINNHUB_API_KEY,
+        },
+      },
+    );
+    const stockProfile = await stockProfileResponse.json();
+
+    const data = {
+      company: company[0],
+      overview: overview,
+      timeseries: timeseries,
+      stockProfile: stockProfile,
+    };
+
+    res.status(200).json({ data, cacheHit: false });
+  } catch (error) {
+    next(new CompaniesError("Error downloading company data", 500));
+  }
+});
+
+/**
  * Retrieves detailed company information by ID with caching support.
  * Fetches company overview data from Polygon API and caches results for performance.
  * @route GET /api/companies/:id
