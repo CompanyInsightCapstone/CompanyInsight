@@ -1,5 +1,11 @@
 const redis = require("redis");
 const dotenv = require("dotenv");
+const {
+  SUCCESS,
+  FAILURE,
+  WATCHLIST_ENUM,
+  LOGGER_ENUMS,
+} = require("./constants");
 dotenv.config();
 
 const redisClient = redis.createClient({
@@ -28,4 +34,27 @@ async function del(key) {
   return redisClient.del(key);
 }
 
-module.exports = { set, get, del, has, redisClient, redisModule: redis };
+async function eventEnqueue(queueName, data) {
+  const eventType = data.eventType;
+  try {
+    redisClient.rPush(queueName, JSON.stringify(data));
+    if (
+      eventType === WATCHLIST_ENUM.SAVE ||
+      eventType == WATCHLIST_ENUM.UNSAVE
+    ) {
+      SUCCESS(`Event ${eventType} enqueued`, LOGGER_ENUMS.TRENDING);
+    }
+  } catch (error) {
+    FAILURE(`Event ${eventType} failed to enqueue`, error, LOGGER_ENUMS.TRENDING);
+  }
+}
+
+module.exports = {
+  set,
+  get,
+  del,
+  has,
+  eventEnqueue,
+  redisClient,
+  redisModule: redis,
+};

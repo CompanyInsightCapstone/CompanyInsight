@@ -1,0 +1,6 @@
+{
+  "k": 5,
+  "refreshInterval": 30000,
+  "queueName": "WATCHLIST",
+  "topKName": "TOP_K_WATCHLIST"
+}

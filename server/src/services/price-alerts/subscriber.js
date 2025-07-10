@@ -1,4 +1,4 @@
-const { SUCCESS, FAILURE } = require("../../utilities/constants");
+const { SUCCESS, FAILURE, LOGGER_ENUMS } = require("../../utilities/constants");
 
 class Subscriber {
   constructor(subscriberStage) {
@@ -16,9 +16,16 @@ class Subscriber {
       try {
         const decodedMessage = JSON.parse(message);
         await decodedMsgCallback(decodedMessage);
-        return SUCCESS("Subscriber successfully processed incoming message");
+        return SUCCESS(
+          "Subscriber successfully processed incoming message",
+          LOGGER_ENUMS.PRICE_ALERTS,
+        );
       } catch (error) {
-        return FAILURE("Subscriber failed to process incoming message", error);
+        return FAILURE(
+          "Subscriber failed to process incoming message",
+          error,
+          LOGGER_ENUMS.PRICE_ALERTS,
+        );
       }
     });
   }

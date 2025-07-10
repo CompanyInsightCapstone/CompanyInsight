@@ -52,7 +52,7 @@ export default function TrendingCompaniesList() {
       <div className="trending-charts-grid">
         {trendingCompanies.slice(0, 5).map((company, index) => (
           <TrendingCompanyChart
-            key={`${company.id}-${index}`}
+            key={company.companyId}
             company={company}
             rank={index + 1}
           />
