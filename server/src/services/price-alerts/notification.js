@@ -94,6 +94,7 @@ class StockPriceNotificationService {
     this.publisherStage = cache.redisModule.createClient();
     this.subscriberStage = cache.redisModule.createClient();
     this.timeInterval = serviceParameters.timeInterval;
+    this.refreshQueueInterval = serviceParameters.refreshQueueInterval;
     this.iteration = 0;
     this.emailer = new Emailer();
   }
@@ -182,8 +183,8 @@ class StockPriceNotificationService {
       percentDropMailerCallback(this.emailer, decodedMsg),
     );
     this.queueRounds();
-    const FOURTY_MINUTES = 40000 * 60;
-    setInterval(() => this.refreshQueue(), FOURTY_MINUTES);
+
+    setInterval(() => this.refreshQueue(), this.refreshQueueInterval);
   }
 }
 
