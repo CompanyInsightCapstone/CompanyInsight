@@ -1,379 +1,147 @@
-2025-07-08 15:45:59 [ERROR] FAILURE: Failed to cache trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:45:59 [ERROR] FAILURE: Failed to send trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:45:59 [INFO] SUCCESS: Trending companies service started
-2025-07-08 15:45:59 [INFO] SUCCESS: Trending companies service started successfully
-2025-07-08 15:46:29 [ERROR] FAILURE: Failed to cache trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:46:29 [ERROR] FAILURE: Failed to send trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:46:59 [ERROR] FAILURE: Failed to cache trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:46:59 [ERROR] FAILURE: Failed to send trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:47:29 [ERROR] FAILURE: Failed to cache trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:47:29 [ERROR] FAILURE: Failed to send trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:47:59 [ERROR] FAILURE: Failed to cache trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:47:59 [ERROR] FAILURE: Failed to send trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:48:29 [ERROR] FAILURE: Failed to cache trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:48:29 [ERROR] FAILURE: Failed to send trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:48:59 [ERROR] FAILURE: Failed to cache trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:48:59 [ERROR] FAILURE: Failed to send trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:49:29 [ERROR] FAILURE: Failed to cache trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:49:29 [ERROR] FAILURE: Failed to send trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:49:59 [ERROR] FAILURE: Failed to cache trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:49:59 [ERROR] FAILURE: Failed to send trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:50:29 [ERROR] FAILURE: Failed to cache trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:50:29 [ERROR] FAILURE: Failed to send trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:50:59 [ERROR] FAILURE: Failed to cache trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:50:59 [ERROR] FAILURE: Failed to send trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:51:29 [ERROR] FAILURE: Failed to cache trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:51:29 [ERROR] FAILURE: Failed to send trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:51:59 [ERROR] FAILURE: Failed to cache trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:51:59 [ERROR] FAILURE: Failed to send trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:52:29 [ERROR] FAILURE: Failed to cache trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:52:29 [ERROR] FAILURE: Failed to send trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:52:59 [ERROR] FAILURE: Failed to cache trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:52:59 [ERROR] FAILURE: Failed to send trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:53:29 [ERROR] FAILURE: Failed to cache trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:53:29 [ERROR] FAILURE: Failed to send trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:53:59 [ERROR] FAILURE: Failed to cache trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:53:59 [ERROR] FAILURE: Failed to send trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:54:29 [ERROR] FAILURE: Failed to cache trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:54:29 [ERROR] FAILURE: Failed to send trending companies data - Do not know how to serialize a BigInt
-2025-07-08 15:55:13 [ERROR] FAILURE: Failed to cache trending companies data - The client is closed
-2025-07-08 15:55:13 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 15:55:13 [INFO] SUCCESS: Trending companies service started
-2025-07-08 15:55:43 [ERROR] FAILURE: Failed to cache trending companies data - The client is closed
-2025-07-08 15:55:43 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 15:56:13 [ERROR] FAILURE: Failed to cache trending companies data - The client is closed
-2025-07-08 15:56:13 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 15:56:43 [ERROR] FAILURE: Failed to cache trending companies data - The client is closed
-2025-07-08 15:56:43 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 15:57:13 [ERROR] FAILURE: Failed to cache trending companies data - The client is closed
-2025-07-08 15:57:13 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 15:57:43 [ERROR] FAILURE: Failed to cache trending companies data - The client is closed
-2025-07-08 15:57:43 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 15:58:13 [ERROR] FAILURE: Failed to cache trending companies data - The client is closed
-2025-07-08 15:58:13 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 15:58:34 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 15:58:34 [INFO] SUCCESS: Trending companies service started
-2025-07-08 15:59:04 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 15:59:11 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 15:59:11 [INFO] SUCCESS: Trending companies service started
-2025-07-08 15:59:12 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 15:59:13 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 15:59:14 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 15:59:15 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 15:59:16 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 15:59:17 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 15:59:18 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 15:59:19 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 15:59:20 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 15:59:21 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 15:59:22 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 15:59:23 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 15:59:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 16:00:26 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 16:00:26 [INFO] SUCCESS: Trending companies service started
-2025-07-08 16:00:56 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 16:01:26 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 16:01:56 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 16:02:26 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 16:02:56 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 16:03:26 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 16:03:56 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 16:04:26 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 16:04:56 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 16:05:26 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 16:05:56 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 16:06:26 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 16:06:56 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 16:07:26 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 16:07:56 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 16:08:26 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 16:08:56 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 16:09:26 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 16:09:56 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 16:10:26 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 16:14:26 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 16:14:26 [INFO] SUCCESS: Trending companies service started
-2025-07-08 16:14:56 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 16:15:26 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 16:15:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 16:15:54 [INFO] SUCCESS: Trending companies service started
-2025-07-08 16:16:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 16:16:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 16:17:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-08 16:17:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:19:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:19:30 [INFO] SUCCESS: Trending companies service started
-2025-07-09 08:20:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:20:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:21:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:21:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:22:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:22:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:23:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:23:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:24:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:24:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:25:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:25:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:26:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:26:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:27:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:27:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:28:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:28:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:29:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:29:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:30:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:30:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:31:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:31:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:32:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:32:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:33:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:33:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:34:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:34:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:35:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:35:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:36:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:36:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:37:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:37:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:38:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:38:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:39:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:39:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:40:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:40:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:41:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:41:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:42:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:42:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:43:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:43:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:44:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:44:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:45:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:45:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:46:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:46:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:47:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:47:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:48:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:48:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:49:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:49:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:50:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:50:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:51:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:51:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:52:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:52:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:53:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:53:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:54:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:54:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:55:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:55:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:56:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:56:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:57:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:57:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:58:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:58:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:59:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 08:59:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:00:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:00:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:01:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:01:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:02:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:02:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:03:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:03:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:04:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:04:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:05:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:05:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:06:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:06:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:07:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:10:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:10:00 [INFO] SUCCESS: Trending companies service started
-2025-07-09 09:10:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:11:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:11:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:12:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:12:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:13:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:13:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:14:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:14:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:15:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:15:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:16:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:16:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:17:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:17:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:18:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:18:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:19:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:19:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:20:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:20:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:21:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:21:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:22:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:22:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:23:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:23:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:24:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:24:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:25:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:25:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:26:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:26:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:27:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:27:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:28:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:28:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:29:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:29:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:30:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:30:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:31:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:31:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:32:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:32:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:33:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:33:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:34:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:34:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:35:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:35:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:36:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:36:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:37:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:37:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:38:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:38:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:39:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:39:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:40:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:40:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:41:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:41:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:42:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:42:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:43:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:43:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:44:00 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:44:30 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:47:02 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:58:10 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:58:40 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:59:10 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 09:59:40 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:00:10 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:00:40 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:01:10 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:01:40 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:02:10 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:02:40 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:03:10 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:03:40 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:04:10 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:04:40 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:05:10 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:05:40 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:10:05 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:10:35 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:11:05 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:11:35 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:12:05 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:12:35 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:13:05 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:13:35 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:14:05 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:14:35 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:15:05 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:15:35 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:16:05 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:16:35 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:17:05 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:17:35 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:18:05 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:18:35 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:19:05 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:19:35 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:20:05 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:20:35 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:21:05 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:21:35 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:22:59 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:24:19 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:24:49 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:28:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:28:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:29:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:29:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:30:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:30:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:31:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:31:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:32:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:32:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:33:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:33:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:34:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:34:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:35:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:35:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:36:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:36:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:37:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:37:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:38:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:38:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:39:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:39:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:40:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:40:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:41:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:41:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:42:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:42:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:43:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:43:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:44:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:44:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:45:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:45:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:46:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:46:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:47:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:47:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:48:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:48:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:49:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:49:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:50:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:50:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:51:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:51:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:52:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:52:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:53:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:53:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:54:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:54:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:55:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:55:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:56:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:56:54 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 10:57:24 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 14:06:15 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 14:06:15 [INFO] SUCCESS: Trending companies service started
-2025-07-09 14:06:45 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 14:07:15 [INFO] SUCCESS: Trending companies data sent
-2025-07-09 14:07:45 [INFO] SUCCESS: Trending companies data sent
+2025-07-10 14:47:01 [INFO] SUCCESS: Starting trending companies service
+2025-07-10 14:47:01 [INFO] SUCCESS: No events to process
+2025-07-10 14:47:01 [INFO] SUCCESS: Trending companies data sent
+2025-07-10 14:47:02 [INFO] SUCCESS: No events to process
+2025-07-10 14:47:02 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 14:47:03 [INFO] SUCCESS: No events to process
+2025-07-10 14:47:03 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 14:47:04 [INFO] SUCCESS: No events to process
+2025-07-10 14:47:04 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 14:47:05 [INFO] SUCCESS: No events to process
+2025-07-10 14:47:05 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 14:47:06 [INFO] SUCCESS: No events to process
+2025-07-10 14:47:06 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 14:47:07 [INFO] SUCCESS: No events to process
+2025-07-10 14:47:07 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 14:47:08 [INFO] SUCCESS: No events to process
+2025-07-10 14:47:08 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 14:47:09 [INFO] SUCCESS: No events to process
+2025-07-10 14:47:09 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 14:47:10 [INFO] SUCCESS: No events to process
+2025-07-10 14:47:10 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 14:47:11 [INFO] SUCCESS: No events to process
+2025-07-10 14:47:11 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 14:47:12 [INFO] SUCCESS: No events to process
+2025-07-10 14:47:12 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 14:47:13 [INFO] SUCCESS: No events to process
+2025-07-10 14:47:13 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 14:47:14 [INFO] SUCCESS: No events to process
+2025-07-10 14:47:14 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 14:48:35 [INFO] SUCCESS: Starting trending companies service
+2025-07-10 14:48:35 [INFO] SUCCESS: No events to process
+2025-07-10 14:48:35 [INFO] SUCCESS: Trending companies data sent
+2025-07-10 14:48:36 [INFO] SUCCESS: No events to process
+2025-07-10 14:48:36 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 14:48:37 [INFO] SUCCESS: No events to process
+2025-07-10 14:48:37 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 14:48:38 [INFO] SUCCESS: No events to process
+2025-07-10 14:48:38 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 14:48:39 [INFO] SUCCESS: No events to process
+2025-07-10 14:48:39 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 14:48:40 [INFO] SUCCESS: No events to process
+2025-07-10 14:48:40 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 14:48:41 [INFO] SUCCESS: No events to process
+2025-07-10 14:48:41 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 14:48:42 [INFO] SUCCESS: No events to process
+2025-07-10 14:48:42 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 14:48:46 [INFO] SUCCESS: Starting trending companies service
+2025-07-10 14:48:46 [INFO] SUCCESS: No events to process
+2025-07-10 14:48:46 [INFO] SUCCESS: Trending companies data sent
+2025-07-10 14:49:46 [INFO] SUCCESS: No events to process
+2025-07-10 14:49:46 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 14:49:55 [INFO] SUCCESS: Starting trending companies service
+2025-07-10 14:49:55 [INFO] SUCCESS: No events to process
+2025-07-10 14:49:55 [INFO] SUCCESS: Trending companies data sent
+2025-07-10 14:50:45 [INFO] SUCCESS: Starting trending companies service
+2025-07-10 14:50:45 [INFO] SUCCESS: No events to process
+2025-07-10 14:50:45 [INFO] SUCCESS: Trending companies data sent
+2025-07-10 14:51:45 [INFO] SUCCESS: No events to process
+2025-07-10 14:51:45 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 14:52:45 [INFO] SUCCESS: No events to process
+2025-07-10 14:52:45 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 14:53:45 [INFO] SUCCESS: No events to process
+2025-07-10 14:53:45 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 14:54:45 [INFO] SUCCESS: No events to process
+2025-07-10 14:54:45 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 14:55:45 [INFO] SUCCESS: No events to process
+2025-07-10 14:55:45 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 14:58:59 [INFO] SUCCESS: Starting trending companies service
+2025-07-10 14:58:59 [INFO] SUCCESS: No events to process
+2025-07-10 14:58:59 [INFO] SUCCESS: Trending companies data sent
+2025-07-10 14:59:59 [INFO] SUCCESS: No events to process
+2025-07-10 14:59:59 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 15:00:59 [INFO] SUCCESS: No events to process
+2025-07-10 15:00:59 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 15:01:59 [INFO] SUCCESS: No events to process
+2025-07-10 15:01:59 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 15:02:59 [INFO] SUCCESS: No events to process
+2025-07-10 15:02:59 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 15:03:59 [INFO] SUCCESS: No events to process
+2025-07-10 15:03:59 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 15:04:26 [INFO] SUCCESS: Starting trending companies service
+2025-07-10 15:04:26 [INFO] SUCCESS: No events to process
+2025-07-10 15:04:26 [INFO] SUCCESS: Trending companies data sent
+2025-07-10 15:04:28 [INFO] SUCCESS: Message received from client: {"type":"ping"}
+2025-07-10 15:05:35 [INFO] SUCCESS: Starting trending companies service
+2025-07-10 15:05:35 [INFO] SUCCESS: No events to process
+2025-07-10 15:05:35 [INFO] SUCCESS: Trending companies data sent
+2025-07-10 15:05:37 [INFO] SUCCESS: Message received from client: {"type":"ping"}
+2025-07-10 15:05:37 [INFO] SUCCESS: Message received from client: {"type":"request-trending-companies"}
+2025-07-10 15:05:37 [INFO] SUCCESS: Message received from client: {"type":"ping"}
+2025-07-10 15:05:37 [INFO] SUCCESS: Message received from client: {"type":"request-trending-companies"}
+2025-07-10 15:05:37 [INFO] SUCCESS: Message received from client: {"type":"ping"}
+2025-07-10 15:05:37 [INFO] SUCCESS: Message received from client: {"type":"request-trending-companies"}
+2025-07-10 15:05:37 [INFO] SUCCESS: Message received from client: {"type":"ping"}
+2025-07-10 15:05:37 [INFO] SUCCESS: Message received from client: {"type":"request-trending-companies"}
+2025-07-10 15:06:35 [INFO] SUCCESS: No events to process
+2025-07-10 15:06:35 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 15:07:35 [INFO] SUCCESS: No events to process
+2025-07-10 15:07:35 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 15:08:35 [INFO] SUCCESS: No events to process
+2025-07-10 15:08:35 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 15:08:49 [INFO] SUCCESS: Message received from client: {"type":"ping"}
+2025-07-10 15:08:49 [INFO] SUCCESS: Message received from client: {"type":"ping"}
+2025-07-10 15:08:49 [INFO] SUCCESS: Message received from client: {"type":"request-trending-companies"}
+2025-07-10 15:08:49 [INFO] SUCCESS: Message received from client: {"type":"request-trending-companies"}
+2025-07-10 15:08:51 [INFO] SUCCESS: Message received from client: {"type":"ping"}
+2025-07-10 15:08:51 [INFO] SUCCESS: Message received from client: {"type":"request-trending-companies"}
+2025-07-10 15:08:51 [INFO] SUCCESS: Message received from client: {"type":"ping"}
+2025-07-10 15:08:51 [INFO] SUCCESS: Message received from client: {"type":"request-trending-companies"}
+2025-07-10 15:09:35 [INFO] SUCCESS: No events to process
+2025-07-10 15:09:35 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 15:09:39 [INFO] SUCCESS: Event SAVE enqueued
+2025-07-10 15:09:41 [INFO] SUCCESS: Event UNSAVE enqueued
+2025-07-10 15:09:45 [INFO] SUCCESS: Message received from client: {"type":"ping"}
+2025-07-10 15:09:45 [INFO] SUCCESS: Message received from client: {"type":"request-trending-companies"}
+2025-07-10 15:09:45 [INFO] SUCCESS: Message received from client: {"type":"ping"}
+2025-07-10 15:09:45 [INFO] SUCCESS: Message received from client: {"type":"request-trending-companies"}
+2025-07-10 15:09:54 [INFO] SUCCESS: Event SAVE enqueued
+2025-07-10 15:09:55 [INFO] SUCCESS: Event SAVE enqueued
+2025-07-10 15:09:55 [INFO] SUCCESS: Event SAVE enqueued
+2025-07-10 15:09:57 [INFO] SUCCESS: Event UNSAVE enqueued
+2025-07-10 15:09:57 [INFO] SUCCESS: Event UNSAVE enqueued
+2025-07-10 15:09:58 [INFO] SUCCESS: Event UNSAVE enqueued
+2025-07-10 15:09:59 [INFO] SUCCESS: Event UNSAVE enqueued
+2025-07-10 15:10:03 [INFO] SUCCESS: Event SAVE enqueued
+2025-07-10 15:10:05 [INFO] SUCCESS: Message received from client: {"type":"ping"}
+2025-07-10 15:10:05 [INFO] SUCCESS: Message received from client: {"type":"request-trending-companies"}
+2025-07-10 15:10:05 [INFO] SUCCESS: Message received from client: {"type":"ping"}
+2025-07-10 15:10:05 [INFO] SUCCESS: Message received from client: {"type":"request-trending-companies"}
+2025-07-10 15:10:35 [INFO] SUCCESS: Successfully incremented count for companyId=10, symbol=AAPW
+2025-07-10 15:10:35 [INFO] SUCCESS: Successfully decremented count for companyId=5, symbol=AAPG
+2025-07-10 15:10:35 [INFO] SUCCESS: Successfully incremented count for companyId=14, symbol=AAT
+2025-07-10 15:10:35 [INFO] SUCCESS: Successfully incremented count for companyId=13, symbol=AARD
+2025-07-10 15:10:35 [INFO] SUCCESS: Successfully incremented count for companyId=12, symbol=AAPY
+2025-07-10 15:10:35 [INFO] SUCCESS: Successfully decremented count for companyId=1, symbol=AA
+2025-07-10 15:10:35 [INFO] SUCCESS: Successfully decremented count for companyId=2, symbol=AAP
+2025-07-10 15:10:35 [INFO] SUCCESS: Successfully decremented count for companyId=3, symbol=AAPB
+2025-07-10 15:10:35 [INFO] SUCCESS: Successfully decremented count for companyId=4, symbol=AAPD
+2025-07-10 15:10:35 [INFO] SUCCESS: Successfully incremented count for companyId=7, symbol=AAPL
+2025-07-10 15:10:35 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 15:10:35 [INFO] SUCCESS: Processed 10 events
+2025-07-10 15:11:35 [INFO] SUCCESS: No events to process
+2025-07-10 15:11:35 [INFO] SUCCESS: Trending companies data sent
+2025-07-10 15:12:35 [INFO] SUCCESS: No events to process
+2025-07-10 15:12:35 [INFO] SUCCESS: No changes in trending companies data, ending sending company
+2025-07-10 15:13:35 [INFO] SUCCESS: No events to process
+2025-07-10 15:13:35 [INFO] SUCCESS: No changes in trending companies data, ending sending company

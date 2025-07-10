@@ -3,12 +3,13 @@ import { Companies } from "../api/companies";
 import CandleStickGraph from "./CandleStickGraph";
 
 export default function TrendingCompanyChart({ company, rank }) {
+
   const { data: timeSeriesResponse, isLoading } = useQuery({
-    queryKey: ["trending-company-chart", company.id, company.symbol],
+    queryKey: ["trending-company-chart", company.companySymbol, company.companyId],
     queryFn: async () => {
       const response = await Companies.fetchCompanyTimeSeries(
-        company.id,
-        company.symbol,
+        company.companyId,
+        company.companySymbol,
         new Date(new Date().setDate(new Date().getDate() - 7))
           .toISOString()
           .slice(0, 10),
@@ -18,7 +19,7 @@ export default function TrendingCompanyChart({ company, rank }) {
       );
       return response;
     },
-    enabled: !!(company.id && company.symbol),
+    enabled: !!(company.companyId && company.companySymbol),
     refetchOnWindowFocus: false,
     staleTime: 10 * 60 * 1000,
   });
@@ -40,9 +41,9 @@ export default function TrendingCompanyChart({ company, rank }) {
   return (
     <div className="trending-chart-container">
       <h3>
-        #{rank} {company.symbol}
+        #{rank} {company.companySymbol}
       </h3>
-      <p>Watched by {company.count} users</p>
+      <p>Watched by {company.score} users</p>
 
       {isLoading && <div className="chart-loading">Loading chart...</div>}
 

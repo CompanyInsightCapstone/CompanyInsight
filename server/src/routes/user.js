@@ -3,7 +3,7 @@ const database = require("../utilities/database");
 const cache = require("../utilities/cache");
 const router = express.Router();
 const { UserError } = require("../middleware/CustomErrors");
-
+const { WATCHLIST_ENUM } = require("../utilities/constants");
 const process = require("process");
 
 /**
@@ -21,14 +21,14 @@ router.post("/api/user/companies/save", async (req, res, next) => {
       );
     }
 
-    const existingSave = await database.scan(database.TABLE_NAMES_ENUM.SAVED, {
+    let savedCompany = await database.scan(database.TABLE_NAMES_ENUM.SAVED, {
       where: {
         userId: userId,
         companyId: parseInt(companyId, 10),
       },
     });
 
-    if (existingSave) {
+    if (savedCompany) {
       return next(new UserError("Company already saved by this user", 409));
     }
 
@@ -47,14 +47,23 @@ router.post("/api/user/companies/save", async (req, res, next) => {
       prevPrice = 0.0;
     }
 
-    await database.createRecord(database.TABLE_NAMES_ENUM.SAVED, {
-      userId: userId,
-      companyId: parseInt(companyId, 10),
-      companySymbol: companySymbol,
-      percentChangeThreshold: percentChangeThreshold,
-      previousPrice: prevPrice,
-    });
+    savedCompany = await database.createRecord(
+      database.TABLE_NAMES_ENUM.SAVED,
+      {
+        userId: userId,
+        companyId: parseInt(companyId, 10),
+        companySymbol: companySymbol,
+        percentChangeThreshold: percentChangeThreshold,
+        previousPrice: prevPrice,
+      },
+    );
 
+    cache.eventEnqueue(WATCHLIST_ENUM.QUEUE_NAME, {
+      companyId: savedCompany.companyId,
+      companySymbol: savedCompany.companySymbol,
+      watchlistId: savedCompany.id,
+      eventType: WATCHLIST_ENUM.SAVE,
+    });
     res.status(200).json({ message: "Saved" });
   } catch (error) {
     next(new UserError("Error saving company", 500));
@@ -90,6 +99,14 @@ router.delete("/api/user/companies/save", async (req, res, next) => {
       database.TABLE_NAMES_ENUM.SAVED,
       savedCompany.id,
     );
+
+    cache.eventEnqueue(WATCHLIST_ENUM.QUEUE_NAME, {
+      companyId: savedCompany.companyId,
+      companySymbol: savedCompany.companySymbol,
+      watchlistId: savedCompany.id,
+      eventType: WATCHLIST_ENUM.UNSAVE,
+    });
+
     res.status(200).json({ message: "Unsaved" });
   } catch (error) {
     next(new UserError("Error removing saved company", 500));

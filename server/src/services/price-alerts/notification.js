@@ -3,7 +3,8 @@ const cache = require("../../utilities/cache");
 const { Publisher, PublisherQueue } = require("./publisher");
 const Subscriber = require("./subscriber");
 const Emailer = require("./emailer");
-const { SUCCESS, FAILURE } = require("../../utilities/constants");
+const { SUCCESS, FAILURE, LOGGER_ENUMS } = require("../../utilities/constants");
+const serviceParameters = require("../../services/price-alerts/config.json");
 
 const formatEmailSubject = (symbol, percentage) =>
   `Company Insights: ${symbol} has changed by ${percentage}%`;
@@ -26,28 +27,29 @@ const formatEmailBody = (symbol, percentage, prev, curr) =>
  */
 async function percentDropMailerCallback(emailer, decodedMessage) {
   try {
+    if (
+      !decodedMessage.data ||
+      decodedMessage.data.c === undefined ||
+      decodedMessage.data.c === null
+    ) {
+      return FAILURE(
+        "Email notification failed",
+        new Error("Missing or invalid stock price data"),
+      );
+    }
+
     const sqlQuery = `
       SELECT DISTINCT u.email, u.id as "userId", usc."percentChangeThreshold", usc."previousPrice" FROM "User" u
       JOIN "Watchlist" usc ON u.id = usc."userId"
       WHERE usc."companyId" = ${decodedMessage.companyId}
     `;
-    if (
-      decodedMessage.data.c === 0 &&
-      decodedMessage.data.d === null &&
-      decodedMessage.data.dp == null
-    ) {
-      return;
-    }
+
     const userMailingList = await database.executeQuery(sqlQuery);
     let emailsSent = 0;
     let emailsNotSent = 0;
 
     userMailingList.forEach(async (user) => {
-      if (
-        !decodedMessage.data ||
-        decodedMessage.data.c === undefined ||
-        decodedMessage.data.c === null
-      ) {
+      if (!user.previousPrice) {
         emailsNotSent++;
         return;
       }
@@ -75,9 +77,14 @@ async function percentDropMailerCallback(emailer, decodedMessage) {
     });
     return SUCCESS(
       `Email notification stage successful, number of emails sent this round: ${emailsSent}, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): ${emailsNotSent}`,
+      LOGGER_ENUMS.PRICE_ALERTS,
     );
   } catch (error) {
-    return FAILURE("Email notification failed", error);
+    return FAILURE(
+      "Email notification failed",
+      error,
+      LOGGER_ENUMS.PRICE_ALERTS,
+    );
   }
 }
 
@@ -86,7 +93,7 @@ class StockPriceNotificationService {
     this.stageName = stageName;
     this.publisherStage = cache.redisModule.createClient();
     this.subscriberStage = cache.redisModule.createClient();
-    this.timeInterval = 30000 << 1;
+    this.timeInterval = serviceParameters.timeInterval;
     this.iteration = 0;
     this.emailer = new Emailer();
   }
@@ -115,6 +122,9 @@ class StockPriceNotificationService {
   async queueRounds() {
     setInterval(async () => {
       const currentStageSpeaker = this.publishers.dequeue();
+      if (!currentStageSpeaker) {
+        return;
+      }
       const pollResult = await currentStageSpeaker.poll();
       const publishResult = await currentStageSpeaker.publish(
         this.publisherStage,
@@ -156,9 +166,9 @@ class StockPriceNotificationService {
           this.publishers.removeCompanyFromQueue(companyId);
         });
       }
-      return SUCCESS("Queue refreshed");
+      return SUCCESS("Queue refreshed", LOGGER_ENUMS.PRICE_ALERTS);
     } catch (error) {
-      return FAILURE("Queue refresh failed", error);
+      return FAILURE("Queue refresh failed", error, LOGGER_ENUMS.PRICE_ALERTS);
     }
   }
 

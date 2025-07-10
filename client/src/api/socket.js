@@ -1,50 +1,40 @@
-import { CONNECTION_STATUS_ENUM, WEBSOCKET_MESSAGE_TYPE } from "../constants";
+import { CONNECTION_STATUS_ENUM, WEBSOCKET_MESSAGE_TYPE, } from "../constants";
+const SOCKET_ADDRRESS = import.meta.env.VITE_WEBSOCKET_SERVER_ADDRESS
 
-class TrendingSocket {
-  constructor() {
-    this.ws = null;
-    this.callbacks = {};
-  }
+export class TrendingCompaniesWebsocket {
+  constructor(callbacks) {
+    this.callbacks = callbacks
+    this.connectionStatus = CONNECTION_STATUS_ENUM.DISCONNECTED;
+    this.socket = new WebSocket(SOCKET_ADDRRESS)
+    this.socket.onopen = () => {
+      this.connectionStatus = CONNECTION_STATUS_ENUM.CONNECTED;
+      this.callbacks.onStatusChange(this.connectionStatus)
+      this.socket.send(JSON.stringify({type: WEBSOCKET_MESSAGE_TYPE.PING}))
+      this.socket.send(JSON.stringify({type: WEBSOCKET_MESSAGE_TYPE.REQUEST_TRENDING_COMPANIES}))
+    }
 
-  connect(callbacks) {
-    this.callbacks = callbacks;
-    this.ws = new WebSocket(import.meta.env.VITE_WEBSOCKET_SERVER_ADDRESS);
+    this.socket.onclose = () => {
+      this.connectionStatus = CONNECTION_STATUS_ENUM.DISCONNECTED;
+      this.callbacks.onStatusChange(this.connectionStatus)
+    }
 
-    this.ws.onopen = () => {
-      this.callbacks.onStatusChange?.(CONNECTION_STATUS_ENUM.CONNECTED);
-      this.send({ type: WEBSOCKET_MESSAGE_TYPE.REQUEST_TRENDING_COMPANIES });
-    };
+    this.socket.onerror = () => {
+      this.connectionStatus = CONNECTION_STATUS_ENUM.ERROR;
+      this.callbacks.onStatusChange(this.connectionStatus)
+    }
 
-    this.ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.type === WEBSOCKET_MESSAGE_TYPE) {
-        this.callbacks.onDataReceived?.(data);
+    this.socket.onmessage = (event) => {
+      const message = JSON.parse(event.data)
+      switch (message.type) {
+        case WEBSOCKET_MESSAGE_TYPE.REQUEST_TRENDING_COMPANIES: case WEBSOCKET_MESSAGE_TYPE.TRENDING_COMPANIES:
+            this.callbacks.onTrendingCompanies(message.data)
+          break;
+        default:
       }
-    };
-
-    this.ws.onerror = () => {
-      this.callbacks.onStatusChange?.(CONNECTION_STATUS_ENUM.ERROR);
-    };
-
-    this.ws.onclose = () => {
-      this.callbacks.onStatusChange?.(CONNECTION_STATUS_ENUM.DISCONNECTED);
-      setTimeout(() => this.connect(this.callbacks), 5000);
-    };
-  }
-
-  send(message) {
-    if (this.ws?.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify(message));
+      if (message.type === WEBSOCKET_MESSAGE_TYPE.PING) {
+        this.socket.send(JSON.stringify({type: WEBSOCKET_MESSAGE_TYPE.PONG}))
+      }
     }
   }
 
-  requestTrendingData() {
-    this.send({ type: WEBSOCKET_MESSAGE_TYPE.REQUEST_TRENDING_COMPANIES });
-  }
-
-  disconnect() {
-    this.ws?.close();
-  }
 }
-
-export const trendingSocket = new TrendingSocket();

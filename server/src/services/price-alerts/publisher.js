@@ -1,5 +1,5 @@
 const process = require("process");
-const { SUCCESS, FAILURE } = require("../../utilities/constants");
+const { SUCCESS, FAILURE, LOGGER_ENUMS } = require("../../utilities/constants");
 
 class Publisher {
   /**
@@ -28,14 +28,32 @@ class Publisher {
           "X-Finnhub-Token": process.env.VITE_FINNHUB_API_KEY,
         },
       });
+
+      if (!result.ok) {
+        throw new Error(`API responded with status: ${result.status}`);
+      }
+
       const data = await result.json();
+      if (!data || data.c === undefined) {
+        throw new Error("Invalid data format received from API");
+      }
+
       this.eventData = {
         data: data,
         timestamp: Date.now(),
       };
-      return SUCCESS("Stock price polling");
+      return SUCCESS("Stock price polling", LOGGER_ENUMS.PRICE_ALERTS);
     } catch (error) {
-      return FAILURE("Stock price polling failed", error);
+      this.eventData = {
+        data: null,
+        error: error.message || "Unknown error",
+        timestamp: Date.now(),
+      };
+      return FAILURE(
+        "Stock price polling failed",
+        error,
+        LOGGER_ENUMS.PRICE_ALERTS,
+      );
     }
   }
 
@@ -54,9 +72,13 @@ class Publisher {
         ...this.eventData,
       };
       publisherStage.publish(stageName, JSON.stringify(eventMessage));
-      return SUCCESS("Message published to Redis");
+      return SUCCESS("Message published to Redis", LOGGER_ENUMS.PRICE_ALERTS);
     } catch (error) {
-      return FAILURE("Message publish failed", error);
+      return FAILURE(
+        "Message publish failed",
+        error,
+        LOGGER_ENUMS.PRICE_ALERTS,
+      );
     }
   }
 }
