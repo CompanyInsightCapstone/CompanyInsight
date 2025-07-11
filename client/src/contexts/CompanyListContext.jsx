@@ -67,11 +67,11 @@ export default function CompanyListProvider({ children }) {
           }
           break;
 
-        case 201:
+        case 404:
           setFetchStatus(FETCH_STATUS.NO_RESULTS);
           return [];
 
-        case 202:
+        case 444:
           setFetchStatus(FETCH_STATUS.NO_MORE_RESULTS);
           return [];
 

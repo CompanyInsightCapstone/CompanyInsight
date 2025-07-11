@@ -4,6 +4,9 @@
 server/.env
 client/.env
 
+# Log files
+logs/*.log
+
 # js third-party dependencies
 node_modules
 package-lock.json

@@ -84,11 +84,13 @@ router.post("/login", async (req, res, next) => {
     req.session.userId = user.id;
     req.session.username = user.username;
     req.session.email = user.email;
+    req.session.infiniteScroll = user.infiniteScroll;
 
     res.json({
       id: user.id,
       username: user.username,
       email: user.email,
+      infiniteScroll: user.infiniteScroll
     });
   } catch (error) {
     next(new AuthError("Something went wrong during login", 500));
