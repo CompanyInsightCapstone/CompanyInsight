@@ -15,6 +15,7 @@ const MAX_PAGE = (async () => {
   return Math.ceil(n / PAGE_SIZE);
 })();
 
+
 const ALPHA_VANTAGE_URLS = {
   OVERVIEW: (symbol) =>
     `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${symbol}&apikey=${process.env.VITE_ALPHA_VANTAGE_API_KEY}`,
@@ -91,6 +92,7 @@ router.get("/api/companies/time-series", async (req, res, next) => {
 router.get("/api/companies", async (req, res, next) => {
   try {
     const pageId = parseInt(req.query.page, 10);
+    const limit = parseInt(req.query.limit, 10);
     if (isNaN(pageId) || pageId < 0) {
       return next(new CompaniesError("Invalid page number", 400));
     }
@@ -99,7 +101,7 @@ router.get("/api/companies", async (req, res, next) => {
       return res.status(202).json({
         currentPageNumber: 0,
         pages: [],
-        pageSize: PAGE_SIZE,
+        pageSize: limit || PAGE_SIZE,
         blockSize: BLOCK_SIZE,
       });
     }
@@ -108,7 +110,7 @@ router.get("/api/companies", async (req, res, next) => {
       await database.getPages(
         database.TABLE_NAMES_ENUM.COMPANIES,
         pageId,
-        PAGE_SIZE,
+        limit || PAGE_SIZE,
         BLOCK_SIZE,
       ),
       [],
@@ -118,17 +120,17 @@ router.get("/api/companies", async (req, res, next) => {
 
     let statusCode = 200;
     if (pages.length === 0 && pageId !== 0) {
-      statusCode = 201;
+      statusCode = 404;
     }
 
     if (pages.length === 0) {
-      statusCode = 202;
+      statusCode = 444;
     }
 
     res.status(statusCode).json({
       currentPageNumber: pageId,
       pages: pages,
-      pageSize: PAGE_SIZE,
+      pageSize: limit || PAGE_SIZE,
       blockSize: BLOCK_SIZE,
     });
   } catch (error) {
@@ -143,7 +145,7 @@ router.get("/api/companies", async (req, res, next) => {
  */
 router.get("/api/companies/filter", async (req, res, next) => {
   try {
-    const { page, name, ipoDate, exchange, assetType, status } = req.query;
+    const { page, limit, name, ipoDate, exchange, assetType, status } = req.query;
     const where = {};
     if (name && name.trim() !== "") {
       where.name = {
@@ -195,22 +197,22 @@ router.get("/api/companies/filter", async (req, res, next) => {
     const companiesChunk = await database.getPages(
       database.TABLE_NAMES_ENUM.COMPANIES,
       pageId,
-      PAGE_SIZE,
+      limit || PAGE_SIZE,
       BLOCK_SIZE,
       clauses,
     );
-    const pages = database.paginate(companiesChunk, [], PAGE_SIZE, pageId);
+    const pages = database.paginate(companiesChunk, [], limit || PAGE_SIZE, pageId);
     let statusCode = 200;
     if (pages.length === 0 && pageId !== 0) {
-      statusCode = 201;
+      statusCode = 404;
     }
     if (pages.length === 0) {
-      statusCode = 202;
+      statusCode = 444;
     }
     res.status(statusCode).json({
       currentPageNumber: pageId,
       pages: pages,
-      pageSize: PAGE_SIZE,
+      pageSize: limit || PAGE_SIZE,
       blockSize: BLOCK_SIZE,
     });
   } catch (error) {

@@ -1,5 +1,13 @@
-import { createContext, useEffect, useState, useMemo } from "react";
+import { createContext, useState, useMemo } from "react";
+import {
+  API_ENDPOINTS,
+  formatUrl,
+  formatRequest,
+  METHOD_ENUM,
+} from "../api/util";
+import { useQuery } from "@tanstack/react-query";
 import User from "../api/user";
+
 
 export const UserContext = createContext();
 
@@ -11,6 +19,16 @@ const responseMessage = {
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [savedCompanies, setSavedCompanies] = useState([]);
+
+  const { data , error } = useQuery({
+    queryKey: ["check-session"],
+    queryFn: async () => {
+      return await formatRequest(formatUrl(API_ENDPOINTS.CHECK_SESSION), METHOD_ENUM.GET);
+    },
+    retry: 1,
+    refetchOnWindowFocus: false,
+    staleTime: 5 * 60 * 1000,
+  });
 
   const savedCompanyMap = useMemo(() => {
     const map = new Map();
@@ -58,12 +76,6 @@ export const UserProvider = ({ children }) => {
       return { error: error.message };
     }
   }
-
-  useEffect(() => {
-    if (user) {
-      fetchUserSavedCompanies();
-    }
-  }, [user]);
 
   return (
     <UserContext.Provider

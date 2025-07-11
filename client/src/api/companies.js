@@ -7,7 +7,7 @@ const Companies = {
    */
   async fetchPage(pageNumber) {
     return await formatRequest(
-      formatUrl(API_ENDPOINTS.COMPANIES, { page: pageNumber }),
+      formatUrl(API_ENDPOINTS.COMPANIES, { page: pageNumber, limit: 20 }),
       METHOD_ENUM.GET,
     );
   },
@@ -18,7 +18,7 @@ const Companies = {
    * @param {Map} filterRequest - Map containing filter parameters
    */
   async fetchFilteredPage(pageNumber, filterRequest) {
-    const params = { page: pageNumber };
+    const params = { page: pageNumber, limit: 20 };
     for (const [key, value] of filterRequest.entries()) {
       params[key] = value;
     }
