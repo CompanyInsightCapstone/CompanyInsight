@@ -15,21 +15,21 @@ const ProtectedTrendingCompanies = WithAuth(TrendingCompanies);
 
 export default function App() {
   return (
-      <Router>
-        <Routes>
-          <Route path="/" element={<ProtectedHome />} />
-          <Route path="/watchlist" element={<ProtectedWatchlist />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/trending-companies"
-            element={<ProtectedTrendingCompanies />}
-          />
-          <Route
-            path="/company-details/:id/:symbol"
-            element={<ProtectedDetails />}
-          />
-        </Routes>
-      </Router>
+    <Router>
+      <Routes>
+        <Route path="/" element={<ProtectedHome />} />
+        <Route path="/watchlist" element={<ProtectedWatchlist />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        <Route
+          path="/trending-companies"
+          element={<ProtectedTrendingCompanies />}
+        />
+        <Route
+          path="/company-details/:id/:symbol"
+          element={<ProtectedDetails />}
+        />
+      </Routes>
+    </Router>
   );
 }

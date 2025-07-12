@@ -21,6 +21,31 @@ export const API_ENDPOINTS = {
   USER_SAVED_COMPANIES: "/api/user/companies/save",
 };
 
+
+// https://stackoverflow.com/questions/75988682/debounce-in-javascript
+export function debounce(func, wait) {
+  let timeoutId = null;
+  return (...args) => {
+    window.clearTimeout(timeoutId);
+    timeoutId = window.setTimeout(() => {
+      func(...args);
+    }, wait);
+  };
+}
+
+
+export function throttle(func, wait) {
+  let lastTime = 0;
+  return (...args) => {
+    const now = Date.now();
+    if (now - lastTime >= wait) {
+      func(...args);
+      lastTime = now;
+    }
+  };
+}
+
+
 /**
  * Builds a complete URL with query parameters
  * @param {string} endpoint - The API endpoint from API_ENDPOINTS

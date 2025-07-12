@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Companies } from "../api/companies";
 import "../styles/CompanyDetails.css";
 import CandleStickGraph from "../components/CandleStickGraph";
-import Download from "../components/Download";
+import DownloadButton from "../components/DownloadButton";
 
 export default function CompanyDetails() {
   const params = useParams();
@@ -139,7 +139,7 @@ export default function CompanyDetails() {
               </p>
             </section>
           )}
-          <Download companyId={companyId} companySymbol={companySymbol} />
+          <DownloadButton companyId={companyId} companySymbol={companySymbol} />
         </section>
       )}
 

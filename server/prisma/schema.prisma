@@ -20,7 +20,7 @@ model User {
   username      String
   email         String
   password      String
-  infiniteScroll Boolean         @default(false)
+  infiniteScroll Boolean         @default(true)
   watchlist     Watchlist[]
   @@index([id], type: Hash)
 }

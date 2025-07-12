@@ -1,9 +1,14 @@
 import { useContext } from "react";
 import { CompanyListContext } from "../contexts/CompanyListContext";
+import { UserContext } from "../contexts/UserContext";
 import "../styles/PageButtons.css";
 
 export default function PageButtons() {
+  const { user } = useContext(UserContext);
   const { handleLoadPage, pageNumberUI } = useContext(CompanyListContext);
+  if (user.infiniteScroll) {
+    return;
+  }
 
   return (
     <div className="page-buttons-container">
