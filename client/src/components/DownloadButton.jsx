@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Companies } from "../api/companies";
 
-export default function Download({ companyId, companySymbol }) {
+export default function DownloadButton({ companyId, companySymbol }) {
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["download", companyId, companySymbol],
     queryFn: async () => {

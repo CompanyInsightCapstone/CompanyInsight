@@ -1,24 +1,8 @@
-import { useContext } from "react";
 import { Link } from "react-router";
 import { UserContext } from "../contexts/UserContext";
-import "../styles/Item.css";
+import WatchlistButton from "./WatchlistButton";
 
 export default function CompanyItem({ company }) {
-  const { isCompanySaved, saveCompany, unsaveCompany } =
-    useContext(UserContext);
-
-  const isSaved = isCompanySaved(company.id);
-
-  const handleSave = async (event) => {
-    event.preventDefault();
-    await saveCompany(company.id, company.symbol);
-  };
-
-  const handleUnsave = async (event) => {
-    event.preventDefault();
-    await unsaveCompany(company.id);
-  };
-
   return (
     <article className="list-item">
       <h2 className="list-item-header">{company.name} </h2>
@@ -34,16 +18,7 @@ export default function CompanyItem({ company }) {
       >
         View More Details
       </Link>
-
-      {!isSaved ? (
-        <button onClick={handleSave} className="list-item-link">
-          Add to Watchlist
-        </button>
-      ) : (
-        <button onClick={handleUnsave} className="list-item-link">
-          Remove from Watchlist
-        </button>
-      )}
+      <WatchlistButton companyId={company.id} companySymbol={company.symbol} />
     </article>
   );
 }

@@ -3,9 +3,12 @@ import { Companies } from "../api/companies";
 import CandleStickGraph from "./CandleStickGraph";
 
 export default function TrendingCompanyChart({ company, rank }) {
-
   const { data: timeSeriesResponse, isLoading } = useQuery({
-    queryKey: ["trending-company-chart", company.companySymbol, company.companyId],
+    queryKey: [
+      "trending-company-chart",
+      company.companySymbol,
+      company.companyId,
+    ],
     queryFn: async () => {
       const response = await Companies.fetchCompanyTimeSeries(
         company.companyId,

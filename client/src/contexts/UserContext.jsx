@@ -8,7 +8,6 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import User from "../api/user";
 
-
 export const UserContext = createContext();
 
 const responseMessage = {
@@ -20,14 +19,43 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [savedCompanies, setSavedCompanies] = useState([]);
 
-  const { data , error } = useQuery({
+  const { data } = useQuery({
     queryKey: ["check-session"],
     queryFn: async () => {
-      return await formatRequest(formatUrl(API_ENDPOINTS.CHECK_SESSION), METHOD_ENUM.GET);
+      const response = await formatRequest(
+        formatUrl(API_ENDPOINTS.CHECK_SESSION),
+        METHOD_ENUM.GET,
+      );
+      if (!response.ok) {
+        throw new Error("Failed to check session");
+      }
+      setUser(response);
+      return response;
     },
     retry: 1,
     refetchOnWindowFocus: false,
     staleTime: 5 * 60 * 1000,
+  });
+
+  const { savedData, isLoading, refetch } = useQuery({
+    queryKey: ["saved-companies", user?.id],
+    queryFn: async () => {
+      const response = await formatRequest(
+        formatUrl(API_ENDPOINTS.USER_SAVED_COMPANIES),
+        METHOD_ENUM.GET,
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch saved companies");
+      }
+
+      setSavedCompanies(response.savedCompanies);
+      return response.savedCompanies || [];
+    },
+    enabled: !!user?.id,
+    retry: 0,
+    refetchOnWindowFocus: false,
+    staleTime: 0,
   });
 
   const savedCompanyMap = useMemo(() => {
@@ -83,6 +111,7 @@ export const UserProvider = ({ children }) => {
         user,
         setUser,
         savedCompanies,
+        setSavedCompanies,
         isCompanySaved,
         saveCompany,
         unsaveCompany,
