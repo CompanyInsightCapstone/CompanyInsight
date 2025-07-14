@@ -176,4 +176,30 @@ router.patch("/api/user/companies/save", async (req, res, next) => {
   }
 });
 
+/**
+ * Update user settings
+ * @route PATCH /api/user/settings
+ */
+router.patch("/api/user/settings", async (req, res, next) => {
+  try {
+    const userId = req.session.userId;
+    if (!userId) {
+      return next(new UserError("userId is required", 400));
+    }
+
+    const { infiniteScroll } = req.body;
+
+    const newRecord = await database.updateRecord(
+      database.TABLE_NAMES_ENUM.USER,
+      userId,
+      { infiniteScroll: infiniteScroll }
+    );
+
+    res.status(200).json({ message: "Settings updated" });
+  } catch (error) {
+    console.error("Error updating user settings:", error);
+    next(new UserError("Error updating settings", 500));
+  }
+});
+
 module.exports = router;

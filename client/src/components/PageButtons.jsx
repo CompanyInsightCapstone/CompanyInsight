@@ -4,9 +4,9 @@ import { UserContext } from "../contexts/UserContext";
 import "../styles/PageButtons.css";
 
 export default function PageButtons() {
-  const { user } = useContext(UserContext);
+  const { userSettings } = useContext(UserContext);
   const { handleLoadPage, pageNumberUI } = useContext(CompanyListContext);
-  if (user.infiniteScroll) {
+  if (userSettings.infiniteScroll) {
     return;
   }
 

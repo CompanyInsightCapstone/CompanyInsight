@@ -51,6 +51,28 @@ const User = {
       { priceDropThreshold },
     );
   },
+
+  /**
+   * Gets the user settings
+   * @param {object} settings - The new settings
+   * */
+  async getUserSettings(userId) {
+    return await formatRequest(API_ENDPOINTS.USER_SETTINGS, METHOD_ENUM.GET, {
+      userId,
+    });
+  },
+
+  /**
+   * Updates the user settings
+   * @param {object} settings - The new settings
+   * */
+  async updateUserSettings(settings) {
+    return await formatRequest(
+      formatUrl(API_ENDPOINTS.USER_SETTINGS),
+      METHOD_ENUM.PATCH,
+      settings,
+    );
+  },
 };
 
 export default User;

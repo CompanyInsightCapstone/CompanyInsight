@@ -119,12 +119,13 @@ router.get("/api/companies", async (req, res, next) => {
     );
 
     let statusCode = 200;
-    if (pages.length === 0 && pageId !== 0) {
-      statusCode = 404;
-    }
 
     if (pages.length === 0) {
       statusCode = 444;
+    }
+
+    if (pages.length === 0 && pageId === 0) {
+      statusCode = 404;
     }
 
     res.status(statusCode).json({
@@ -203,12 +204,15 @@ router.get("/api/companies/filter", async (req, res, next) => {
     );
     const pages = database.paginate(companiesChunk, [], limit || PAGE_SIZE, pageId);
     let statusCode = 200;
-    if (pages.length === 0 && pageId !== 0) {
-      statusCode = 404;
-    }
+
     if (pages.length === 0) {
       statusCode = 444;
     }
+
+    if (pages.length === 0 && pageId === 0) {
+      statusCode = 404;
+    }
+
     res.status(statusCode).json({
       currentPageNumber: pageId,
       pages: pages,
