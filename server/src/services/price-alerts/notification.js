@@ -6,8 +6,7 @@ const Emailer = require("./emailer");
 const { SUCCESS, FAILURE, LOGGER_ENUMS } = require("../../utilities/constants");
 const serviceParameters = require("../../services/price-alerts/config.json");
 
-const formatEmailSubject = (symbol, percentage) =>
-  `Company Insights: ${symbol} has changed by ${percentage}%`;
+const formatEmailSubject = (symbol, percentage) => `Company Insights: ${symbol} has changed by ${percentage}%`;
 
 const formatEmailBody = (symbol, percentage, prev, curr) =>
   `
@@ -183,7 +182,6 @@ class StockPriceNotificationService {
       percentDropMailerCallback(this.emailer, decodedMsg),
     );
     this.queueRounds();
-
     setInterval(() => this.refreshQueue(), this.refreshQueueInterval);
   }
 }

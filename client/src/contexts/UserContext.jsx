@@ -17,6 +17,7 @@ const responseMessage = {
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [userSettings, setUserSettings] = useState({});
   const [savedCompanies, setSavedCompanies] = useState([]);
 
   const { data } = useQuery({
@@ -30,6 +31,9 @@ export const UserProvider = ({ children }) => {
         throw new Error("Failed to check session");
       }
       setUser(response);
+      setUserSettings({
+        infiniteScroll: response.infiniteScroll ?? true,
+      });
       return response;
     },
     retry: 1,
@@ -110,6 +114,8 @@ export const UserProvider = ({ children }) => {
       value={{
         user,
         setUser,
+        userSettings,
+        setUserSettings,
         savedCompanies,
         setSavedCompanies,
         isCompanySaved,

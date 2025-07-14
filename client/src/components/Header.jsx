@@ -52,6 +52,9 @@ export default function Header() {
         >
           VIEW TRENDING
         </Link>
+        <Link className="back-link" to="/user-settings">
+          VIEW SETTINGS
+        </Link>
       </div>
     </header>
   );

@@ -1,8 +1,9 @@
 import CompanyItem from "./CompanyItem";
 import { CompanyListContext } from "../contexts/CompanyListContext";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../contexts/UserContext";
 import { debounce, throttle } from "../api/util";
+import { FETCH_STATUS } from "../contexts/CompanyListContext";
 import "../styles/List.css";
 
 export default function ListView() {
@@ -13,14 +14,13 @@ export default function ListView() {
     handleLoadPage,
     FETCH_STATUS,
   } = useContext(CompanyListContext);
-  const { user } = useContext(UserContext);
+  const { userSettings } = useContext(UserContext);
+  const [fetchStatusLocal, setFetchStatusLocal] = useState(fetchStatus);
 
+  useEffect(() => {
+    setFetchStatusLocal(fetchStatus);
+  }, [fetchStatus]);
 
-  const handleScroll = (event) => {
-    if (Math.ceil(window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 400) {
-      handleLoadPage();
-    }
-  };
 
   const NO_RESULTS = (
     <section className="list-container">
@@ -40,10 +40,13 @@ export default function ListView() {
     </section>
   );
 
+
   const LOADING = (
+    <>
     <section className="list-container">
       <p className="list-loading">Loading companies...</p>
     </section>
+    </>
   );
 
   const ERROR = (
@@ -57,48 +60,81 @@ export default function ListView() {
     </section>
   );
 
+  const debouncedLoadPage = debounce(handleLoadPage, 300);
+
+  function infinteScroll(event) {
+    const currentHeight = Math.floor(
+      window.innerHeight + window.scrollY || window.pageYOffset,
+    );
+    const heightThreshold =
+      Math.max(
+        document.documentElement.scrollHeight,
+        document.body.scrollHeight,
+      ) -
+      window.innerHeight * 0.45;
+    const isPageEnd = currentHeight >= heightThreshold;
+    if (
+      isPageEnd &&
+      fetchStatusLocal !== FETCH_STATUS.LOADING &&
+      fetchStatusLocal !== FETCH_STATUS.NO_MORE_RESULTS
+    ) {
+      debouncedLoadPage();
+    }
+  }
+
+  const handleScroll = throttle(infinteScroll, 100);
+
   useEffect(() => {
-    if (user.infiniteScroll) {
-      window.addEventListener("scroll", handleScroll);
+    if (userSettings.infiniteScroll) {
+      window.addEventListener("scroll", handleScroll, { passive: true });
       return () => window.removeEventListener("scroll", handleScroll);
     }
-  }, []);
+  }, [userSettings.infiniteScroll]);
 
-  const renderListContent = () => {
-    if (user.infiniteScroll) {
-      return (
-        <>
-        <section className="list-container">
-        {companiesList.map((elm) => {
-          return <CompanyItem key={elm.id} company={elm} />
-    })}
-      </section>
-      {fetchStatus.LOADING && LOADING}
-      {fetchStatus.NO_MORE_RESULTS && NO_MORE_RESULTS}
+    return (
+      <>
+        {userSettings.infiniteScroll ? (
+          <>
+            {fetchStatusLocal === FETCH_STATUS.ERROR && (ERROR)}
+            {fetchStatusLocal === FETCH_STATUS.NO_RESULTS && (
+             NO_RESULTS
+            )}
+            {companiesList.length > 0 && (
+              <section className="list-container">
+                {companiesList.map((elm) => (
+                  <CompanyItem key={elm.id} company={elm} />
+                ))}
+              </section>
+            )}
+
+            {(fetchStatusLocal === FETCH_STATUS.LOADING ||
+              fetchStatusLocal === FETCH_STATUS.IDLE) && (LOADING)}
+
+            {fetchStatusLocal=== FETCH_STATUS.NO_MORE_RESULTS && (
+              NO_MORE_RESULTS
+            )}
+          </>
+        ) : (
+          <>
+            {fetchStatusLocal === FETCH_STATUS.ERROR && (
+              ERROR
+            )}
+            {fetchStatusLocal === FETCH_STATUS.NO_RESULTS && (
+              NO_MORE_RESULTS
+            )}
+            {fetchStatusLocal === FETCH_STATUS.NO_MORE_RESULTS && (
+             NO_MORE_RESULTS
+            )}
+            {fetchStatusLocal === FETCH_STATUS.LOADING && LOADING}
+            {fetchStatusLocal === FETCH_STATUS.SUCCESS && companiesList.length > 0 && (
+              <section className="list-container">
+                {companiesList.map((elm) => (
+                  <CompanyItem key={elm.id} company={elm} />
+                ))}
+              </section>
+            )}
+          </>
+        )}
       </>
-      )
-    } else {
-      switch (fetchStatus) {
-        case FETCH_STATUS.NO_MORE_RESULTS:
-          return NO_MORE_RESULTS;
-        case FETCH_STATUS.NO_RESULTS:
-          return NO_RESULTS;
-        case FETCH_STATUS.ERROR:
-          return ERROR;
-        case FETCH_STATUS.SUCCESS:
-          return (
-            <section className="list-container">
-              {companiesList.map((elm) => (
-                <CompanyItem key={elm.id} company={elm} />
-              ))}
-            </section>
-          );
-        case FETCH_STATUS.LOADING:
-        default:
-          return LOADING;
-      }
-    }
-  };
-
-  return renderListContent();
-}
+    );
+  }

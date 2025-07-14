@@ -109,7 +109,7 @@ router.get("/check-session", async (req, res, next) => {
   try {
     const user = await database.scan(database.TABLE_NAMES_ENUM.USER, {
       where: { id: req.session.userId },
-      select: { username: true, email: true, infiniteScroll: true, password: false },
+      select: { username: true, email: true, password: false, infiniteScroll: true },
     });
     res.json({
       id: req.session.userId,

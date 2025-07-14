@@ -54,6 +54,10 @@ const sessionValidation = (req, res, next) => {
 server.use(sessionValidation);
 
 server.use(companiesRouter);
+server.use((req, res, next) => {
+  console.log(req)
+  next()
+});
 server.use(userRouter);
 
 server.use((err, req, res, next) => {

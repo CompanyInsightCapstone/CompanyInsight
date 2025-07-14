@@ -19,8 +19,8 @@ export const API_ENDPOINTS = {
   COMPANY_DOWNLOAD: "/api/companies/download",
   COMPANY_TIME_SERIES: "/api/companies/time-series",
   USER_SAVED_COMPANIES: "/api/user/companies/save",
+  USER_SETTINGS: "/api/user/settings",
 };
-
 
 // https://stackoverflow.com/questions/75988682/debounce-in-javascript
 export function debounce(func, wait) {
@@ -33,7 +33,6 @@ export function debounce(func, wait) {
   };
 }
 
-
 export function throttle(func, wait) {
   let lastTime = 0;
   return (...args) => {
@@ -44,7 +43,6 @@ export function throttle(func, wait) {
     }
   };
 }
-
 
 /**
  * Builds a complete URL with query parameters

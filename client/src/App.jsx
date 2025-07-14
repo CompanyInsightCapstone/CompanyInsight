@@ -7,11 +7,13 @@ import CompanyDetails from "./pages/CompanyDetails";
 import Home from "./pages/Home";
 import Watchlist from "./pages/Watchlist";
 import TrendingCompanies from "./pages/TrendingCompanies";
+import UserSettings from "./pages/UserSettings";
 
 const ProtectedHome = WithAuth(Home);
 const ProtectedDetails = WithAuth(CompanyDetails);
 const ProtectedWatchlist = WithAuth(Watchlist);
 const ProtectedTrendingCompanies = WithAuth(TrendingCompanies);
+const ProtectedUserSettings = WithAuth(UserSettings);
 
 export default function App() {
   return (
@@ -29,6 +31,7 @@ export default function App() {
           path="/company-details/:id/:symbol"
           element={<ProtectedDetails />}
         />
+        <Route path="/user-settings" element={<ProtectedUserSettings />} />
       </Routes>
     </Router>
   );
