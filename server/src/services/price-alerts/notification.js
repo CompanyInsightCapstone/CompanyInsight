@@ -6,7 +6,8 @@ const Emailer = require("./lib/emailer");
 const { SUCCESS, FAILURE, LOGGER_TYPE } = require("../../utilities/constants");
 const serviceParameters = require("./config.json");
 
-const formatEmailSubject = (symbol, percentage) => `Company Insights: ${symbol} has changed by ${percentage}%`;
+const formatEmailSubject = (symbol, percentage) =>
+  `Company Insights: ${symbol} has changed by ${percentage}%`;
 
 const formatEmailBody = (symbol, percentage, prev, curr) =>
   `
@@ -43,8 +44,11 @@ async function percentDropMailerCallback(emailer, decodedMessage) {
       WHERE usc."companyId" = $1
     `;
 
-    const mailingParams = [ decodedMessage.companyId]
-    const userMailingList = await database.executeQuery(mailingQuery,mailingParams);
+    const mailingParams = [decodedMessage.companyId];
+    const userMailingList = await database.executeQuery(
+      mailingQuery,
+      mailingParams,
+    );
     let emailsSent = 0;
     let emailsNotSent = 0;
 
@@ -72,9 +76,13 @@ async function percentDropMailerCallback(emailer, decodedMessage) {
       );
       emailsSent++;
 
-      const updateQuery =  `UPDATE "Watchlist" SET "previousPrice" = $1 WHERE "companyId" = $2 AND "userId" = '$3'`
-      const updateParams = [decodedMessage.data.c, decodedMessage.companyId, user.userId];
-      await database.executeQuery(updateQuery, updateParams)
+      const updateQuery = `UPDATE "Watchlist" SET "previousPrice" = $1 WHERE "companyId" = $2 AND "userId" = '$3'`;
+      const updateParams = [
+        decodedMessage.data.c,
+        decodedMessage.companyId,
+        user.userId,
+      ];
+      await database.executeQuery(updateQuery, updateParams);
     });
     return SUCCESS(
       `Email notification stage successful, number of emails sent this round: ${emailsSent}, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): ${emailsNotSent}`,
@@ -128,10 +136,7 @@ class StockPriceNotificationService {
         return;
       }
       await currentStageSpeaker.poll();
-      await currentStageSpeaker.publish(
-        this.publisherStage,
-        this.stageName,
-      );
+      await currentStageSpeaker.publish(this.publisherStage, this.stageName);
       this.publishers.enqueue(currentStageSpeaker);
     }, this.timeInterval);
   }

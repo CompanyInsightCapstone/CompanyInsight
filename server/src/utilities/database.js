@@ -4,8 +4,8 @@ const prisma = new PrismaClient();
 const TABLE_NAMES_TYPE = {
   USER: "user",
   COMPANIES: "company",
-  SAVED: "Watchlist"
-}
+  SAVED: "Watchlist",
+};
 
 /**
  * Format the table name to the prisma model name

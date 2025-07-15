@@ -34,27 +34,11 @@ async function del(key) {
   return redisClient.del(key);
 }
 
-async function eventEnqueue(queueName, data) {
-  const eventType = data.eventType;
-  try {
-    redisClient.rPush(queueName, JSON.stringify(data));
-    if (
-      eventType === WATCHLIST_TYPE.SAVE ||
-      eventType == WATCHLIST_TYPE.UNSAVE
-    ) {
-      SUCCESS(`Event ${eventType} enqueued`, LOGGER_TYPE.TRENDING);
-    }
-  } catch (error) {
-    FAILURE(`Event ${eventType} failed to enqueue`, error, LOGGER_TYPE.TRENDING);
-  }
-}
-
 module.exports = {
   set,
   get,
   del,
   has,
-  eventEnqueue,
   redisClient,
   redisModule: redis,
 };

@@ -1,9 +1,13 @@
 const ws = require("ws");
-const { WEBSOCKET_MESSAGE_TYPE, SUCCESS, LOGGER_TYPE} = require("../../../utilities/constants");
+const {
+  WEBSOCKET_MESSAGE_TYPE,
+  SUCCESS,
+  LOGGER_TYPE,
+} = require("../../../utilities/constants");
 
 class Websocket {
-  constructor(port,callbacks) {
-    this.callbacks = callbacks
+  constructor(port, callbacks) {
+    this.callbacks = callbacks;
     this.server = new ws.WebSocketServer({
       port: port,
       perMessageDeflate: {
@@ -39,7 +43,9 @@ class Websocket {
         const message = JSON.parse(data);
         switch (message.type) {
           case WEBSOCKET_MESSAGE_TYPE.REQUEST_TRENDING_COMPANIES:
-            client.send(JSON.stringify(this.callbacks.onTrendingCompaniesRequest()))
+            client.send(
+              JSON.stringify(this.callbacks.onTrendingCompaniesRequest()),
+            );
             break;
           case WEBSOCKET_MESSAGE_TYPE.PING:
             client.send(JSON.stringify({ type: WEBSOCKET_MESSAGE_TYPE.PONG }));

@@ -1,16 +1,22 @@
 const express = require("express");
 const database = require("../utilities/database");
-const cache = require("../utilities/RedisClient");
 const router = express.Router();
 const { UserError } = require("../middleware/CustomErrors");
-const { WATCHLIST_TYPE, LOGGER_TYPE} = require("../utilities/constants");
-const QueueService  = require("../utilities/QueueService");
+const { WATCHLIST_TYPE, LOGGER_TYPE } = require("../utilities/constants");
+const QueueService = require("../utilities/QueueService");
 const process = require("process");
-const queueName = "WATCHLIST"
+const queueName = "WATCHLIST";
 
-
-const savesQueueService = new QueueService(queueName, WATCHLIST_TYPE.SAVE,  LOGGER_TYPE.TRENDING);
-const unsavesQueueService = new QueueService(queueName, WATCHLIST_TYPE.UNSAVE, LOGGER_TYPE.TRENDING);
+const savesQueueService = new QueueService(
+  queueName,
+  WATCHLIST_TYPE.SAVE,
+  LOGGER_TYPE.TRENDING,
+);
+const unsavesQueueService = new QueueService(
+  queueName,
+  WATCHLIST_TYPE.UNSAVE,
+  LOGGER_TYPE.TRENDING,
+);
 
 /**
  * Saves a company to the user's saved companies list.
@@ -64,14 +70,13 @@ router.post("/api/user/companies/save", async (req, res, next) => {
       },
     );
 
-
-    const eventData =  {
+    const eventData = {
       companyId: savedCompany.companyId,
       companySymbol: savedCompany.companySymbol,
       watchlistId: savedCompany.id,
-    }
+    };
 
-    savesQueueService.eventEnqueue(eventData)
+    savesQueueService.eventEnqueue(eventData);
 
     res.status(200).json({ message: "Saved" });
   } catch (error) {
@@ -109,13 +114,13 @@ router.delete("/api/user/companies/save", async (req, res, next) => {
       savedCompany.id,
     );
 
-    const eventData =  {
+    const eventData = {
       companyId: savedCompany.companyId,
       companySymbol: savedCompany.companySymbol,
       watchlistId: savedCompany.id,
-    }
+    };
 
-    unsavesQueueService.eventEnqueue(eventData)
+    unsavesQueueService.eventEnqueue(eventData);
     res.status(200).json({ message: "Unsaved" });
   } catch (error) {
     next(new UserError("Error removing saved company", 500));
@@ -201,7 +206,7 @@ router.patch("/api/user/settings", async (req, res, next) => {
     const newRecord = await database.updateRecord(
       database.TABLE_NAMES_TYPE.USER,
       userId,
-      { infiniteScroll: infiniteScroll }
+      { infiniteScroll: infiniteScroll },
     );
 
     res.status(200).json({ message: "Settings updated" });

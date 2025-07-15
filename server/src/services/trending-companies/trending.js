@@ -5,14 +5,13 @@ const {
   SUCCESS,
   FAILURE,
   LOGGER_TYPE,
-  WEBSOCKET_MESSAGE_TYPE
+  WEBSOCKET_MESSAGE_TYPE,
 } = require("../../utilities/constants");
 const serviceParameters = require("./config.json");
 
 const collectionEquality = (c1, c2) => {
   return JSON.stringify(c1) === JSON.stringify(c2);
-}
-
+};
 
 class TrendingCompaniesService {
   constructor() {
@@ -28,35 +27,44 @@ class TrendingCompaniesService {
           data: this.heavyHitters,
           timestamp: new Date().toISOString(),
         };
-        return eventMessage
-      }
-    }
+        return eventMessage;
+      },
+    };
     this.socket = new Websocket(
-      process.env.VITE_TRENDING_COMPANIES_WEBSOCKET_PORT || 8081, this.callbacks
+      process.env.VITE_TRENDING_COMPANIES_WEBSOCKET_PORT || 8081,
+      this.callbacks,
     );
-    this.socket.receiveMessages()
+    this.socket.receiveMessages();
   }
 
   async send() {
     try {
-      const result = await cache.redisClient.zRangeWithScores(this.topKName, 0, this.k - 1, { REV: true });
+      const result = await cache.redisClient.zRangeWithScores(
+        this.topKName,
+        0,
+        this.k - 1,
+        { REV: true },
+      );
       const candidates = result.map((item) => {
-          const decodedJson = JSON.parse(item.value);
-          const { companySymbol, companyId } = decodedJson;
-          return { companySymbol, companyId, score: item.score };
+        const decodedJson = JSON.parse(item.value);
+        const { companySymbol, companyId } = decodedJson;
+        return { companySymbol, companyId, score: item.score };
       });
 
       if (collectionEquality(this.heavyHitters, candidates)) {
-        return SUCCESS("No changes in trending companies data, ending sending company", LOGGER_TYPE.TRENDING);
+        return SUCCESS(
+          "No changes in trending companies data, ending sending company",
+          LOGGER_TYPE.TRENDING,
+        );
       }
       this.heavyHitters = candidates;
       const eventMessage = {
-          type: WEBSOCKET_MESSAGE_TYPE.TRENDING_COMPANIES,
-          data: candidates,
-          timestamp: new Date().toISOString(),
+        type: WEBSOCKET_MESSAGE_TYPE.TRENDING_COMPANIES,
+        data: candidates,
+        timestamp: new Date().toISOString(),
       };
       this.socket.sendMessage(eventMessage);
-      return  SUCCESS("Trending companies data sent", LOGGER_TYPE.TRENDING);
+      return SUCCESS("Trending companies data sent", LOGGER_TYPE.TRENDING);
     } catch (error) {
       return FAILURE(
         "Failed to send trending companies data",
@@ -65,7 +73,6 @@ class TrendingCompaniesService {
       );
     }
   }
-
 
   async update() {
     try {
@@ -87,7 +94,11 @@ class TrendingCompaniesService {
               );
               break;
             case "UNSAVE":
-              await cache.redisClient.zIncrBy(this.topKName, -1, companyJsonKey);
+              await cache.redisClient.zIncrBy(
+                this.topKName,
+                -1,
+                companyJsonKey,
+              );
               await cache.redisClient
                 .zScore(this.topKName, companyJsonKey)
                 .then((score) => {
@@ -118,10 +129,7 @@ class TrendingCompaniesService {
       });
 
       await cache.redisClient.lTrim(this.queueName, events.length, -1);
-      SUCCESS(
-        `Processed ${events.length} events`,
-        LOGGER_TYPE.TRENDING,
-      );
+      SUCCESS(`Processed ${events.length} events`, LOGGER_TYPE.TRENDING);
     } catch (error) {
       return FAILURE(
         "Failed to update trending data",

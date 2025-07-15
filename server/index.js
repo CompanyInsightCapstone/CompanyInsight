@@ -55,8 +55,8 @@ server.use(sessionValidation);
 
 server.use(companiesRouter);
 server.use((req, res, next) => {
-  console.log(req)
-  next()
+  console.log(req);
+  next();
 });
 server.use(userRouter);
 

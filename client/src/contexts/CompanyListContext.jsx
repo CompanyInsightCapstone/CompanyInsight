@@ -14,7 +14,6 @@ export const FETCH_STATUS = {
 export const CompanyListContext = createContext();
 
 export default function CompanyListProvider({ children }) {
-
   const { user, userSettings } = useContext(UserContext);
   const [companiesList, setCompaniesList] = useState([]);
   const [pageNumberUI, setPageNumberUI] = useState(0);
@@ -28,9 +27,6 @@ export default function CompanyListProvider({ children }) {
   const [filteredCompaniesPageNumber, setFilteredCompaniesPageNumber] =
     useState(0);
   const [filterRequest, setFilterRequest] = useState(null);
-
-
-
 
   async function fetchPaginatedData(
     fetchFn,
@@ -56,7 +52,7 @@ export default function CompanyListProvider({ children }) {
             const currentPageEntries = data.pages.find(
               (page) => page.pageNumber === specificPageNumber,
             )?.pageEntries;
-            setFetchStatus(FETCH_STATUS.SUCCESS)
+            setFetchStatus(FETCH_STATUS.SUCCESS);
             return currentPageEntries;
           }
           break;
@@ -107,7 +103,6 @@ export default function CompanyListProvider({ children }) {
           }
         }
         setCompaniesList(flattenedPageTable || []);
-
       } else {
         setCompaniesList(entries || []);
       }
@@ -122,7 +117,6 @@ export default function CompanyListProvider({ children }) {
           setCompaniesPageTable,
         );
         companiesPageTable.set(companiesPageNumber, entries);
-
       }
       if (userSettings.infiniteScroll) {
         const flattenedPageTable = [];
@@ -135,7 +129,6 @@ export default function CompanyListProvider({ children }) {
           }
         }
         setCompaniesList(flattenedPageTable || []);
-
       } else {
         setCompaniesList(entries || []);
       }
@@ -151,7 +144,7 @@ export default function CompanyListProvider({ children }) {
   }, [companiesPageNumber, filteredCompaniesPageNumber, filterRequest]);
 
   function handleLoadPage(event, jumpPageNumber) {
-    setFetchStatus(FETCH_STATUS.LOADING)
+    setFetchStatus(FETCH_STATUS.LOADING);
     const setPageNumberType = !filterRequest
       ? setCompaniesPageNumber
       : setFilteredCompaniesPageNumber;
@@ -177,7 +170,7 @@ export default function CompanyListProvider({ children }) {
 
   const handleNewFilterRequest = (newFilterRequest) => {
     setCompaniesList([]);
-    setFetchStatus(FETCH_STATUS.LOADING)
+    setFetchStatus(FETCH_STATUS.LOADING);
     setFilteredCompaniesPageTable(new Map());
     setFilteredCompaniesPageNumber(0);
     setPageNumberUI(0);

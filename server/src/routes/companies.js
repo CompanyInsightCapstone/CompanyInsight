@@ -15,7 +15,6 @@ const MAX_PAGE = (async () => {
   return Math.ceil(n / PAGE_SIZE);
 })();
 
-
 const ALPHA_VANTAGE_URLS = {
   OVERVIEW: (symbol) =>
     `https://www.alphavantage.co/query?function=OVERVIEW&symbol=${symbol}&apikey=${process.env.VITE_ALPHA_VANTAGE_API_KEY}`,
@@ -146,7 +145,8 @@ router.get("/api/companies", async (req, res, next) => {
  */
 router.get("/api/companies/filter", async (req, res, next) => {
   try {
-    const { page, limit, name, ipoDate, exchange, assetType, status } = req.query;
+    const { page, limit, name, ipoDate, exchange, assetType, status } =
+      req.query;
     const where = {};
     if (name && name.trim() !== "") {
       where.name = {
@@ -202,7 +202,12 @@ router.get("/api/companies/filter", async (req, res, next) => {
       BLOCK_SIZE,
       clauses,
     );
-    const pages = database.paginate(companiesChunk, [], limit || PAGE_SIZE, pageId);
+    const pages = database.paginate(
+      companiesChunk,
+      [],
+      limit || PAGE_SIZE,
+      pageId,
+    );
     let statusCode = 200;
 
     if (pages.length === 0) {
@@ -243,27 +248,28 @@ router.get("/api/companies/download", async (req, res, next) => {
         where: { id: parseInt(companyId) },
       }),
       await (await fetch(POLYGON_URLS.OVERVIEW(companySymbol))).json(),
-      await (await fetch(
-        POLYGON_URLS.TIMESERIES(
-          companySymbol,
-          "1/day",
-          new Date(Date.now() - 7 * (24 * 60 * 60 * 1000))
-            .toISOString()
-            .slice(0, 10),
-          new Date().toISOString().slice(0, 10),
-          7,
-        ),
-      )).json(),
-      await (await fetch(
-        FINNHUB_URLS.OVERVIEW(companySymbol),
-        {
+      await (
+        await fetch(
+          POLYGON_URLS.TIMESERIES(
+            companySymbol,
+            "1/day",
+            new Date(Date.now() - 7 * (24 * 60 * 60 * 1000))
+              .toISOString()
+              .slice(0, 10),
+            new Date().toISOString().slice(0, 10),
+            7,
+          ),
+        )
+      ).json(),
+      await (
+        await fetch(FINNHUB_URLS.OVERVIEW(companySymbol), {
           method: "GET",
           headers: {
             "X-Finnhub-Token": process.env.VITE_FINNHUB_API_KEY,
           },
-        },
-      )).json(),
-    ])
+        })
+      ).json(),
+    ]);
 
     if (!company || company.length === 0) {
       return next(new CompaniesError("Company not found", 404));
@@ -276,7 +282,7 @@ router.get("/api/companies/download", async (req, res, next) => {
       stockProfile: stockProfile,
     };
 
-    res.status(200).json({ data});
+    res.status(200).json({ data });
   } catch (error) {
     next(new CompaniesError("Error downloading company data", 500));
   }

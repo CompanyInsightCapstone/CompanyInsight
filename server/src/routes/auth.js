@@ -90,7 +90,7 @@ router.post("/login", async (req, res, next) => {
       id: user.id,
       username: user.username,
       email: user.email,
-      infiniteScroll: user.infiniteScroll
+      infiniteScroll: user.infiniteScroll,
     });
   } catch (error) {
     next(new AuthError("Something went wrong during login", 500));
@@ -109,13 +109,18 @@ router.get("/check-session", async (req, res, next) => {
   try {
     const user = await database.scan(database.TABLE_NAMES_TYPE.USER, {
       where: { id: req.session.userId },
-      select: { username: true, email: true, password: false, infiniteScroll: true },
+      select: {
+        username: true,
+        email: true,
+        password: false,
+        infiniteScroll: true,
+      },
     });
     res.json({
       id: req.session.userId,
       username: user.username,
       email: user.email,
-      infiniteScroll: user.infiniteScroll
+      infiniteScroll: user.infiniteScroll,
     });
   } catch (error) {
     next(new AuthError("Error fetching user session data", 500));

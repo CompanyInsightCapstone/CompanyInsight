@@ -74,11 +74,7 @@ class Publisher {
       publisherStage.publish(stageName, JSON.stringify(eventMessage));
       return SUCCESS("Message published to Redis", LOGGER_TYPE.PRICE_ALERTS);
     } catch (error) {
-      return FAILURE(
-        "Message publish failed",
-        error,
-        LOGGER_TYPE.PRICE_ALERTS,
-      );
+      return FAILURE("Message publish failed", error, LOGGER_TYPE.PRICE_ALERTS);
     }
   }
 }

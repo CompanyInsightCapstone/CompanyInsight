@@ -41,7 +41,9 @@ class Emailer {
       if (error) {
         return FAILURE("Email send failed", error);
       } else {
-        return SUCCESS(`Email sent successfully, INFORMATION:${JSON.stringify(info)}`);
+        return SUCCESS(
+          `Email sent successfully, INFORMATION:${JSON.stringify(info)}`,
+        );
       }
     });
   }
