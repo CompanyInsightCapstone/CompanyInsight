@@ -1,12 +1,11 @@
 const { priceAlertsLogger, trendingLogger } = require("./logger");
 
-const LOGGER_ENUMS = {
+const LOGGER_TYPE = {
   PRICE_ALERTS: "price-alerts",
   TRENDING: "trending",
 };
 
-const WATCHLIST_ENUM = {
-  QUEUE_NAME: "WATCHLIST",
+const WATCHLIST_TYPE = {
   SAVE: "SAVE",
   UNSAVE: "UNSAVE",
 };
@@ -19,15 +18,15 @@ const WEBSOCKET_MESSAGE_TYPE = {
 };
 
 const matchLogger = (service) => {
-  if (service == LOGGER_ENUMS.PRICE_ALERTS) {
+  if (service == LOGGER_TYPE.PRICE_ALERTS) {
     return priceAlertsLogger;
   }
-  if (service == LOGGER_ENUMS.TRENDING) {
+  if (service == LOGGER_TYPE.TRENDING) {
     return trendingLogger;
   }
 };
 
-const SUCCESS = (operation, service = LOGGER_ENUMS.PRICE_ALERTS) => {
+const SUCCESS = (operation, service = LOGGER_TYPE.PRICE_ALERTS) => {
   const logger = matchLogger(service);
   if (!logger) {
     return;
@@ -39,7 +38,7 @@ const SUCCESS = (operation, service = LOGGER_ENUMS.PRICE_ALERTS) => {
 const FAILURE = (
   operation,
   error = null,
-  service = LOGGER_ENUMS.PRICE_ALERTS,
+  service = LOGGER_TYPE.PRICE_ALERTS,
 ) => {
   const logger = matchLogger(service);
   if (!logger) {
@@ -53,7 +52,7 @@ const FAILURE = (
 module.exports = {
   SUCCESS,
   FAILURE,
-  LOGGER_ENUMS,
-  WATCHLIST_ENUM,
+  LOGGER_TYPE,
+  WATCHLIST_TYPE,
   WEBSOCKET_MESSAGE_TYPE,
 };

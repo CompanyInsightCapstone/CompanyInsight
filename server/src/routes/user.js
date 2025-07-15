@@ -1,10 +1,22 @@
 const express = require("express");
 const database = require("../utilities/database");
-const cache = require("../utilities/cache");
 const router = express.Router();
 const { UserError } = require("../middleware/CustomErrors");
-const { WATCHLIST_ENUM } = require("../utilities/constants");
+const { WATCHLIST_TYPE, LOGGER_TYPE } = require("../utilities/constants");
+const QueueService = require("../utilities/QueueService");
 const process = require("process");
+const queueName = "WATCHLIST";
+
+const savesQueueService = new QueueService(
+  queueName,
+  WATCHLIST_TYPE.SAVE,
+  LOGGER_TYPE.TRENDING,
+);
+const unsavesQueueService = new QueueService(
+  queueName,
+  WATCHLIST_TYPE.UNSAVE,
+  LOGGER_TYPE.TRENDING,
+);
 
 /**
  * Saves a company to the user's saved companies list.
@@ -21,7 +33,7 @@ router.post("/api/user/companies/save", async (req, res, next) => {
       );
     }
 
-    let savedCompany = await database.scan(database.TABLE_NAMES_ENUM.SAVED, {
+    let savedCompany = await database.scan(database.TABLE_NAMES_TYPE.SAVED, {
       where: {
         userId: userId,
         companyId: parseInt(companyId, 10),
@@ -48,7 +60,7 @@ router.post("/api/user/companies/save", async (req, res, next) => {
     }
 
     savedCompany = await database.createRecord(
-      database.TABLE_NAMES_ENUM.SAVED,
+      database.TABLE_NAMES_TYPE.SAVED,
       {
         userId: userId,
         companyId: parseInt(companyId, 10),
@@ -58,12 +70,14 @@ router.post("/api/user/companies/save", async (req, res, next) => {
       },
     );
 
-    cache.eventEnqueue(WATCHLIST_ENUM.QUEUE_NAME, {
+    const eventData = {
       companyId: savedCompany.companyId,
       companySymbol: savedCompany.companySymbol,
       watchlistId: savedCompany.id,
-      eventType: WATCHLIST_ENUM.SAVE,
-    });
+    };
+
+    savesQueueService.eventEnqueue(eventData);
+
     res.status(200).json({ message: "Saved" });
   } catch (error) {
     next(new UserError("Error saving company", 500));
@@ -84,7 +98,7 @@ router.delete("/api/user/companies/save", async (req, res, next) => {
       return next(new UserError("userId and companyId are required", 400));
     }
 
-    const savedCompany = await database.scan(database.TABLE_NAMES_ENUM.SAVED, {
+    const savedCompany = await database.scan(database.TABLE_NAMES_TYPE.SAVED, {
       where: {
         userId: userId,
         companyId: parseInt(companyId, 10),
@@ -96,17 +110,17 @@ router.delete("/api/user/companies/save", async (req, res, next) => {
     }
 
     await database.deleteRecord(
-      database.TABLE_NAMES_ENUM.SAVED,
+      database.TABLE_NAMES_TYPE.SAVED,
       savedCompany.id,
     );
 
-    cache.eventEnqueue(WATCHLIST_ENUM.QUEUE_NAME, {
+    const eventData = {
       companyId: savedCompany.companyId,
       companySymbol: savedCompany.companySymbol,
       watchlistId: savedCompany.id,
-      eventType: WATCHLIST_ENUM.UNSAVE,
-    });
+    };
 
+    unsavesQueueService.eventEnqueue(eventData);
     res.status(200).json({ message: "Unsaved" });
   } catch (error) {
     next(new UserError("Error removing saved company", 500));
@@ -124,7 +138,7 @@ router.get("/api/user/companies/save", async (req, res, next) => {
     if (!userId) {
       return next(new UserError("userId is required", 400));
     }
-    const model = database.formatTableName(database.TABLE_NAMES_ENUM.SAVED);
+    const model = database.formatTableName(database.TABLE_NAMES_TYPE.SAVED);
     const savedCompanies = await model.findMany({
       where: { userId: userId },
       include: {
@@ -166,7 +180,7 @@ router.patch("/api/user/companies/save", async (req, res, next) => {
     }
 
     const newRecord = await database.updateRecord(
-      database.TABLE_NAMES_ENUM.SAVED,
+      database.TABLE_NAMES_TYPE.SAVED,
       parseInt(id, 10),
       { percentChangeThreshold: updatedDelta },
     );
@@ -190,9 +204,9 @@ router.patch("/api/user/settings", async (req, res, next) => {
     const { infiniteScroll } = req.body;
 
     const newRecord = await database.updateRecord(
-      database.TABLE_NAMES_ENUM.USER,
+      database.TABLE_NAMES_TYPE.USER,
       userId,
-      { infiniteScroll: infiniteScroll }
+      { infiniteScroll: infiniteScroll },
     );
 
     res.status(200).json({ message: "Settings updated" });

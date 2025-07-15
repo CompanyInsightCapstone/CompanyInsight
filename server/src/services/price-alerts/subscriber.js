@@ -1,4 +1,4 @@
-const { SUCCESS, FAILURE, LOGGER_ENUMS } = require("../../utilities/constants");
+const { SUCCESS, FAILURE, LOGGER_TYPE } = require("../../utilities/constants");
 
 class Subscriber {
   constructor(subscriberStage) {
@@ -18,13 +18,13 @@ class Subscriber {
         await decodedMsgCallback(decodedMessage);
         return SUCCESS(
           "Subscriber successfully processed incoming message",
-          LOGGER_ENUMS.PRICE_ALERTS,
+          LOGGER_TYPE.PRICE_ALERTS,
         );
       } catch (error) {
         return FAILURE(
           "Subscriber failed to process incoming message",
           error,
-          LOGGER_ENUMS.PRICE_ALERTS,
+          LOGGER_TYPE.PRICE_ALERTS,
         );
       }
     });

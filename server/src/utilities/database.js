@@ -1,10 +1,10 @@
 const { PrismaClient } = require("../generated/prisma");
 const prisma = new PrismaClient();
 
-const TABLE_NAMES_ENUM = {
+const TABLE_NAMES_TYPE = {
   USER: "user",
   COMPANIES: "company",
-  SAVED: "Watchlist", // Changed to camelCase to match Prisma's naming convention
+  SAVED: "Watchlist",
 };
 
 /**
@@ -148,5 +148,5 @@ module.exports = {
   formatTableName,
   executeQuery,
   updateRecord,
-  TABLE_NAMES_ENUM,
+  TABLE_NAMES_TYPE,
 };

@@ -2,7 +2,7 @@ const express = require("express");
 const database = require("../utilities/database");
 const argon2 = require("argon2");
 const router = express.Router();
-const cache = require("../utilities/cache");
+const cache = require("../utilities/RedisClient");
 const { AuthError } = require("../middleware/CustomErrors");
 
 /**
@@ -24,7 +24,7 @@ router.post("/signup", async (req, res, next) => {
       );
     }
 
-    const existingUser = await database.scan(database.TABLE_NAMES_ENUM.USER, {
+    const existingUser = await database.scan(database.TABLE_NAMES_TYPE.USER, {
       where: { username: username },
     });
 
@@ -33,7 +33,7 @@ router.post("/signup", async (req, res, next) => {
     }
 
     const existingUserEmail = await database.scan(
-      database.TABLE_NAMES_ENUM.USER,
+      database.TABLE_NAMES_TYPE.USER,
       { where: { email: email } },
     );
 
@@ -47,7 +47,7 @@ router.post("/signup", async (req, res, next) => {
       parallelism: 1,
     });
 
-    await database.createRecord(database.TABLE_NAMES_ENUM.USER, {
+    await database.createRecord(database.TABLE_NAMES_TYPE.USER, {
       username,
       email,
       password: hashedPassword,
@@ -71,7 +71,7 @@ router.post("/login", async (req, res, next) => {
       return next(new AuthError("Username and password are required", 400));
     }
 
-    const user = await database.scan(database.TABLE_NAMES_ENUM.USER, {
+    const user = await database.scan(database.TABLE_NAMES_TYPE.USER, {
       where: { username: username },
     });
 
@@ -90,7 +90,7 @@ router.post("/login", async (req, res, next) => {
       id: user.id,
       username: user.username,
       email: user.email,
-      infiniteScroll: user.infiniteScroll
+      infiniteScroll: user.infiniteScroll,
     });
   } catch (error) {
     next(new AuthError("Something went wrong during login", 500));
@@ -107,15 +107,20 @@ router.get("/check-session", async (req, res, next) => {
     return next(new AuthError("Not logged in", 401));
   }
   try {
-    const user = await database.scan(database.TABLE_NAMES_ENUM.USER, {
+    const user = await database.scan(database.TABLE_NAMES_TYPE.USER, {
       where: { id: req.session.userId },
-      select: { username: true, email: true, password: false, infiniteScroll: true },
+      select: {
+        username: true,
+        email: true,
+        password: false,
+        infiniteScroll: true,
+      },
     });
     res.json({
       id: req.session.userId,
       username: user.username,
       email: user.email,
-      infiniteScroll: user.infiniteScroll
+      infiniteScroll: user.infiniteScroll,
     });
   } catch (error) {
     next(new AuthError("Error fetching user session data", 500));

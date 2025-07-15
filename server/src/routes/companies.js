@@ -1,6 +1,6 @@
 const express = require("express");
 const database = require("../utilities/database");
-const cache = require("../utilities/cache");
+const cache = require("../utilities/RedisClient");
 const router = express.Router();
 const { CompaniesError } = require("../middleware/CustomErrors");
 const process = require("process");
@@ -10,11 +10,10 @@ const PAGE_SIZE = 20;
 
 const MAX_PAGE = (async () => {
   const n = await database.tableCardinality(
-    database.TABLE_NAMES_ENUM.COMPANIES,
+    database.TABLE_NAMES_TYPE.COMPANIES,
   );
   return Math.ceil(n / PAGE_SIZE);
 })();
-
 
 const ALPHA_VANTAGE_URLS = {
   OVERVIEW: (symbol) =>
@@ -108,7 +107,7 @@ router.get("/api/companies", async (req, res, next) => {
 
     const pages = database.paginate(
       await database.getPages(
-        database.TABLE_NAMES_ENUM.COMPANIES,
+        database.TABLE_NAMES_TYPE.COMPANIES,
         pageId,
         limit || PAGE_SIZE,
         BLOCK_SIZE,
@@ -146,7 +145,8 @@ router.get("/api/companies", async (req, res, next) => {
  */
 router.get("/api/companies/filter", async (req, res, next) => {
   try {
-    const { page, limit, name, ipoDate, exchange, assetType, status } = req.query;
+    const { page, limit, name, ipoDate, exchange, assetType, status } =
+      req.query;
     const where = {};
     if (name && name.trim() !== "") {
       where.name = {
@@ -196,13 +196,18 @@ router.get("/api/companies/filter", async (req, res, next) => {
     }
 
     const companiesChunk = await database.getPages(
-      database.TABLE_NAMES_ENUM.COMPANIES,
+      database.TABLE_NAMES_TYPE.COMPANIES,
       pageId,
       limit || PAGE_SIZE,
       BLOCK_SIZE,
       clauses,
     );
-    const pages = database.paginate(companiesChunk, [], limit || PAGE_SIZE, pageId);
+    const pages = database.paginate(
+      companiesChunk,
+      [],
+      limit || PAGE_SIZE,
+      pageId,
+    );
     let statusCode = 200;
 
     if (pages.length === 0) {
@@ -238,40 +243,37 @@ router.get("/api/companies/download", async (req, res, next) => {
       );
     }
 
-    const company = await database.scan(database.TABLE_NAMES_ENUM.COMPANIES, {
-      where: { id: parseInt(companyId) },
-    });
+    let [company, overview, timeseries, stockProfile] = await Promise.all([
+      await database.scan(database.TABLE_NAMES_TYPE.COMPANIES, {
+        where: { id: parseInt(companyId) },
+      }),
+      await (await fetch(POLYGON_URLS.OVERVIEW(companySymbol))).json(),
+      await (
+        await fetch(
+          POLYGON_URLS.TIMESERIES(
+            companySymbol,
+            "1/day",
+            new Date(Date.now() - 7 * (24 * 60 * 60 * 1000))
+              .toISOString()
+              .slice(0, 10),
+            new Date().toISOString().slice(0, 10),
+            7,
+          ),
+        )
+      ).json(),
+      await (
+        await fetch(FINNHUB_URLS.OVERVIEW(companySymbol), {
+          method: "GET",
+          headers: {
+            "X-Finnhub-Token": process.env.VITE_FINNHUB_API_KEY,
+          },
+        })
+      ).json(),
+    ]);
 
     if (!company || company.length === 0) {
       return next(new CompaniesError("Company not found", 404));
     }
-
-    const overviewResponse = await fetch(POLYGON_URLS.OVERVIEW(companySymbol));
-    const overview = await overviewResponse.json();
-
-    const timeseriesResponse = await fetch(
-      POLYGON_URLS.TIMESERIES(
-        companySymbol,
-        "1/day",
-        new Date(Date.now() - 7 * (24 * 60 * 60 * 1000))
-          .toISOString()
-          .slice(0, 10),
-        new Date().toISOString().slice(0, 10),
-        7,
-      ),
-    );
-    const timeseries = await timeseriesResponse.json();
-
-    const stockProfileResponse = await fetch(
-      FINNHUB_URLS.OVERVIEW(companySymbol),
-      {
-        method: "GET",
-        headers: {
-          "X-Finnhub-Token": process.env.VITE_FINNHUB_API_KEY,
-        },
-      },
-    );
-    const stockProfile = await stockProfileResponse.json();
 
     const data = {
       company: company[0],
@@ -280,7 +282,7 @@ router.get("/api/companies/download", async (req, res, next) => {
       stockProfile: stockProfile,
     };
 
-    res.status(200).json({ data, cacheHit: false });
+    res.status(200).json({ data });
   } catch (error) {
     next(new CompaniesError("Error downloading company data", 500));
   }

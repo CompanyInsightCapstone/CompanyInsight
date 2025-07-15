@@ -34,6 +34,8 @@ export default function DownloadButton({ companyId, companySymbol }) {
         element.click();
         document.body.removeChild(element);
         URL.revokeObjectURL(element.href);
+      } else {
+        alert("Error downloading data, please try again later.");
       }
     });
   }

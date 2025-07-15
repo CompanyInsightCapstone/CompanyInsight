@@ -21,7 +21,6 @@ export default function ListView() {
     setFetchStatusLocal(fetchStatus);
   }, [fetchStatus]);
 
-
   const NO_RESULTS = (
     <section className="list-container">
       <div className="list-empty-state">
@@ -40,12 +39,11 @@ export default function ListView() {
     </section>
   );
 
-
   const LOADING = (
     <>
-    <section className="list-container">
-      <p className="list-loading">Loading companies...</p>
-    </section>
+      <section className="list-container">
+        <p className="list-loading">Loading companies...</p>
+      </section>
     </>
   );
 
@@ -91,50 +89,42 @@ export default function ListView() {
     }
   }, [userSettings.infiniteScroll]);
 
-    return (
-      <>
-        {userSettings.infiniteScroll ? (
-          <>
-            {fetchStatusLocal === FETCH_STATUS.ERROR && (ERROR)}
-            {fetchStatusLocal === FETCH_STATUS.NO_RESULTS && (
-             NO_RESULTS
-            )}
-            {companiesList.length > 0 && (
+  return (
+    <>
+      {userSettings.infiniteScroll ? (
+        <>
+          {fetchStatusLocal === FETCH_STATUS.ERROR && ERROR}
+          {fetchStatusLocal === FETCH_STATUS.NO_RESULTS && NO_RESULTS}
+          {companiesList.length > 0 && (
+            <section className="list-container">
+              {companiesList.map((elm) => (
+                <CompanyItem key={elm.id} company={elm} />
+              ))}
+            </section>
+          )}
+
+          {(fetchStatusLocal === FETCH_STATUS.LOADING ||
+            fetchStatusLocal === FETCH_STATUS.IDLE) &&
+            LOADING}
+
+          {fetchStatusLocal === FETCH_STATUS.NO_MORE_RESULTS && NO_MORE_RESULTS}
+        </>
+      ) : (
+        <>
+          {fetchStatusLocal === FETCH_STATUS.ERROR && ERROR}
+          {fetchStatusLocal === FETCH_STATUS.NO_RESULTS && NO_MORE_RESULTS}
+          {fetchStatusLocal === FETCH_STATUS.NO_MORE_RESULTS && NO_MORE_RESULTS}
+          {fetchStatusLocal === FETCH_STATUS.LOADING && LOADING}
+          {fetchStatusLocal === FETCH_STATUS.SUCCESS &&
+            companiesList.length > 0 && (
               <section className="list-container">
                 {companiesList.map((elm) => (
                   <CompanyItem key={elm.id} company={elm} />
                 ))}
               </section>
             )}
-
-            {(fetchStatusLocal === FETCH_STATUS.LOADING ||
-              fetchStatusLocal === FETCH_STATUS.IDLE) && (LOADING)}
-
-            {fetchStatusLocal=== FETCH_STATUS.NO_MORE_RESULTS && (
-              NO_MORE_RESULTS
-            )}
-          </>
-        ) : (
-          <>
-            {fetchStatusLocal === FETCH_STATUS.ERROR && (
-              ERROR
-            )}
-            {fetchStatusLocal === FETCH_STATUS.NO_RESULTS && (
-              NO_MORE_RESULTS
-            )}
-            {fetchStatusLocal === FETCH_STATUS.NO_MORE_RESULTS && (
-             NO_MORE_RESULTS
-            )}
-            {fetchStatusLocal === FETCH_STATUS.LOADING && LOADING}
-            {fetchStatusLocal === FETCH_STATUS.SUCCESS && companiesList.length > 0 && (
-              <section className="list-container">
-                {companiesList.map((elm) => (
-                  <CompanyItem key={elm.id} company={elm} />
-                ))}
-              </section>
-            )}
-          </>
-        )}
-      </>
-    );
-  }
+        </>
+      )}
+    </>
+  );
+}

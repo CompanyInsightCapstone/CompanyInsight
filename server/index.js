@@ -17,7 +17,7 @@ const {
 const dotenv = require("dotenv");
 dotenv.config();
 
-const { redisClient } = require("./src/utilities/cache");
+const { redisClient } = require("./src/utilities/RedisClient");
 
 const PORT = process.env.PORT || 3001;
 
@@ -55,8 +55,8 @@ server.use(sessionValidation);
 
 server.use(companiesRouter);
 server.use((req, res, next) => {
-  console.log(req)
-  next()
+  console.log(req);
+  next();
 });
 server.use(userRouter);
 

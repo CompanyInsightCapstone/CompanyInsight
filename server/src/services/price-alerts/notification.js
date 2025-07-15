@@ -1,12 +1,13 @@
 const database = require("../../utilities/database");
-const cache = require("../../utilities/cache");
+const cache = require("../../utilities/RedisClient");
 const { Publisher, PublisherQueue } = require("./publisher");
 const Subscriber = require("./subscriber");
-const Emailer = require("./emailer");
-const { SUCCESS, FAILURE, LOGGER_ENUMS } = require("../../utilities/constants");
-const serviceParameters = require("../../services/price-alerts/config.json");
+const Emailer = require("./lib/emailer");
+const { SUCCESS, FAILURE, LOGGER_TYPE } = require("../../utilities/constants");
+const serviceParameters = require("./config.json");
 
-const formatEmailSubject = (symbol, percentage) => `Company Insights: ${symbol} has changed by ${percentage}%`;
+const formatEmailSubject = (symbol, percentage) =>
+  `Company Insights: ${symbol} has changed by ${percentage}%`;
 
 const formatEmailBody = (symbol, percentage, prev, curr) =>
   `
@@ -37,13 +38,17 @@ async function percentDropMailerCallback(emailer, decodedMessage) {
       );
     }
 
-    const sqlQuery = `
+    const mailingQuery = `
       SELECT DISTINCT u.email, u.id as "userId", usc."percentChangeThreshold", usc."previousPrice" FROM "User" u
       JOIN "Watchlist" usc ON u.id = usc."userId"
-      WHERE usc."companyId" = ${decodedMessage.companyId}
+      WHERE usc."companyId" = $1
     `;
 
-    const userMailingList = await database.executeQuery(sqlQuery);
+    const mailingParams = [decodedMessage.companyId];
+    const userMailingList = await database.executeQuery(
+      mailingQuery,
+      mailingParams,
+    );
     let emailsSent = 0;
     let emailsNotSent = 0;
 
@@ -70,19 +75,24 @@ async function percentDropMailerCallback(emailer, decodedMessage) {
         ),
       );
       emailsSent++;
-      await database.executeQuery(
-        `UPDATE "Watchlist" SET "previousPrice" = ${decodedMessage.data.c} WHERE "companyId" = ${decodedMessage.companyId} AND "userId" = '${user.userId}'`,
-      );
+
+      const updateQuery = `UPDATE "Watchlist" SET "previousPrice" = $1 WHERE "companyId" = $2 AND "userId" = '$3'`;
+      const updateParams = [
+        decodedMessage.data.c,
+        decodedMessage.companyId,
+        user.userId,
+      ];
+      await database.executeQuery(updateQuery, updateParams);
     });
     return SUCCESS(
       `Email notification stage successful, number of emails sent this round: ${emailsSent}, emails not sent (price change not within user set threshold or stock not supported by FinnHub API): ${emailsNotSent}`,
-      LOGGER_ENUMS.PRICE_ALERTS,
+      LOGGER_TYPE.PRICE_ALERTS,
     );
   } catch (error) {
     return FAILURE(
       "Email notification failed",
       error,
-      LOGGER_ENUMS.PRICE_ALERTS,
+      LOGGER_TYPE.PRICE_ALERTS,
     );
   }
 }
@@ -125,11 +135,8 @@ class StockPriceNotificationService {
       if (!currentStageSpeaker) {
         return;
       }
-      const pollResult = await currentStageSpeaker.poll();
-      const publishResult = await currentStageSpeaker.publish(
-        this.publisherStage,
-        this.stageName,
-      );
+      await currentStageSpeaker.poll();
+      await currentStageSpeaker.publish(this.publisherStage, this.stageName);
       this.publishers.enqueue(currentStageSpeaker);
     }, this.timeInterval);
   }
@@ -166,9 +173,9 @@ class StockPriceNotificationService {
           this.publishers.removeCompanyFromQueue(companyId);
         });
       }
-      return SUCCESS("Queue refreshed", LOGGER_ENUMS.PRICE_ALERTS);
+      return SUCCESS("Queue refreshed", LOGGER_TYPE.PRICE_ALERTS);
     } catch (error) {
-      return FAILURE("Queue refresh failed", error, LOGGER_ENUMS.PRICE_ALERTS);
+      return FAILURE("Queue refresh failed", error, LOGGER_TYPE.PRICE_ALERTS);
     }
   }
 
