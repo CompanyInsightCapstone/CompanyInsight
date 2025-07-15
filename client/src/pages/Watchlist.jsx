@@ -4,7 +4,6 @@ import WatchlistItem from "../components/WatchlistItem";
 import { useContext } from "react";
 import { UserContext } from "../contexts/UserContext";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-
 import User from "../api/user";
 
 export default function Watchlist() {

@@ -28,7 +28,6 @@ export default function TrendingCompanyChart({ company, rank }) {
   });
 
   const timeSeriesData = timeSeriesResponse?.data?.results || [];
-  const resultsCount = timeSeriesResponse?.data?.resultsCount || 0;
 
   const chartConfig = {
     width: 400,

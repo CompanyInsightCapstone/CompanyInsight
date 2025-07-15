@@ -66,9 +66,9 @@ const User = {
    * Updates the user settings
    * @param {object} settings - The new settings
    * */
-  async updateUserSettings(settings) {
+  async updateUserSettings(settingsId, settings) {
     return await formatRequest(
-      formatUrl(API_ENDPOINTS.USER_SETTINGS),
+      formatUrl(API_ENDPOINTS.USER_SETTINGS, { settingsId }),
       METHOD_ENUM.PATCH,
       settings,
     );

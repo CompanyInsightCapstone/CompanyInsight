@@ -6,7 +6,7 @@ import { useContext, useState } from "react";
 import { METHOD_ENUM, options, SERVER_ADDRESS } from "../api/util";
 
 export default function Footer() {
-  const { user, setUser } = useContext(UserContext);
+  const { setUser, setUserSettings } = useContext(UserContext);
 
   const location = useLocation();
   const [message, setMessage] = useState("");
@@ -20,6 +20,7 @@ export default function Footer() {
         credentials: "include",
       });
       setUser(null);
+      setUserSettings(null);
       navigate("/login");
     } catch (error) {
       setMessage("Error logging out, try again.");

@@ -6,7 +6,7 @@ export default function WatchlistItem({ savedCompany, callbacks }) {
       <h3 className="list-item-header">{savedCompany.company.name}</h3>
       <p className="list-item-symbol">{savedCompany.company.symbol}</p>
       <p className="list-item-typography">
-        Current {savedCompany.percentChangeThreshold}
+        Current Threshold {savedCompany.percentChangeThreshold}
       </p>
       <form
         onSubmit={(event) => callbacks.handleSubmit(event, savedCompany.id)}

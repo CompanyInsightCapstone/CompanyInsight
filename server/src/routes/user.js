@@ -1,5 +1,4 @@
 const express = require("express");
-const database = require("../utilities/database");
 const router = express.Router();
 const { UserError } = require("../middleware/CustomErrors");
 const { WATCHLIST_TYPE, LOGGER_TYPE } = require("../utilities/constants");
@@ -7,11 +6,15 @@ const QueueService = require("../utilities/QueueService");
 const process = require("process");
 const queueName = "WATCHLIST";
 
+const { User } = require("../models/User");
+const userModel = new User();
+
 const savesQueueService = new QueueService(
   queueName,
   WATCHLIST_TYPE.SAVE,
   LOGGER_TYPE.TRENDING,
 );
+
 const unsavesQueueService = new QueueService(
   queueName,
   WATCHLIST_TYPE.UNSAVE,
@@ -33,14 +36,9 @@ router.post("/api/user/companies/save", async (req, res, next) => {
       );
     }
 
-    let savedCompany = await database.scan(database.TABLE_NAMES_TYPE.SAVED, {
-      where: {
-        userId: userId,
-        companyId: parseInt(companyId, 10),
-      },
-    });
+    const existingCompany = await userModel.getSavedCompany(userId, companyId);
 
-    if (savedCompany) {
+    if (existingCompany) {
       return next(new UserError("Company already saved by this user", 409));
     }
 
@@ -59,15 +57,12 @@ router.post("/api/user/companies/save", async (req, res, next) => {
       prevPrice = 0.0;
     }
 
-    savedCompany = await database.createRecord(
-      database.TABLE_NAMES_TYPE.SAVED,
-      {
-        userId: userId,
-        companyId: parseInt(companyId, 10),
-        companySymbol: companySymbol,
-        percentChangeThreshold: percentChangeThreshold,
-        previousPrice: prevPrice,
-      },
+    const savedCompany = await userModel.saveCompany(
+      userId,
+      companyId,
+      companySymbol,
+      percentChangeThreshold,
+      prevPrice,
     );
 
     const eventData = {
@@ -98,21 +93,13 @@ router.delete("/api/user/companies/save", async (req, res, next) => {
       return next(new UserError("userId and companyId are required", 400));
     }
 
-    const savedCompany = await database.scan(database.TABLE_NAMES_TYPE.SAVED, {
-      where: {
-        userId: userId,
-        companyId: parseInt(companyId, 10),
-      },
-    });
+    const savedCompany = await userModel.getSavedCompany(userId, companyId);
 
     if (!savedCompany) {
       return next(new UserError("Saved company not found", 404));
     }
 
-    await database.deleteRecord(
-      database.TABLE_NAMES_TYPE.SAVED,
-      savedCompany.id,
-    );
+    await userModel.unsaveCompany(savedCompany.id);
 
     const eventData = {
       companyId: savedCompany.companyId,
@@ -121,6 +108,7 @@ router.delete("/api/user/companies/save", async (req, res, next) => {
     };
 
     unsavesQueueService.eventEnqueue(eventData);
+
     res.status(200).json({ message: "Unsaved" });
   } catch (error) {
     next(new UserError("Error removing saved company", 500));
@@ -138,13 +126,8 @@ router.get("/api/user/companies/save", async (req, res, next) => {
     if (!userId) {
       return next(new UserError("userId is required", 400));
     }
-    const model = database.formatTableName(database.TABLE_NAMES_TYPE.SAVED);
-    const savedCompanies = await model.findMany({
-      where: { userId: userId },
-      include: {
-        company: true,
-      },
-    });
+
+    const savedCompanies = await userModel.getSavedCompanies(userId);
 
     res.status(200).json({ savedCompanies });
   } catch (error) {
@@ -179,11 +162,9 @@ router.patch("/api/user/companies/save", async (req, res, next) => {
       );
     }
 
-    const newRecord = await database.updateRecord(
-      database.TABLE_NAMES_TYPE.SAVED,
-      parseInt(id, 10),
-      { percentChangeThreshold: updatedDelta },
-    );
+    const newRecord = userModel.updateSavedCompany(id, {
+      percentChangeThreshold: updatedDelta,
+    });
     res.status(200).json({ newRecord });
   } catch (error) {
     next(new UserError("Error updating price drop threshold", 500));
@@ -197,17 +178,16 @@ router.patch("/api/user/companies/save", async (req, res, next) => {
 router.patch("/api/user/settings", async (req, res, next) => {
   try {
     const userId = req.session.userId;
+    const settingsId = req.query.settingsId;
     if (!userId) {
       return next(new UserError("userId is required", 400));
     }
 
     const { infiniteScroll } = req.body;
 
-    const newRecord = await database.updateRecord(
-      database.TABLE_NAMES_TYPE.USER,
-      userId,
-      { infiniteScroll: infiniteScroll },
-    );
+    const newRecord = await userModel.updateUserSettings(settingsId, {
+      infiniteScroll: infiniteScroll,
+    });
 
     res.status(200).json({ message: "Settings updated" });
   } catch (error) {

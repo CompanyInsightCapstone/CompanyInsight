@@ -2,20 +2,21 @@ const express = require("express");
 const session = require("express-session");
 const cors = require("cors");
 const { RedisStore } = require("connect-redis");
+const process = require("process");
+const dotenv = require("dotenv");
+dotenv.config();
 
 const authRouter = require("./src/routes/auth");
 const companiesRouter = require("./src/routes/companies");
 const userRouter = require("./src/routes/user");
 
 const server = express();
+
 const {
   AuthError,
   CompaniesError,
   UserError,
 } = require("./src/middleware/CustomErrors");
-
-const dotenv = require("dotenv");
-dotenv.config();
 
 const { redisClient } = require("./src/utilities/RedisClient");
 
@@ -54,10 +55,7 @@ const sessionValidation = (req, res, next) => {
 server.use(sessionValidation);
 
 server.use(companiesRouter);
-server.use((req, res, next) => {
-  console.log(req);
-  next();
-});
+
 server.use(userRouter);
 
 server.use((err, req, res, next) => {

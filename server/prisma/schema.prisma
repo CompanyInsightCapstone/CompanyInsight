@@ -15,39 +15,52 @@ datasource db {
 }
 
 model User {
-  id            String          @id @default(cuid())
-  createdAt     DateTime        @default(now())
-  username      String
-  email         String
-  password      String
-  infiniteScroll Boolean         @default(true)
-  watchlist     Watchlist[]
+  id             String         @id @default(cuid())
+  createdAt      DateTime       @default(now())
+  username       String        @unique
+  email          String
+  password       String
+  watchlist      Watchlist[]
+  UserSettings   UserSettings?
   @@index([id], type: Hash)
+  @@map("User")
+}
+
+model UserSettings {
+  id             String   @id @default(cuid())
+  createdAt      DateTime @default(now())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  infiniteScroll Boolean        @default(true)
+  @@index([userId], type: Hash)
+  @@map("UserSettings")
 }
 
 model Company {
-  id            Int             @id @default(autoincrement())
-  symbol        String          @unique
+  id            String      @unique @default(cuid())
+  symbol        String      @unique
   name          String
   exchange      String?
   assetType     String?
   ipoDate       String?
-  delistingDate String          @default("N/A")
+  delistingDate String      @default("N/A")
   status        String?
   watchlist     Watchlist[]
-  @@index([symbol], type: Hash)
+  @@id([id, symbol])
+  @@index([symbol])
+  @@map("Company")
 }
 
 model Watchlist {
-  id            Int     @id @default(autoincrement())
-  savedAt       DateTime?
-  unsavedAt     DateTime?
-  percentChangeThreshold Float @default(5.0)
-  previousPrice Float?
-  userId        String
-  user          User    @relation(fields: [userId], references: [id])
-  companyId     Int
-  companySymbol String
-  company       Company @relation(fields: [companyId], references: [id])
+  id                     String       @id @default(cuid())
+  percentChangeThreshold Float     @default(5.0)
+  previousPrice          Float?
+  lastNotifiedTime       DateTime?
+  userId                 String
+  user                   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyId              String
+  companySymbol          String
+  company                Company   @relation(fields: [companyId, companySymbol], references: [id, symbol])
   @@index([userId, companyId])
+  @@map("Watchlist")
 }

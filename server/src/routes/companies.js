@@ -1,19 +1,13 @@
 const express = require("express");
-const database = require("../utilities/database");
 const cache = require("../utilities/RedisClient");
 const router = express.Router();
-const { CompaniesError } = require("../middleware/CustomErrors");
 const process = require("process");
-
+const { CompaniesError } = require("../middleware/CustomErrors");
+const { Company } = require("../models/Company");
+const companyModel = new Company();
 const BLOCK_SIZE = 4;
 const PAGE_SIZE = 20;
-
-const MAX_PAGE = (async () => {
-  const n = await database.tableCardinality(
-    database.TABLE_NAMES_TYPE.COMPANIES,
-  );
-  return Math.ceil(n / PAGE_SIZE);
-})();
+const MAX_PAGE = (async () => await companyModel.maxPageId(PAGE_SIZE))();
 
 const ALPHA_VANTAGE_URLS = {
   OVERVIEW: (symbol) =>
@@ -105,18 +99,11 @@ router.get("/api/companies", async (req, res, next) => {
       });
     }
 
-    const pages = database.paginate(
-      await database.getPages(
-        database.TABLE_NAMES_TYPE.COMPANIES,
-        pageId,
-        limit || PAGE_SIZE,
-        BLOCK_SIZE,
-      ),
-      [],
-      PAGE_SIZE,
+    const pages = await companyModel.getPages(
       pageId,
+      limit || PAGE_SIZE,
+      BLOCK_SIZE,
     );
-
     let statusCode = 200;
 
     if (pages.length === 0) {
@@ -145,69 +132,27 @@ router.get("/api/companies", async (req, res, next) => {
  */
 router.get("/api/companies/filter", async (req, res, next) => {
   try {
-    const { page, limit, name, ipoDate, exchange, assetType, status } =
+    const { page, limit, name, symbol, ipoDate, exchange, assetType, status } =
       req.query;
-    const where = {};
-    if (name && name.trim() !== "") {
-      where.name = {
-        contains: name.trim(),
-        mode: "insensitive",
-      };
-    }
-    if (exchange && exchange !== "all") {
-      where.exchange = {
-        contains: exchange,
-        mode: "insensitive",
-      };
-    }
-    if (assetType && assetType !== "all") {
-      where.assetType = {
-        contains: assetType,
-        mode: "insensitive",
-      };
-    }
-    if (status && status !== "all") {
-      where.status = {
-        contains: status,
-        mode: "insensitive",
-      };
-    }
-    let orderBy = { id: "asc" };
-    if (ipoDate) {
-      if (ipoDate === "earliest") {
-        orderBy = {
-          ipoDate: "asc",
-        };
-      } else if (ipoDate === "latest") {
-        orderBy = {
-          ipoDate: "desc",
-        };
-      }
-    }
-
-    const clauses = {
-      where: Object.keys(where).length > 0 ? where : undefined,
-      orderBy: orderBy,
-    };
 
     const pageId = parseInt(page, 10) || 0;
+
     if (pageId < 0) {
       return next(new CompaniesError("Invalid page number", 400));
     }
 
-    const companiesChunk = await database.getPages(
-      database.TABLE_NAMES_TYPE.COMPANIES,
+    const pages = await companyModel.getFilteredPages(
       pageId,
-      limit || PAGE_SIZE,
+      parseInt(limit, 10) || PAGE_SIZE,
       BLOCK_SIZE,
-      clauses,
+      name,
+      symbol,
+      assetType,
+      exchange,
+      status,
+      ipoDate,
     );
-    const pages = database.paginate(
-      companiesChunk,
-      [],
-      limit || PAGE_SIZE,
-      pageId,
-    );
+
     let statusCode = 200;
 
     if (pages.length === 0) {
@@ -244,9 +189,7 @@ router.get("/api/companies/download", async (req, res, next) => {
     }
 
     let [company, overview, timeseries, stockProfile] = await Promise.all([
-      await database.scan(database.TABLE_NAMES_TYPE.COMPANIES, {
-        where: { id: parseInt(companyId) },
-      }),
+      await companyModel.get(companyId),
       await (await fetch(POLYGON_URLS.OVERVIEW(companySymbol))).json(),
       await (
         await fetch(

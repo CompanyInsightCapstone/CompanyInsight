@@ -1,8 +1,9 @@
 import { useEffect, useState, createContext, useContext } from "react";
 import { Companies } from "../api/companies";
 import { UserContext } from "../contexts/UserContext";
+import { useQuery } from "@tanstack/react-query";
 
-export const FETCH_STATUS = {
+export const FETCH_STATUS_TYPE = {
   IDLE: "idle",
   LOADING: "loading",
   SUCCESS: "success",
@@ -14,10 +15,9 @@ export const FETCH_STATUS = {
 export const CompanyListContext = createContext();
 
 export default function CompanyListProvider({ children }) {
-  const { user, userSettings } = useContext(UserContext);
+  const { userSettings } = useContext(UserContext);
   const [companiesList, setCompaniesList] = useState([]);
   const [pageNumberUI, setPageNumberUI] = useState(0);
-  const [fetchStatus, setFetchStatus] = useState(FETCH_STATUS.IDLE);
   const [errorMessage, setErrorMessage] = useState("");
   const [companiesPageTable, setCompaniesPageTable] = useState(new Map());
   const [filteredCompaniesPageTable, setFilteredCompaniesPageTable] = useState(
@@ -27,6 +27,11 @@ export default function CompanyListProvider({ children }) {
   const [filteredCompaniesPageNumber, setFilteredCompaniesPageNumber] =
     useState(0);
   const [filterRequest, setFilterRequest] = useState(null);
+  const [fetchStatus, setFetchStatus] = useState(FETCH_STATUS_TYPE.IDLE);
+
+  const updateFetchStatus = (newFetchStatus) => {
+    setFetchStatus(newFetchStatus);
+  };
 
   async function fetchPaginatedData(
     fetchFn,
@@ -52,30 +57,43 @@ export default function CompanyListProvider({ children }) {
             const currentPageEntries = data.pages.find(
               (page) => page.pageNumber === specificPageNumber,
             )?.pageEntries;
-            setFetchStatus(FETCH_STATUS.SUCCESS);
+            updateFetchStatus(FETCH_STATUS_TYPE.SUCCESS);
             return currentPageEntries;
           }
           break;
 
         case 404:
-          setFetchStatus(FETCH_STATUS.NO_RESULTS);
+          updateFetchStatus(FETCH_STATUS_TYPE.NO_RESULTS);
           return [];
 
         case 444:
-          setFetchStatus(FETCH_STATUS.NO_MORE_RESULTS);
+          updateFetchStatus(FETCH_STATUS_TYPE.NO_MORE_RESULTS);
           return [];
 
         default:
-          setFetchStatus(FETCH_STATUS.ERROR);
+          updateFetchStatus(FETCH_STATUS_TYPE.ERROR);
           setErrorMessage(`Unexpected response status: ${data.statusCode}`);
           return [];
       }
     } catch (error) {
-      setFetchStatus(FETCH_STATUS.ERROR);
+      updateFetchStatus(FETCH_STATUS_TYPE.ERROR);
       setErrorMessage(error.message || "An error occurred while fetching data");
       return [];
     }
   }
+
+  const flatten = (pageNumber, pageTable) => {
+    const flattenedPageTable = [];
+    for (let pageId = 0; pageId <= pageNumber; pageId++) {
+      const currentPage = pageTable.get(pageId);
+      if (currentPage instanceof Array) {
+        flattenedPageTable.push(...currentPage);
+      } else {
+        return flattenedPageTable;
+      }
+    }
+    return flattenedPageTable;
+  };
 
   async function loadData() {
     let entries = [];
@@ -93,15 +111,10 @@ export default function CompanyListProvider({ children }) {
         filteredCompaniesPageTable.set(filteredCompaniesPageNumber, entries);
       }
       if (userSettings.infiniteScroll) {
-        const flattenedPageTable = [];
-        for (let pid = 0; pid <= filteredCompaniesPageNumber; pid++) {
-          const currentPage = filteredCompaniesPageTable.get(pid);
-          if (currentPage instanceof Array) {
-            flattenedPageTable.push(...currentPage);
-          } else {
-            break;
-          }
-        }
+        const flattenedPageTable = flatten(
+          filteredCompaniesPageNumber,
+          filteredCompaniesPageTable,
+        );
         setCompaniesList(flattenedPageTable || []);
       } else {
         setCompaniesList(entries || []);
@@ -119,15 +132,10 @@ export default function CompanyListProvider({ children }) {
         companiesPageTable.set(companiesPageNumber, entries);
       }
       if (userSettings.infiniteScroll) {
-        const flattenedPageTable = [];
-        for (let pid = 0; pid <= companiesPageNumber; pid++) {
-          const currentPage = companiesPageTable.get(pid);
-          if (currentPage instanceof Array) {
-            flattenedPageTable.push(...currentPage);
-          } else {
-            break;
-          }
-        }
+        const flattenedPageTable = flatten(
+          companiesPageNumber,
+          companiesPageTable,
+        );
         setCompaniesList(flattenedPageTable || []);
       } else {
         setCompaniesList(entries || []);
@@ -144,7 +152,13 @@ export default function CompanyListProvider({ children }) {
   }, [companiesPageNumber, filteredCompaniesPageNumber, filterRequest]);
 
   function handleLoadPage(event, jumpPageNumber) {
-    setFetchStatus(FETCH_STATUS.LOADING);
+    if (
+      fetchStatus === FETCH_STATUS_TYPE.NO_MORE_RESULTS ||
+      fetchStatus === FETCH_STATUS_TYPE.NO_RESULTS
+    ) {
+      return;
+    }
+    updateFetchStatus(FETCH_STATUS_TYPE.LOADING);
     const setPageNumberType = !filterRequest
       ? setCompaniesPageNumber
       : setFilteredCompaniesPageNumber;
@@ -170,7 +184,7 @@ export default function CompanyListProvider({ children }) {
 
   const handleNewFilterRequest = (newFilterRequest) => {
     setCompaniesList([]);
-    setFetchStatus(FETCH_STATUS.LOADING);
+    updateFetchStatus(FETCH_STATUS_TYPE.LOADING);
     setFilteredCompaniesPageTable(new Map());
     setFilteredCompaniesPageNumber(0);
     setPageNumberUI(0);
@@ -187,7 +201,7 @@ export default function CompanyListProvider({ children }) {
         updateCompaniesList: setCompaniesList,
         setNewFilterRequest: handleNewFilterRequest,
         handleLoadPage,
-        FETCH_STATUS,
+        FETCH_STATUS_TYPE,
       }}
     >
       {children}

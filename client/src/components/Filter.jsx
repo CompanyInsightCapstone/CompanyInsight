@@ -4,6 +4,7 @@ import "../styles/Filter.css";
 
 const FILTER_FIELDS = {
   NAME: "name",
+  SYMBOL: "symbol",
   IPO_DATE: "ipoDate",
   EXCHANGE: "exchange",
   ASSET_TYPE: "assetType",
@@ -24,6 +25,9 @@ export default function Filter() {
     const formEntries = Array.from(formData.entries());
     const hasValidFilter = formEntries.some(([name, value]) => {
       if (name === FILTER_FIELDS.NAME && value.trim() !== "") {
+        return true;
+      }
+      if (name === FILTER_FIELDS.SYMBOL && value.trim() !== "") {
         return true;
       }
       if (
@@ -70,6 +74,14 @@ export default function Filter() {
                 type="text"
                 id={FILTER_FIELDS.NAME}
                 name={FILTER_FIELDS.NAME}
+              />
+            </div>
+            <div className="filter-control">
+              <label htmlFor={FILTER_FIELDS.SYMBOL}>Symbol</label>
+              <input
+                type="text"
+                id={FILTER_FIELDS.SYMBOL}
+                name={FILTER_FIELDS.SYMBOL}
               />
             </div>
             <div className="filter-control">
