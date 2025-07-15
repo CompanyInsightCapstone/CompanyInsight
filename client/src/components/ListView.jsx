@@ -3,7 +3,6 @@ import { CompanyListContext } from "../contexts/CompanyListContext";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../contexts/UserContext";
 import { debounce, throttle } from "../api/util";
-import { FETCH_STATUS } from "../contexts/CompanyListContext";
 import "../styles/List.css";
 
 export default function ListView() {
@@ -12,14 +11,9 @@ export default function ListView() {
     fetchStatus,
     errorMessage,
     handleLoadPage,
-    FETCH_STATUS,
+    FETCH_STATUS_TYPE,
   } = useContext(CompanyListContext);
   const { userSettings } = useContext(UserContext);
-  const [fetchStatusLocal, setFetchStatusLocal] = useState(fetchStatus);
-
-  useEffect(() => {
-    setFetchStatusLocal(fetchStatus);
-  }, [fetchStatus]);
 
   const NO_RESULTS = (
     <section className="list-container">
@@ -71,11 +65,7 @@ export default function ListView() {
       ) -
       window.innerHeight * 0.45;
     const isPageEnd = currentHeight >= heightThreshold;
-    if (
-      isPageEnd &&
-      fetchStatusLocal !== FETCH_STATUS.LOADING &&
-      fetchStatusLocal !== FETCH_STATUS.NO_MORE_RESULTS
-    ) {
+    if (isPageEnd) {
       debouncedLoadPage();
     }
   }
@@ -93,8 +83,8 @@ export default function ListView() {
     <>
       {userSettings.infiniteScroll ? (
         <>
-          {fetchStatusLocal === FETCH_STATUS.ERROR && ERROR}
-          {fetchStatusLocal === FETCH_STATUS.NO_RESULTS && NO_RESULTS}
+          {fetchStatus === FETCH_STATUS_TYPE.ERROR && ERROR}
+          {fetchStatus === FETCH_STATUS_TYPE.NO_RESULTS && NO_RESULTS}
           {companiesList.length > 0 && (
             <section className="list-container">
               {companiesList.map((elm) => (
@@ -103,19 +93,19 @@ export default function ListView() {
             </section>
           )}
 
-          {(fetchStatusLocal === FETCH_STATUS.LOADING ||
-            fetchStatusLocal === FETCH_STATUS.IDLE) &&
-            LOADING}
-
-          {fetchStatusLocal === FETCH_STATUS.NO_MORE_RESULTS && NO_MORE_RESULTS}
+          {fetchStatus === FETCH_STATUS_TYPE.NO_MORE_RESULTS
+            ? NO_MORE_RESULTS
+            : fetchStatus === FETCH_STATUS_TYPE.LOADING
+              ? LOADING
+              : null}
         </>
       ) : (
         <>
-          {fetchStatusLocal === FETCH_STATUS.ERROR && ERROR}
-          {fetchStatusLocal === FETCH_STATUS.NO_RESULTS && NO_MORE_RESULTS}
-          {fetchStatusLocal === FETCH_STATUS.NO_MORE_RESULTS && NO_MORE_RESULTS}
-          {fetchStatusLocal === FETCH_STATUS.LOADING && LOADING}
-          {fetchStatusLocal === FETCH_STATUS.SUCCESS &&
+          {fetchStatus === FETCH_STATUS_TYPE.ERROR && ERROR}
+          {fetchStatus === FETCH_STATUS_TYPE.NO_RESULTS && NO_MORE_RESULTS}
+          {fetchStatus === FETCH_STATUS_TYPE.NO_MORE_RESULTS && NO_MORE_RESULTS}
+          {fetchStatus === FETCH_STATUS_TYPE.LOADING && LOADING}
+          {fetchStatus === FETCH_STATUS_TYPE.SUCCESS &&
             companiesList.length > 0 && (
               <section className="list-container">
                 {companiesList.map((elm) => (

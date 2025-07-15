@@ -6,7 +6,6 @@ import Footer from "../components/Footer";
 
 export default function UserSettings() {
   const { setUserSettings, userSettings } = useContext(UserContext);
-
   const [infiniteScroll, setInfiniteScroll] = useState(
     userSettings.infiniteScroll,
   );
@@ -16,7 +15,9 @@ export default function UserSettings() {
     if (!event.target.infiniteScroll.checked) {
       return;
     }
-    User.updateUserSettings({ infiniteScroll: !infiniteScroll });
+    User.updateUserSettings(userSettings.id, {
+      infiniteScroll: !infiniteScroll,
+    });
     setUserSettings({ ...userSettings, infiniteScroll: !infiniteScroll });
     setInfiniteScroll(!infiniteScroll);
   };

@@ -1,4 +1,4 @@
 {
   "timeInterval": 10000,
-  "refreshQueueInterval": 30000
+  "refreshQueueInterval": 120000
 }

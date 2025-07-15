@@ -31,9 +31,6 @@ export const UserProvider = ({ children }) => {
         throw new Error("Failed to check session");
       }
       setUser(response);
-      setUserSettings({
-        infiniteScroll: response.infiniteScroll ?? true,
-      });
       return response;
     },
     retry: 1,

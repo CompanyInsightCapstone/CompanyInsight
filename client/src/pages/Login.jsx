@@ -10,7 +10,7 @@ export default function Login() {
   const [formData, setFormData] = useState({ username: "", password: "" });
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
-  const { setUser, setUserSettings, userSettings } = useContext(UserContext);
+  const { setUser, setUserSettings } = useContext(UserContext);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -31,10 +31,7 @@ export default function Login() {
       if (response.ok) {
         setMessage({ type: "success", text: "Login successful!" });
         setUser({ id: data.id, username: data.username, email: data.email });
-        setUserSettings({
-          ...userSettings,
-          infiniteScroll: data.infiniteScroll,
-        });
+        setUserSettings(data.userSettings);
         navigate("/");
       } else {
         setMessage({ type: "error", text: data.error || "Login failed." });

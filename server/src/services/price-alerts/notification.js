@@ -41,7 +41,8 @@ async function percentDropMailerCallback(emailer, decodedMessage) {
     const mailingQuery = `
       SELECT DISTINCT u.email, u.id as "userId", usc."percentChangeThreshold", usc."previousPrice" FROM "User" u
       JOIN "Watchlist" usc ON u.id = usc."userId"
-      WHERE usc."companyId" = $1
+      WHERE usc."companyId" = $1 AND usc."lastNotifiedTime" IS NULL OR DATE(usc."lastNotifiedTime") <> CURRENT_DATE
+      
     `;
 
     const mailingParams = [decodedMessage.companyId];
@@ -76,9 +77,10 @@ async function percentDropMailerCallback(emailer, decodedMessage) {
       );
       emailsSent++;
 
-      const updateQuery = `UPDATE "Watchlist" SET "previousPrice" = $1 WHERE "companyId" = $2 AND "userId" = '$3'`;
+      const updateQuery = `UPDATE "Watchlist" SET "previousPrice" = $1, "lastNotifiedTime" = $2 WHERE "companyId" = $3 AND "userId" = $4`;
       const updateParams = [
         decodedMessage.data.c,
+        new Date().toISOString(),
         decodedMessage.companyId,
         user.userId,
       ];

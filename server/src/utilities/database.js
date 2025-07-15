@@ -2,8 +2,9 @@ const { PrismaClient } = require("../generated/prisma");
 const prisma = new PrismaClient();
 
 const TABLE_NAMES_TYPE = {
-  USER: "user",
-  COMPANIES: "company",
+  USER: "User",
+  USER_SETTINGS: "UserSettings",
+  COMPANIES: "Company",
   SAVED: "Watchlist",
 };
 

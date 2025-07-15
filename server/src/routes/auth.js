@@ -1,9 +1,9 @@
 const express = require("express");
-const database = require("../utilities/database");
 const argon2 = require("argon2");
 const router = express.Router();
-const cache = require("../utilities/RedisClient");
 const { AuthError } = require("../middleware/CustomErrors");
+const { Auth } = require("../models/Auth");
+const authModel = new Auth();
 
 /**
  * Handles user registration with username, password, and email validation.
@@ -24,18 +24,14 @@ router.post("/signup", async (req, res, next) => {
       );
     }
 
-    const existingUser = await database.scan(database.TABLE_NAMES_TYPE.USER, {
-      where: { username: username },
-    });
+    const [existingUser, existingUserEmail] = await Promise.all([
+      await authModel.checkExistingUser(username),
+      await authModel.checkExistingEmail(email),
+    ]);
 
     if (existingUser) {
       return next(new AuthError("Username already exists", 400));
     }
-
-    const existingUserEmail = await database.scan(
-      database.TABLE_NAMES_TYPE.USER,
-      { where: { email: email } },
-    );
 
     if (existingUserEmail) {
       return next(new AuthError("Email already exists", 400));
@@ -47,12 +43,12 @@ router.post("/signup", async (req, res, next) => {
       parallelism: 1,
     });
 
-    await database.createRecord(database.TABLE_NAMES_TYPE.USER, {
+    const newUser = await authModel.createNewUser(
       username,
       email,
-      password: hashedPassword,
-    });
-
+      hashedPassword,
+    );
+    await authModel.createNewUserSettings(newUser.id);
     res.status(201).json({ message: "Signup successful!" });
   } catch (error) {
     next(new AuthError("Something went wrong during signup", 500));
@@ -71,9 +67,7 @@ router.post("/login", async (req, res, next) => {
       return next(new AuthError("Username and password are required", 400));
     }
 
-    const user = await database.scan(database.TABLE_NAMES_TYPE.USER, {
-      where: { username: username },
-    });
+    const user = await authModel.checkExistingUser(username);
 
     const isValidPassword = await argon2.verify(user.password, password);
 
@@ -84,13 +78,14 @@ router.post("/login", async (req, res, next) => {
     req.session.userId = user.id;
     req.session.username = user.username;
     req.session.email = user.email;
-    req.session.infiniteScroll = user.infiniteScroll;
+
+    const userSettings = await authModel.getUserSettings(user.id);
 
     res.json({
       id: user.id,
       username: user.username,
       email: user.email,
-      infiniteScroll: user.infiniteScroll,
+      userSettings: userSettings,
     });
   } catch (error) {
     next(new AuthError("Something went wrong during login", 500));
@@ -107,20 +102,14 @@ router.get("/check-session", async (req, res, next) => {
     return next(new AuthError("Not logged in", 401));
   }
   try {
-    const user = await database.scan(database.TABLE_NAMES_TYPE.USER, {
-      where: { id: req.session.userId },
-      select: {
-        username: true,
-        email: true,
-        password: false,
-        infiniteScroll: true,
-      },
-    });
+    const user = authModel.checkSession(req.session.userId);
+    const userSettings = await authModel.getUserSettings(user.id);
+
     res.json({
       id: req.session.userId,
       username: user.username,
       email: user.email,
-      infiniteScroll: user.infiniteScroll,
+      settings: userSettings,
     });
   } catch (error) {
     next(new AuthError("Error fetching user session data", 500));

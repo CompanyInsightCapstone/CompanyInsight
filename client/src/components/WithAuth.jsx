@@ -6,8 +6,7 @@ import { options, METHOD_ENUM, SERVER_ADDRESS } from "../api/util";
 
 const WithAuth = (WrappedComponent) => {
   return function ProtectedComponent(props) {
-    const { user, setUser, setUserSettings, userSettings } =
-      useContext(UserContext);
+    const { user, setUser, setUserSettings } = useContext(UserContext);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -24,10 +23,7 @@ const WithAuth = (WrappedComponent) => {
                 username: data.username,
                 email: data.email,
               });
-              setUserSettings({
-                ...userSettings,
-                infiniteScroll: data.infiniteScroll,
-              });
+              setUserSettings(data.settings);
             } else {
               navigate("/login");
             }
@@ -36,7 +32,7 @@ const WithAuth = (WrappedComponent) => {
             navigate("/login");
           });
       }
-    }, [user, setUser, setUserSettings, navigate]);
+    }, [user, setUser, navigate]);
 
     if (!user) {
       return <p className="auth-loading">Loading...</p>;

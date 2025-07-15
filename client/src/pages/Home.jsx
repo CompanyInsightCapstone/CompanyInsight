@@ -4,6 +4,7 @@ import CompanyListProvider from "../contexts/CompanyListContext";
 import Filter from "../components/Filter";
 import ListView from "../components/ListView";
 import PageButtons from "../components/PageButtons";
+import TrendingCompanies from "../components/TrendingCompanies";
 import "../styles/Home.css";
 
 export default function Home() {
@@ -12,6 +13,7 @@ export default function Home() {
       <Header />
       <main className="home-container">
         <h2 className="home-title">Company Catalog</h2>
+        <TrendingCompanies />
         <CompanyListProvider>
           <Filter />
           <ListView />
