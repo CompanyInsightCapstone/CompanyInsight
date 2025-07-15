@@ -5,6 +5,7 @@ export default function WatchlistButton({ companyId, companySymbol }) {
   const { isCompanySaved, saveCompany, unsaveCompany } =
     useContext(UserContext);
 
+
   const isSaved = isCompanySaved(companyId);
 
   const handleSave = async (event) => {
@@ -17,14 +18,15 @@ export default function WatchlistButton({ companyId, companySymbol }) {
     await unsaveCompany(companyId);
   };
 
+
   return (
     <>
       {!isSaved ? (
-        <button onClick={handleSave} className="list-item-link">
+        <button onClick={handleSave}  className="list-item-link">
           Add to Watchlist
         </button>
       ) : (
-        <button onClick={handleUnsave} className="list-item-link">
+        <button onClick={handleUnsave}  className="list-item-link">
           Remove from Watchlist
         </button>
       )}

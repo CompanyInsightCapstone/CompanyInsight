@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 const process = require("process");
-const { SUCCESS, FAILURE } = require("../../utilities/constants");
+const { SUCCESS, FAILURE } = require("../../../utilities/constants");
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -39,9 +39,9 @@ class Emailer {
 
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
-        return FAILURE("Email send failed", error, info);
+        return FAILURE("Email send failed", error);
       } else {
-        return SUCCESS("Email sent successfully");
+        return SUCCESS(`Email sent successfully, INFORMATION:${JSON.stringify(info)}`);
       }
     });
   }

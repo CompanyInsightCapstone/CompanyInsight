@@ -3,8 +3,8 @@ const dotenv = require("dotenv");
 const {
   SUCCESS,
   FAILURE,
-  WATCHLIST_ENUM,
-  LOGGER_ENUMS,
+  WATCHLIST_TYPE,
+  LOGGER_TYPE,
 } = require("./constants");
 dotenv.config();
 
@@ -39,13 +39,13 @@ async function eventEnqueue(queueName, data) {
   try {
     redisClient.rPush(queueName, JSON.stringify(data));
     if (
-      eventType === WATCHLIST_ENUM.SAVE ||
-      eventType == WATCHLIST_ENUM.UNSAVE
+      eventType === WATCHLIST_TYPE.SAVE ||
+      eventType == WATCHLIST_TYPE.UNSAVE
     ) {
-      SUCCESS(`Event ${eventType} enqueued`, LOGGER_ENUMS.TRENDING);
+      SUCCESS(`Event ${eventType} enqueued`, LOGGER_TYPE.TRENDING);
     }
   } catch (error) {
-    FAILURE(`Event ${eventType} failed to enqueue`, error, LOGGER_ENUMS.TRENDING);
+    FAILURE(`Event ${eventType} failed to enqueue`, error, LOGGER_TYPE.TRENDING);
   }
 }
 

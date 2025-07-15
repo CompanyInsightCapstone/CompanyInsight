@@ -36,7 +36,7 @@ export default function Signup() {
         setMessage({ type: "error", text: data.error || "Signup failed." });
       }
     } catch (error) {
-      setMessage({ type: "error", text: "Network error. Please try again." });
+      setMessage({ type: "error", text: error.message });
     }
   };
 

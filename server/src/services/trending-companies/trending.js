@@ -1,13 +1,13 @@
-const Websocket = require("../../services/trending-companies/socket");
-const cache = require("../../utilities/cache");
+const Websocket = require("./lib/socket");
+const cache = require("../../utilities/RedisClient");
 const process = require("process");
 const {
   SUCCESS,
   FAILURE,
-  LOGGER_ENUMS,
+  LOGGER_TYPE,
   WEBSOCKET_MESSAGE_TYPE
 } = require("../../utilities/constants");
-const serviceParameters = require("../../services/trending-companies/config.json");
+const serviceParameters = require("./config.json");
 
 const collectionEquality = (c1, c2) => {
   return JSON.stringify(c1) === JSON.stringify(c2);
@@ -47,7 +47,7 @@ class TrendingCompaniesService {
       });
 
       if (collectionEquality(this.heavyHitters, candidates)) {
-        return SUCCESS("No changes in trending companies data, ending sending company", LOGGER_ENUMS.TRENDING);
+        return SUCCESS("No changes in trending companies data, ending sending company", LOGGER_TYPE.TRENDING);
       }
       this.heavyHitters = candidates;
       const eventMessage = {
@@ -56,12 +56,12 @@ class TrendingCompaniesService {
           timestamp: new Date().toISOString(),
       };
       this.socket.sendMessage(eventMessage);
-      return  SUCCESS("Trending companies data sent", LOGGER_ENUMS.TRENDING);
+      return  SUCCESS("Trending companies data sent", LOGGER_TYPE.TRENDING);
     } catch (error) {
       return FAILURE(
         "Failed to send trending companies data",
         error,
-        LOGGER_ENUMS.TRENDING,
+        LOGGER_TYPE.TRENDING,
       );
     }
   }
@@ -71,24 +71,24 @@ class TrendingCompaniesService {
     try {
       const events = await cache.redisClient.lRange(this.queueName, 0, -1);
       if (!events || events.length === 0) {
-        return SUCCESS("No events to process", LOGGER_ENUMS.TRENDING);
+        return SUCCESS("No events to process", LOGGER_TYPE.TRENDING);
       }
 
-      events.forEach((event) => {
+      events.forEach(async (event) => {
         try {
           const { companySymbol, companyId, eventType } = JSON.parse(event);
           const companyJsonKey = JSON.stringify({ companySymbol, companyId });
           switch (eventType) {
             case "SAVE":
-              cache.redisClient.zIncrBy(this.topKName, 1, companyJsonKey);
+              await cache.redisClient.zIncrBy(this.topKName, 1, companyJsonKey);
               SUCCESS(
                 `Successfully incremented count for companyId=${companyId}, symbol=${companySymbol}`,
-                LOGGER_ENUMS.TRENDING,
+                LOGGER_TYPE.TRENDING,
               );
               break;
             case "UNSAVE":
-              cache.redisClient.zIncrBy(this.topKName, -1, companyJsonKey);
-              cache.redisClient
+              await cache.redisClient.zIncrBy(this.topKName, -1, companyJsonKey);
+              await cache.redisClient
                 .zScore(this.topKName, companyJsonKey)
                 .then((score) => {
                   if (score <= 0) {
@@ -97,14 +97,14 @@ class TrendingCompaniesService {
                 });
               SUCCESS(
                 `Successfully decremented count for companyId=${companyId}, symbol=${companySymbol}`,
-                LOGGER_ENUMS.TRENDING,
+                LOGGER_TYPE.TRENDING,
               );
               break;
             default:
               FAILURE(
                 `Invalid event type: ${eventType}`,
                 null,
-                LOGGER_ENUMS.TRENDING,
+                LOGGER_TYPE.TRENDING,
               );
               break;
           }
@@ -112,7 +112,7 @@ class TrendingCompaniesService {
           FAILURE(
             `Failed to process event: ${event}`,
             error,
-            LOGGER_ENUMS.TRENDING,
+            LOGGER_TYPE.TRENDING,
           );
         }
       });
@@ -120,19 +120,19 @@ class TrendingCompaniesService {
       await cache.redisClient.lTrim(this.queueName, events.length, -1);
       SUCCESS(
         `Processed ${events.length} events`,
-        LOGGER_ENUMS.TRENDING,
+        LOGGER_TYPE.TRENDING,
       );
     } catch (error) {
       return FAILURE(
         "Failed to update trending data",
         error,
-        LOGGER_ENUMS.TRENDING,
+        LOGGER_TYPE.TRENDING,
       );
     }
   }
 
   async run() {
-    SUCCESS("Starting trending companies service", LOGGER_ENUMS.TRENDING);
+    SUCCESS("Starting trending companies service", LOGGER_TYPE.TRENDING);
     await this.update();
     await this.send();
     setInterval(() => this.update(), this.refreshInterval);

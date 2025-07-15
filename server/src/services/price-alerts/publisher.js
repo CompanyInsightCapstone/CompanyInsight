@@ -1,5 +1,5 @@
 const process = require("process");
-const { SUCCESS, FAILURE, LOGGER_ENUMS } = require("../../utilities/constants");
+const { SUCCESS, FAILURE, LOGGER_TYPE } = require("../../utilities/constants");
 
 class Publisher {
   /**
@@ -42,7 +42,7 @@ class Publisher {
         data: data,
         timestamp: Date.now(),
       };
-      return SUCCESS("Stock price polling", LOGGER_ENUMS.PRICE_ALERTS);
+      return SUCCESS("Stock price polling", LOGGER_TYPE.PRICE_ALERTS);
     } catch (error) {
       this.eventData = {
         data: null,
@@ -52,7 +52,7 @@ class Publisher {
       return FAILURE(
         "Stock price polling failed",
         error,
-        LOGGER_ENUMS.PRICE_ALERTS,
+        LOGGER_TYPE.PRICE_ALERTS,
       );
     }
   }
@@ -72,12 +72,12 @@ class Publisher {
         ...this.eventData,
       };
       publisherStage.publish(stageName, JSON.stringify(eventMessage));
-      return SUCCESS("Message published to Redis", LOGGER_ENUMS.PRICE_ALERTS);
+      return SUCCESS("Message published to Redis", LOGGER_TYPE.PRICE_ALERTS);
     } catch (error) {
       return FAILURE(
         "Message publish failed",
         error,
-        LOGGER_ENUMS.PRICE_ALERTS,
+        LOGGER_TYPE.PRICE_ALERTS,
       );
     }
   }
