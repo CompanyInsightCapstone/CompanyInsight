@@ -7,7 +7,6 @@ import { METHOD_ENUM, options, SERVER_ADDRESS } from "../api/util";
 
 export default function Footer() {
   const { setUser, setUserSettings } = useContext(UserContext);
-
   const location = useLocation();
   const [message, setMessage] = useState("");
   const navigate = useNavigate();

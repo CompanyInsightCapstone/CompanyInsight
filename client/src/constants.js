@@ -12,6 +12,25 @@ export const WEBSOCKET_MESSAGE_TYPE = {
   PONG: "pong",
 };
 
+export const FETCH_STATUS_TYPE = {
+  IDLE: "idle",
+  LOADING: "loading",
+  SUCCESS: "success",
+  NO_RESULTS: "no_results",
+  NO_MORE_RESULTS: "no_more_results",
+  ERROR: "error",
+};
+
+
+export const FILTER_FIELDS = {
+  NAME: "name",
+  SYMBOL: "symbol",
+  IPO_DATE: "ipoDate",
+  EXCHANGE: "exchange",
+  ASSET_TYPE: "assetType",
+  STATUS: "status",
+};
+
 /**
  * Generates configuration object for candlestick chart plotting
  * @param {number} width - Chart width
