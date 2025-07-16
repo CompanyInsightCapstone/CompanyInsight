@@ -1,16 +1,7 @@
 import { useEffect, useState, createContext, useContext } from "react";
 import { Companies } from "../api/companies";
 import { UserContext } from "../contexts/UserContext";
-import { useQuery } from "@tanstack/react-query";
-
-export const FETCH_STATUS_TYPE = {
-  IDLE: "idle",
-  LOADING: "loading",
-  SUCCESS: "success",
-  NO_RESULTS: "no_results",
-  NO_MORE_RESULTS: "no_more_results",
-  ERROR: "error",
-};
+import { FETCH_STATUS_TYPE } from "../constants";
 
 export const CompanyListContext = createContext();
 
@@ -47,6 +38,7 @@ export default function CompanyListProvider({ children }) {
 
       switch (data.statusCode) {
         case 200:
+        case 444:
           if (data && data.pages) {
             const newPageTable = new Map(pageTable);
             data.pages.forEach((page) => {
@@ -57,17 +49,17 @@ export default function CompanyListProvider({ children }) {
             const currentPageEntries = data.pages.find(
               (page) => page.pageNumber === specificPageNumber,
             )?.pageEntries;
-            updateFetchStatus(FETCH_STATUS_TYPE.SUCCESS);
+            if (data.statusCode === 444) {
+              updateFetchStatus(FETCH_STATUS_TYPE.NO_MORE_RESULTS);
+            } else {
+              updateFetchStatus(FETCH_STATUS_TYPE.SUCCESS);
+            }
             return currentPageEntries;
           }
           break;
 
         case 404:
           updateFetchStatus(FETCH_STATUS_TYPE.NO_RESULTS);
-          return [];
-
-        case 444:
-          updateFetchStatus(FETCH_STATUS_TYPE.NO_MORE_RESULTS);
           return [];
 
         default:
@@ -96,8 +88,14 @@ export default function CompanyListProvider({ children }) {
   };
 
   async function loadData() {
-    let entries = [];
+
+    if (fetchStatus === FETCH_STATUS_TYPE.NO_MORE_RESULTS) {
+      return;
+    }
+
+    updateFetchStatus(FETCH_STATUS_TYPE.LOADING);
     if (filterRequest) {
+      let entries = [];
       if (filteredCompaniesPageTable.has(filteredCompaniesPageNumber)) {
         entries = filteredCompaniesPageTable.get(filteredCompaniesPageNumber);
       } else {
@@ -117,11 +115,13 @@ export default function CompanyListProvider({ children }) {
         );
         setCompaniesList(flattenedPageTable || []);
       } else {
-        setCompaniesList(entries || []);
+        setCompaniesList(filteredCompaniesPageTable.get(filteredCompaniesPageNumber) || []);
       }
     } else {
+      let entries = [];
       if (companiesPageTable.has(companiesPageNumber)) {
         entries = companiesPageTable.get(companiesPageNumber);
+
       } else {
         entries = await fetchPaginatedData(
           Companies.fetchPage,
@@ -138,7 +138,8 @@ export default function CompanyListProvider({ children }) {
         );
         setCompaniesList(flattenedPageTable || []);
       } else {
-        setCompaniesList(entries || []);
+        const companies = [...companiesPageTable.get(companiesPageNumber)];
+        setCompaniesList([...companies]);
       }
     }
 
@@ -151,39 +152,7 @@ export default function CompanyListProvider({ children }) {
     loadData();
   }, [companiesPageNumber, filteredCompaniesPageNumber, filterRequest]);
 
-  function handleLoadPage(event, jumpPageNumber) {
-    if (
-      fetchStatus === FETCH_STATUS_TYPE.NO_MORE_RESULTS ||
-      fetchStatus === FETCH_STATUS_TYPE.NO_RESULTS
-    ) {
-      return;
-    }
-    updateFetchStatus(FETCH_STATUS_TYPE.LOADING);
-    const setPageNumberType = !filterRequest
-      ? setCompaniesPageNumber
-      : setFilteredCompaniesPageNumber;
-    if (userSettings.infiniteScroll) {
-      setPageNumberType((x) => x + 1);
-    } else {
-      event.preventDefault();
-      if (!jumpPageNumber) {
-        setPageNumberType(
-          Math.max(
-            0,
-            (!filterRequest
-              ? companiesPageNumber
-              : filteredCompaniesPageNumber) + parseInt(event.target.value),
-          ),
-        );
-      } else {
-        setPageNumberType(Math.max(0, jumpPageNumber));
-      }
-      return;
-    }
-  }
-
   const handleNewFilterRequest = (newFilterRequest) => {
-    setCompaniesList([]);
     updateFetchStatus(FETCH_STATUS_TYPE.LOADING);
     setFilteredCompaniesPageTable(new Map());
     setFilteredCompaniesPageNumber(0);
@@ -191,17 +160,26 @@ export default function CompanyListProvider({ children }) {
     setFilterRequest(newFilterRequest);
   };
 
+  const companiesListContextData = {
+    userSettings,
+    companiesList,
+    pageNumberUI,
+    errorMessage,
+    companiesPageNumber,
+    filteredCompaniesPageNumber,
+    filterRequest,
+    fetchStatus,
+  };
+
   return (
     <CompanyListContext.Provider
       value={{
-        companiesList,
-        pageNumberUI,
-        fetchStatus,
-        errorMessage,
+        companiesListContextData,
+        setCompaniesPageNumber,
+        setFilteredCompaniesPageNumber,
+        updateFetchStatus,
         updateCompaniesList: setCompaniesList,
         setNewFilterRequest: handleNewFilterRequest,
-        handleLoadPage,
-        FETCH_STATUS_TYPE,
       }}
     >
       {children}

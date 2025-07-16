@@ -154,14 +154,17 @@ router.get("/api/companies/filter", async (req, res, next) => {
     );
 
     let statusCode = 200;
-
-    if (pages.length === 0) {
+    if (pages.length < limit) {
       statusCode = 444;
     }
 
     if (pages.length === 0 && pageId === 0) {
       statusCode = 404;
     }
+
+    // if (page.length < limit) {
+    //   statusCode = 202;
+    // }
 
     res.status(statusCode).json({
       currentPageNumber: pageId,

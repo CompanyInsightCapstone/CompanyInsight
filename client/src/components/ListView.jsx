@@ -1,20 +1,16 @@
 import CompanyItem from "./CompanyItem";
 import { CompanyListContext } from "../contexts/CompanyListContext";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { UserContext } from "../contexts/UserContext";
 import { debounce, throttle } from "../api/util";
+import { FETCH_STATUS_TYPE } from "../constants";
+import useHandleLoadPage from "../hooks/useHandleLoadPage";
 import "../styles/List.css";
 
 export default function ListView() {
-  const {
-    companiesList,
-    fetchStatus,
-    errorMessage,
-    handleLoadPage,
-    FETCH_STATUS_TYPE,
-  } = useContext(CompanyListContext);
+  const { companiesListContextData } = useContext(CompanyListContext);
   const { userSettings } = useContext(UserContext);
-
+  const loadPage = useHandleLoadPage();
   const NO_RESULTS = (
     <section className="list-container">
       <div className="list-empty-state">
@@ -46,26 +42,26 @@ export default function ListView() {
       <div className="list-error">
         <h3>Error loading companies</h3>
         <p>
-          {errorMessage || "An unexpected error occurred. Please try again."}
+          {companiesListContextData.errorMessage ||
+            "An unexpected error occurred. Please try again."}
         </p>
       </div>
     </section>
   );
 
-  const debouncedLoadPage = debounce(handleLoadPage, 300);
+  const debouncedLoadPage = debounce(loadPage, 300);
 
   function infinteScroll(event) {
-    const currentHeight = Math.floor(
-      window.innerHeight + window.scrollY || window.pageYOffset,
-    );
     const heightThreshold =
       Math.max(
         document.documentElement.scrollHeight,
         document.body.scrollHeight,
       ) -
       window.innerHeight * 0.45;
-    const isPageEnd = currentHeight >= heightThreshold;
-    if (isPageEnd) {
+    const currentHeight = Math.floor(
+      window.innerHeight + window.scrollY || window.pageYOffset,
+    );
+    if (currentHeight >= heightThreshold) {
       debouncedLoadPage();
     }
   }
@@ -80,39 +76,37 @@ export default function ListView() {
   }, [userSettings.infiniteScroll]);
 
   return (
+
     <>
       {userSettings.infiniteScroll ? (
         <>
-          {fetchStatus === FETCH_STATUS_TYPE.ERROR && ERROR}
-          {fetchStatus === FETCH_STATUS_TYPE.NO_RESULTS && NO_RESULTS}
-          {companiesList.length > 0 && (
+          {companiesListContextData.fetchStatus === FETCH_STATUS_TYPE.ERROR &&
+            ERROR}
+          {companiesListContextData.fetchStatus ===
+            FETCH_STATUS_TYPE.NO_RESULTS && NO_RESULTS}
+          {companiesListContextData.companiesList.length > 0 && (
             <section className="list-container">
-              {companiesList.map((elm) => (
+              {companiesListContextData.companiesList.map((elm) => (
                 <CompanyItem key={elm.id} company={elm} />
               ))}
             </section>
           )}
 
-          {fetchStatus === FETCH_STATUS_TYPE.NO_MORE_RESULTS
+          {companiesListContextData.fetchStatus ===
+          FETCH_STATUS_TYPE.NO_MORE_RESULTS
             ? NO_MORE_RESULTS
-            : fetchStatus === FETCH_STATUS_TYPE.LOADING
+            : companiesListContextData.fetchStatus === FETCH_STATUS_TYPE.LOADING
               ? LOADING
               : null}
         </>
       ) : (
         <>
-          {fetchStatus === FETCH_STATUS_TYPE.ERROR && ERROR}
-          {fetchStatus === FETCH_STATUS_TYPE.NO_RESULTS && NO_MORE_RESULTS}
-          {fetchStatus === FETCH_STATUS_TYPE.NO_MORE_RESULTS && NO_MORE_RESULTS}
-          {fetchStatus === FETCH_STATUS_TYPE.LOADING && LOADING}
-          {fetchStatus === FETCH_STATUS_TYPE.SUCCESS &&
-            companiesList.length > 0 && (
-              <section className="list-container">
-                {companiesList.map((elm) => (
+            <section className="list-container">
+                {companiesListContextData.companiesList.map((elm) => (
                   <CompanyItem key={elm.id} company={elm} />
                 ))}
-              </section>
-            )}
+            </section>
+
         </>
       )}
     </>

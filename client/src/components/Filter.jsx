@@ -1,15 +1,7 @@
 import { useContext, useState } from "react";
 import { CompanyListContext } from "../contexts/CompanyListContext";
+import { FILTER_FIELDS } from "../constants";
 import "../styles/Filter.css";
-
-const FILTER_FIELDS = {
-  NAME: "name",
-  SYMBOL: "symbol",
-  IPO_DATE: "ipoDate",
-  EXCHANGE: "exchange",
-  ASSET_TYPE: "assetType",
-  STATUS: "status",
-};
 
 export default function Filter() {
   const { setNewFilterRequest } = useContext(CompanyListContext);
