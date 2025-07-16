@@ -21,7 +21,6 @@ export const FETCH_STATUS_TYPE = {
   ERROR: "error",
 };
 
-
 export const FILTER_FIELDS = {
   NAME: "name",
   SYMBOL: "symbol",

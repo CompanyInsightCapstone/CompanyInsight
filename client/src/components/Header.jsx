@@ -8,6 +8,7 @@ export default function Header() {
   const { user } = useContext(UserContext);
 
   const location = useLocation();
+
   const showHomeLink = () => {
     return location.pathname === "/login" ||
       location.pathname === "/signup" ||
@@ -45,6 +46,9 @@ export default function Header() {
         </Link>
         <Link className="back-link" to="/user-settings">
           VIEW SETTINGS
+        </Link>
+        <Link className="back-link" to="/search">
+          VIEW SEARCH
         </Link>
       </div>
     </header>

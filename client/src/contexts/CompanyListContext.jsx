@@ -88,7 +88,6 @@ export default function CompanyListProvider({ children }) {
   };
 
   async function loadData() {
-
     if (fetchStatus === FETCH_STATUS_TYPE.NO_MORE_RESULTS) {
       return;
     }
@@ -115,13 +114,14 @@ export default function CompanyListProvider({ children }) {
         );
         setCompaniesList(flattenedPageTable || []);
       } else {
-        setCompaniesList(filteredCompaniesPageTable.get(filteredCompaniesPageNumber) || []);
+        setCompaniesList(
+          filteredCompaniesPageTable.get(filteredCompaniesPageNumber) || [],
+        );
       }
     } else {
       let entries = [];
       if (companiesPageTable.has(companiesPageNumber)) {
         entries = companiesPageTable.get(companiesPageNumber);
-
       } else {
         entries = await fetchPaginatedData(
           Companies.fetchPage,

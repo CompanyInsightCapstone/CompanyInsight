@@ -20,6 +20,7 @@ export const API_ENDPOINTS = {
   COMPANY_TIME_SERIES: "/api/companies/time-series",
   USER_SAVED_COMPANIES: "/api/user/companies/save",
   USER_SETTINGS: "/api/user/settings",
+  ADVANCED_SEARCH: "/api/advanced-search",
 };
 
 // https://stackoverflow.com/questions/75988682/debounce-in-javascript

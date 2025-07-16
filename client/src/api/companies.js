@@ -1,4 +1,4 @@
-import { API_ENDPOINTS, formatRequest, formatUrl, METHOD_ENUM } from "./util";
+import { API_ENDPOINTS, formatRequest, formatUrl, METHOD_ENUM,  } from "./util";
 
 const Companies = {
   /**
@@ -83,6 +83,10 @@ const Companies = {
     );
     return response.data;
   },
+
+  async advancedSearch(query) {
+    return []
+  }
 };
 
 export { Companies };
