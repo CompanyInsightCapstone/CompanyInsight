@@ -6,7 +6,7 @@ import "../styles/PageButtons.css";
 
 export default function PageButtons() {
   const { userSettings } = useContext(UserContext);
-  const { companiesListContextData} = useContext(CompanyListContext);
+  const { companiesListContextData } = useContext(CompanyListContext);
   const loadPage = useHandleLoadPage();
 
   if (userSettings.infiniteScroll) {

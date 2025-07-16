@@ -4,6 +4,9 @@ body,
   height: 100%;
   margin: 0;
   padding: 0;
+  --dark-gray: rgb(90, 90, 90);
+  --light-gray: rgb(148, 148, 148);
+  --focus-blue: rgb(69, 159, 189);
 }
 
 body {
@@ -20,4 +23,7 @@ body {
 
 main {
   flex: 1 0 auto;
+}
+
+html {
 }

@@ -1,0 +1,82 @@
+/* https://medium.com/100-days-in-kyoto-to-create-a-web-app-with-google/day-17-styling-a-search-box-like-googles-e17dd9074abe */
+
+.search-form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.search-form-container form {
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  justify-content: center;
+}
+
+.searchbox {
+  --target-size: 48px;
+  --box-height: var(--target-size);
+  --border-width: 2px;
+  --border-radius: calc(var(--box-height) / 2);
+  --icon-size: calc(var(--box-height) * 3 / 4);
+  --side-margin: calc(var(--border-radius) / 2);
+  --icon-vertical-margin: calc((var(--box-height) - var(--icon-size)) / 2);
+  position: relative;
+  height: var(--box-height);
+  width: 100%;
+  max-width: 800px;
+}
+
+
+.searchbox input[type="search"] {
+  border: var(--border-width) solid var(--dark-gray);
+  border-radius: var(--border-radius);
+  height: 100%;
+  width: 100%;
+  padding-left: calc(var(--side-margin) + var(--icon-size) + 4px);
+  padding-right: var(--side-margin);
+  color: var(--dark-gray);
+  font-family: "Noto Sans", Verdana, sans-serif;
+  font-size: 1rem;
+  -webkit-appearance: none;
+  background: transparent;
+}
+
+.searchbox input[type="search"]:focus {
+  border-color: var(--focus-blue);
+  box-shadow: 0px 0px 5px var(--focus-blue);
+  outline: 1px solid transparent;
+}
+
+
+.searchbox input[type="search"]::placeholder {
+  color: var(--light-gray);
+  opacity: 1;
+}
+
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+
+.searchbox input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+
+  background-image: url("data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='rgb(148, 148, 148)' %3E%3Cpath d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z' /%3E%3C/svg%3E%0A");
+  height: calc(var(--box-height) / 2);
+  width: calc(var(--box-height) / 2);
+}
+
+
+.searchbox svg {
+  position: absolute;
+  left: var(--side-margin);
+  top: var(--icon-vertical-margin);
+  bottom: var(--icon-vertical-margin);
+  fill: var(--dark-gray);
+  height: var(--icon-size);
+  width: var(--icon-size);
+  z-index: 1;
+}

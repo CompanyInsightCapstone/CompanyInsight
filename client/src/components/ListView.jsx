@@ -76,7 +76,6 @@ export default function ListView() {
   }, [userSettings.infiniteScroll]);
 
   return (
-
     <>
       {userSettings.infiniteScroll ? (
         <>
@@ -101,12 +100,11 @@ export default function ListView() {
         </>
       ) : (
         <>
-            <section className="list-container">
-                {companiesListContextData.companiesList.map((elm) => (
-                  <CompanyItem key={elm.id} company={elm} />
-                ))}
-            </section>
-
+          <section className="list-container">
+            {companiesListContextData.companiesList.map((elm) => (
+              <CompanyItem key={elm.id} company={elm} />
+            ))}
+          </section>
         </>
       )}
     </>
