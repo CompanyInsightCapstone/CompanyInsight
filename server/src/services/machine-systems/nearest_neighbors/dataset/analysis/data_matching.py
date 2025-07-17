@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from kaggle.api.kaggle_api_extended import KaggleApi
 from utils import *
-config()
+current_dir = config()
 from models.database import Database
 
 data_dir = os.path.join(current_dir, "data")
@@ -34,8 +34,6 @@ def initialize_dataset_df():
         return pd.read_parquet(parquet_path)
     else:
         return download_dataset("code1110/yfinance-stock-price-data-for-numerai-signals")
-
-
 
 def load_companies():
     """Load company data from database"""

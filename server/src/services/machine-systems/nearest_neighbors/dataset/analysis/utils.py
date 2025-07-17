@@ -26,8 +26,7 @@ def config(custom_path=None):
 
     if machine_systems_dir not in sys.path:
         sys.path.append(machine_systems_dir)
-
-
+    return current_dir
 
 def load_csv(file_path):
     """

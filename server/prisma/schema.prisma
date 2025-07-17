@@ -62,14 +62,14 @@ model CompanyDetails {
   lastUpdated   DateTime?
   sector        String?
   description   String?
-  company Company @relation(fields: [companyId, companySymbol], references: [id, symbol])
+  company Company @relation(fields: [companyId, companySymbol], references: [id, symbol], onDelete: Cascade)
 }
 
 model CompanyNumericals {
   id            String    @unique @default(cuid())
   companyId     String
   companySymbol String
-  lastUpdated   DateTime?
+  lastUpdated   DateTime? @default(now())
   rawClose      Float?
   close         Float?
   open          Float?
@@ -79,7 +79,7 @@ model CompanyNumericals {
   simpleMovingAverage    Float?
   smaStartDate  DateTime?
   smaEndDate    DateTime?
-  company       Company   @relation(fields: [companyId, companySymbol], references: [id, symbol])
+  company       Company   @relation(fields: [companyId, companySymbol], references: [id, symbol], onDelete: Cascade)
 }
 
 model Watchlist {
@@ -91,8 +91,7 @@ model Watchlist {
   user                   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   companyId              String
   companySymbol          String
-  company                Company   @relation(fields: [companyId, companySymbol], references: [id, symbol])
-
+  company                Company   @relation(fields: [companyId, companySymbol], references: [id, symbol], onDelete: Cascade)
   @@index([userId, companyId])
   @@map("Watchlist")
 }

@@ -238,6 +238,14 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
+# Data files
+*.csv
+**/dataset/**/*.csv
+**/data/**/*.csv
+*.parquet
+**/dataset/**/*.parquet
+**/data/**/*.parquet
+
 # Streamlit
 .streamlit/secrets.toml
 # db file
