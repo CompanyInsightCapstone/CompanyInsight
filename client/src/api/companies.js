@@ -1,4 +1,4 @@
-import { API_ENDPOINTS, formatRequest, formatUrl, METHOD_ENUM,  } from "./util";
+import { API_ENDPOINTS, formatRequest, formatUrl, METHOD_ENUM} from "./util";
 
 const Companies = {
   /**
@@ -85,7 +85,11 @@ const Companies = {
   },
 
   async advancedSearch(query) {
-    return []
+    const response = await formatRequest(
+      formatUrl(API_ENDPOINTS.ADVANCED_SEARCH, { query}, null , true),
+      METHOD_ENUM.GET,
+    );
+    return response.data
   }
 };
 

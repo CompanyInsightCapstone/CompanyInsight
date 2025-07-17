@@ -1,4 +1,5 @@
 const SERVER_ADDRESS = import.meta.env.VITE_SERVER_ADDRESS;
+const FLASK_ADDRESS = import.meta.env.VITE_FLASK_ADDRESS;
 
 export const METHOD_ENUM = {
   GET: "GET",
@@ -52,8 +53,13 @@ export function throttle(func, wait) {
  * @param {string|number} pathParam - Optional path parameter to append to endpoint
  * @returns {string} Complete URL with query parameters
  */
-export const formatUrl = (endpoint, params = null, pathParam = null) => {
-  let url = `${SERVER_ADDRESS}${endpoint}`;
+export const formatUrl = (endpoint, params = null, pathParam = null, isFlask = false) => {
+  let url = ""
+  if (isFlask) {
+    url = `${FLASK_ADDRESS}${endpoint}`;
+  } else {
+    url = `${SERVER_ADDRESS}${endpoint}`;
+  }
   if (pathParam !== null) {
     url += `/${pathParam}`;
   }

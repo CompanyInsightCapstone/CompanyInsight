@@ -1,0 +1,13 @@
+flask
+flask-cors
+psycopg2-binary
+pgvector
+numpy
+scikit-learn
+scipy
+python-dotenv
+requests
+torch
+transformers
+tqdm
+joblib
