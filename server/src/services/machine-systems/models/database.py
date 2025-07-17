@@ -18,7 +18,3 @@ class Database:
 
     def close(self):
         self.conn.close()
-
-    def testQuery(self):
-        self.cursor.execute("SELECT * FROM Company;")
-        return self.cursor.fetchall()
