@@ -24,5 +24,4 @@ class Company:
 
                 return {"data": results, "count": len(results)}
         except Exception as e:
-            print(f"Error in nearest_neighbors: {e}")
             return {"data": [], "count": 0, "error": str(e)}

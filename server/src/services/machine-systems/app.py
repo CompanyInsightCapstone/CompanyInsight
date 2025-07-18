@@ -32,7 +32,6 @@ searchController = SearchController(database)
 @app.route("/api/advanced-search", methods=["GET"])
 def search():
     try:
-        print("Received request for advanced search")
         query = request.args.get("query", "")
         results = searchController.search(query)
         return jsonify(results)
@@ -42,4 +41,3 @@ def search():
 
 if __name__ == "__main__":
     app.run(port=os.environ["FLASK_SERVER_PORT"], debug=True)
-    print("Running on port: " + os.environ["FLASK_SERVER_PORT"])

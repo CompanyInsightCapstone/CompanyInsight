@@ -5,13 +5,10 @@ import numpy as np
 import pandas as pd
 from kaggle.api.kaggle_api_extended import KaggleApi
 from utils import config, load_companies, load_csv, load_parquet
-
-
 current_dir = config()
 data_dir = os.path.join(current_dir, "data")
 analysis_dir = os.path.join(data_dir, "analysis")
 os.makedirs(data_dir, exist_ok=True)
-
 from models.database import Database
 
 def download_dataset(dataset_name):
