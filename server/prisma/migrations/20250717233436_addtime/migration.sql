@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "CompanyDetails" ALTER COLUMN "lastUpdated" SET DEFAULT CURRENT_TIMESTAMP;

@@ -4,12 +4,15 @@ import kaggle
 import numpy as np
 import pandas as pd
 from kaggle.api.kaggle_api_extended import KaggleApi
-from utils import *
-current_dir = config()
-from models.database import Database
+from utils import config, load_companies, load_csv, load_parquet
 
+
+current_dir = config()
 data_dir = os.path.join(current_dir, "data")
+analysis_dir = os.path.join(data_dir, "analysis")
 os.makedirs(data_dir, exist_ok=True)
+
+from models.database import Database
 
 def download_dataset(dataset_name):
     """Download dataset from Kaggle and load it into a DataFrame"""
@@ -34,18 +37,6 @@ def initialize_dataset_df():
         return pd.read_parquet(parquet_path)
     else:
         return download_dataset("code1110/yfinance-stock-price-data-for-numerai-signals")
-
-def load_companies():
-    """Load company data from database"""
-    try:
-        database = Database()
-        cursor = database.cursor()
-        cursor.execute('SELECT id, symbol FROM "Company";')
-        companies = cursor.fetchall()
-        return companies
-    except Exception as e:
-        print(f"Error loading companies: {e}")
-        return []
 
 
 def process_ticker_symbols(df, companies):
@@ -108,9 +99,44 @@ def save_ticker_lists(ticker_analysis):
 
     print(f"\nTicker lists saved to {output_dir}")
 
+
+def update_database_smaller_set():
+    """Update database to keep only matching tickers"""
+    try:
+        matching_tickers_path = os.path.join(analysis_dir, "matching_tickers.csv")
+        if not os.path.exists(matching_tickers_path):
+            print(f"Error: Matching tickers file not found at {matching_tickers_path}")
+            return False
+
+        matching_tickers = pd.read_csv(matching_tickers_path)
+
+        db = Database()
+        cursor = db.cursor()
+        ticker_symbols = matching_tickers["ticker"].tolist()
+
+        cursor.execute(""" SELECT COUNT(*) FROM "Company" """)
+        before_count = cursor.fetchone()[0]
+        print(f"Companies before update: {before_count}")
+
+        sql_query = """DELETE FROM "Company" WHERE symbol NOT IN (%s) """ % ", ".join(
+            ["'%s'" % ticker for ticker in ticker_symbols]
+        )
+        cursor.execute(sql_query)
+        cursor.execute(""" SELECT COUNT(*) FROM "Company" """)
+        after_count = cursor.fetchone()[0]
+        print(f"Companies after update: {after_count}")
+        print(f"Removed {before_count - after_count} companies")
+        db.commit()
+        cursor.close()
+        return True
+    except Exception as e:
+        print(f"Error updating database: {e}")
+        return False
+
+
+
 def main():
     """Main function to run the data matching process"""
-
     df = initialize_dataset_df()
     if df is None:
         print("Failed to load dataset")
@@ -124,8 +150,9 @@ def main():
     ticker_analysis = process_ticker_symbols(df, companies)
     analyze_dataset(df)
     save_ticker_lists(ticker_analysis)
+    update_database_smaller_set()
 
-    print("\nData Matching Complete ")
+    print("\nData Matching Complete")
 
 if __name__ == "__main__":
     main()
