@@ -28,6 +28,7 @@ def config(custom_path=None):
         sys.path.append(machine_systems_dir)
     return current_dir
 
+
 def load_csv(file_path):
     """
     Load a CSV file into a pandas DataFrame.
@@ -52,3 +53,26 @@ def load_parquet(file_path):
         pandas.DataFrame: The loaded data
     """
     return pd.read_parquet(file_path)
+
+
+def load_companies():
+    """Load company data from database"""
+    try:
+        import sys
+
+        machine_systems_dir = os.path.abspath(
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "..")
+        )
+        if machine_systems_dir not in sys.path:
+            sys.path.append(machine_systems_dir)
+
+        from models.database import Database
+
+        database = Database()
+        cursor = database.cursor()
+        cursor.execute('SELECT * FROM "Company";')
+        companies = cursor.fetchall()
+        return companies
+    except Exception as e:
+        print(f"Error loading companies: {e}")
+        return []

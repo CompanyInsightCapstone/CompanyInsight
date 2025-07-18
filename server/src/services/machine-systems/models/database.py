@@ -13,8 +13,14 @@ class Database:
             port=os.environ["DATABASE_PORT"],
         )
 
-    def cursor(self):
-        return self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+    def commit(self):
+        self.conn.commit()
+
+    def rollback(self):
+        self.conn.rollback()
 
     def close(self):
         self.conn.close()
+
+    def cursor(self):
+        return self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)

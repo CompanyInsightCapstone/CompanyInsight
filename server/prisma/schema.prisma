@@ -59,8 +59,7 @@ model CompanyDetails {
   id            String    @unique @default(cuid())
   companyId     String
   companySymbol String
-  lastUpdated   DateTime?
-  sector        String?
+  lastUpdated   DateTime? @default(now())
   description   String?
   company Company @relation(fields: [companyId, companySymbol], references: [id, symbol], onDelete: Cascade)
 }
