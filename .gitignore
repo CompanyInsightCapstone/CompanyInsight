@@ -246,6 +246,16 @@ __marimo__/
 **/dataset/**/*.parquet
 **/data/**/*.parquet
 
+# Monte Carlo simulation generated data
+**/data/qd_simulations/*.json
+**/data/dataset/*.json
+**/nearest_neighbors/data/qd_simulations/*.json
+**/nearest_neighbors/data/dataset/*.json
+server/src/services/machine-systems/nearest_neighbors/data/qd_simulations/
+server/src/services/machine-systems/nearest_neighbors/data/dataset/
+server/src/services/machine-systems/data/qd_simulations/
+server/src/services/machine-systems/data/dataset/
+
 # Streamlit
 .streamlit/secrets.toml
 # db file
