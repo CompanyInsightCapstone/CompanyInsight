@@ -42,7 +42,6 @@ def search_wikipedia_page(company_name):
         print(f"Cannot search Wikipedia with empty company name")
         return None
 
-    search_url = "https://en.wikipedia.org/w/api.php"
     params = {
         "action": "query",
         "list": "search",

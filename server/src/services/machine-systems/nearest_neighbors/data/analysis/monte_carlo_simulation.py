@@ -1,16 +1,21 @@
 import gc
 import json
+import multiprocessing
 import os
 import random
 import sys
+import threading
 import time
-from collections import defaultdict
-from concurrent.futures import as_completed, ThreadPoolExecutor
+import uuid
+from collections import Counter, defaultdict
+from concurrent.futures import as_completed, ProcessPoolExecutor, ThreadPoolExecutor
 from datetime import datetime
+
 import numpy as np
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline as hf_pipeline
-from utils import config, load_company_documents
+from utils import *
+from scoring import *
 
 current_dir = config()
 nearest_neighbors_dir = os.path.dirname(os.path.dirname(current_dir))
@@ -27,105 +32,72 @@ os.makedirs(dataset_dir, exist_ok=True)
 from models.database import Database
 
 document_objects = load_company_documents()
+n = len(document_objects)
+inverted_index = build_inverted_index(document_objects)
+idf = compute_idf(inverted_index, n)
+numerical_index = build_numerical_index(document_objects)
+doc_norms = compute_doc_norms(inverted_index, idf, n)
 
-SYSTEM_PROMPTS = [
-    """Generate short financial search queries (2-10 words). One query per line. No formatting.""",
-    """Create brief stock market search queries. Raw text only. One per line. No explanations.""",
-    """Financial search queries only. Keep under 10 words. No numbering or formatting.""",
-]
 
 try:
-    model_name = "google/flan-t5-base"
+    model_name = "google/flan-t5-large"
     device = 0 if torch.cuda.is_available() else -1
     query_generator = hf_pipeline(
-        "text2text-generation",
+        task="text2text-generation",
         model=model_name,
         tokenizer=model_name,
         device=device,
-        max_length=100,
+        max_length=150,
+        do_sample=True,
+        temperature=0.7,
     )
-    print(f"Successfully initialized LLM pipeline using {model_name}")
 except Exception as e:
-    print(f"Error initializing LLM pipeline: {e}")
+    print(f"Error initializing LLM models: {e}")
     query_generator = None
-
-patterns = [
-    "Queries about stock name or symbol",
-    "Queries about stock price",
-    "Queries about an overview of the company",
-    "Queries about the company's sector or industry",
-    "Queries about rising / falling stock prices",
-    "Queries about company performance",
-    "Queries about company financials",
-    "Queries about company stock trends",
-]
-
-prompts = [
-    "Generate search queries for {pattern} related to {company}",
-    "Create 5 search queries about {pattern} for {company}",
-    "What would users search for regarding {pattern} for {company}?",
-    "List potential search queries about {company} focusing on {pattern}",
-    "Generate realistic user queries about {pattern} for {company}",
-]
 
 
 def rule_based_annotation_qd(query, documents):
     """
-    Rule-based annotation for query-document pairs.
+    Rule-based annotation for query-document pairs with index-based search.
     Args:
         query (str): The query string.
         documents (list): A list of documents.
     Returns:
-        tuple: (positive_document, scores) - The annotated document with highest relevance score and metadata
+        tuple: (positive_document, scores) - The annotated document randomly selected from top 3 highest relevance scores
     """
-    scores = {}
-    scores["metadata"] = {
-        "query": query,
-        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "average_score": None,
-        "min_score": None,
-        "max_score": None,
-    }
     query_lower = query.lower()
-    all_scores = []
-    for doc in documents:
-        score = 0.1
-        if any(term in query_lower for term in ["price", "stock price", "value", "$"]):
-            if "close" in doc and doc["close"]:
-                score += 0.5
-            if "simpleMovingAverage" in doc and doc["simpleMovingAverage"]:
-                score += 0.3
-        elif any(term in query_lower for term in ["name", "symbol", "ticker"]):
-            if (
-                "name" in doc
-                and doc["name"]
-                and any(
-                    term.lower() in doc["name"].lower() for term in query_lower.split()
-                )
-            ):
-                score += 0.6
-            if (
-                "symbol" in doc
-                and doc["symbol"]
-                and doc["symbol"].lower() in query_lower
-            ):
-                score += 0.7
-        else:
-            if "description" in doc and doc["description"]:
-                query_terms = [term for term in query_lower.split() if len(term) > 2]
-                matches = sum(
-                    1 for term in query_terms if term in doc["description"].lower()
-                )
-                score += min(0.8, matches * 0.2)
-        scores[doc["id"]] = score
-        all_scores.append(score)
-    positive_document = max(documents, key=lambda x: scores.get(x["id"], 0))
-    scores["metadata"]["average_score"] = (
-        sum(all_scores) / len(all_scores) if all_scores else 0
-    )
-    scores["metadata"]["min_score"] = min(all_scores) if all_scores else 0
-    scores["metadata"]["max_score"] = max(all_scores) if all_scores else 0
-    return positive_document, scores
+    scored_docs = []
+    for i, doc in enumerate(documents):
+        score = 0.0
+        tf_idf_results = index_search(query_lower, inverted_index, idf, doc_norms)
+        tf_idf_score = 0.0
+        if tf_idf_results:
+            for result_score, result_idx in tf_idf_results:
+                if result_idx == i:
+                    tf_idf_score = result_score
+                    break
+
+        numerical_score = numerical_index_search(query_lower, numerical_index, doc)
+        score += (tf_idf_score) * +numerical_score
+
+        company_name = doc.get("name", "").lower()
+        company_symbol = doc.get("symbol", "").lower()
+
+        if company_name and query_lower.startswith(company_name):
+            score += 2.0
+        elif company_symbol and query_lower.startswith(company_symbol):
+            score += 1.5
+        elif company_name and company_name in query_lower.split()[:3]:
+            score += 1.0
+        elif company_symbol and company_symbol in query_lower.split()[:3]:
+            score += 0.8
+
+        scored_docs.append((doc, score))
+
+    scored_docs.sort(key=lambda x: x[1], reverse=True)
+
+    selected_doc = scored_docs[0][0]
+    return selected_doc
 
 
 class SyntheticDatasetGenerator:
@@ -142,12 +114,133 @@ class SyntheticDatasetGenerator:
         self.iteration_number = iteration_number
         self.document_objects = document_objects
         self.search_queries = []
-        self.dataset_scores_list = []
+
+    def make_data_instance(self):
+        """
+        Create a single data instance with query and annotated document.
+
+        Returns:
+            Dictionary containing the data instance
+        """
+        if not self.search_queries:
+            self.generate_search_queries()
+
+        selected_query = random.choice(self.search_queries)
+        positive_document = rule_based_annotation_qd(
+            selected_query, self.document_objects
+        )
+
+        return {
+            "id": str(uuid.uuid4()),
+            "query": selected_query,
+            "positive_document": positive_document,
+        }
+
+    def generate_company_specific_queries(self, num_queries=50):
+        """
+        Generate queries that specifically focus on company names and symbols.
+
+        Args:
+            num_queries: Number of company-specific queries to generate
+
+        Returns:
+            List of company-specific queries
+        """
+        company_queries = []
+        selected_companies = (
+            random.sample(document_objects, min(len(document_objects), num_queries))
+            if len(document_objects) > 10
+            else document_objects
+        )
+
+        for company in selected_companies:
+            if len(company_queries) >= num_queries:
+                break
+
+            company_name = company.get("name", "")
+            company_symbol = company.get("symbol", "")
+
+            if not company_name or not company_symbol:
+                continue
+
+            company_identifier = random.choice(
+                [
+                    company_name,
+                    company_symbol,
+                    f"{company_name} ({company_symbol})",
+                    company_symbol,
+                ]
+            )
+
+            template = random.choice(COMPANY_QUERY_TEMPLATES)
+            query = template.format(company=company_identifier)
+            query = query.strip()
+            if query and len(query.split()) <= 15:
+                company_queries.append(query)
+        return company_queries
+
+    def generate_general_sector_queries(self, num_queries=50):
+        """
+        Generate queries that focus on sectors and general investment topics without specific company names.
+
+        Args:
+            num_queries: Number of general sector queries to generate
+
+        Returns:
+            List of general sector queries
+        """
+        sector_queries = []
+        sectors = [
+            "technology",
+            "healthcare",
+            "financial",
+            "energy",
+            "consumer",
+            "industrial",
+            "utilities",
+            "real estate",
+            "communication",
+            "materials",
+            "retail",
+            "automotive",
+            "pharmaceutical",
+            "banking",
+            "insurance",
+            "media",
+            "entertainment",
+            "telecom",
+            "semiconductor",
+            "software",
+            "hardware",
+            "biotech",
+            "fintech",
+            "renewable energy",
+            "oil and gas",
+            "mining",
+            "agriculture",
+        ]
+
+        for _ in range(num_queries):
+            if len(sector_queries) >= num_queries:
+                break
+
+            sector = random.choice(sectors)
+            template = random.choice(GENERAL_QUERY_TEMPLATES)
+            query = template.format(sector=sector)
+            query = query.strip()
+            if query and len(query.split()) <= 15:
+                sector_queries.append(query)
+        return sector_queries
 
     def generate_search_queries(self, num_queries=100):
         """
         Generate synthetic search queries using patterns and company names.
         Uses LLM if available, otherwise falls back to simple pattern-based generation.
+
+        This enhanced version balances between:
+        - LLM-generated general queries (most common)
+        - Sector-based template queries (second most common)
+        - Company-specific template queries (limited to 10% or less)
 
         Args:
             num_queries: Number of queries to generate
@@ -156,30 +249,46 @@ class SyntheticDatasetGenerator:
             List of generated search queries
         """
         generated_queries = []
-
+        company_specific_count = int(num_queries * 0.1)
+        sector_based_count = int(num_queries * 0.4)
+        general_count = num_queries - company_specific_count - sector_based_count
+        company_queries = self.generate_company_specific_queries(company_specific_count)
+        generated_queries.extend(company_queries)
+        sector_queries = self.generate_general_sector_queries(sector_based_count)
+        generated_queries.extend(sector_queries)
         batch_size = 5 if query_generator else 1
-        num_batches = (num_queries + batch_size - 1) // batch_size
+        num_batches = (general_count + batch_size - 1) // batch_size
+
         for batch in range(num_batches):
-            company = random.choice(document_objects)
+            if len(generated_queries) >= num_queries:
+                break
+
             pattern = random.choice(patterns)
-            prompt_template = random.choice(prompts)
-            system_prompt = random.choice(SYSTEM_PROMPTS)
 
-            company_name = company["name"] + " " + company["symbol"]
-            formatted_prompt = prompt_template.format(
-                pattern=pattern, company=company_name
+            prompt_template = (
+                random.choice(prompts[:10])
+                if len(prompts) >= 10
+                else random.choice(prompts)
             )
-
+            system_prompt = random.choice(SYSTEM_PROMPTS)
+            formatted_prompt = prompt_template.format(pattern=pattern, company="")
             if query_generator:
                 try:
+
                     full_prompt = (
-                        f"{system_prompt}\n\nTASK: {formatted_prompt}\n\nQUERIES:"
+                        f"{system_prompt}\n\n"
+                        f"TASK: {formatted_prompt}\n\n"
+                        f"IMPORTANT: Generate general investment queries that DON'T mention specific company names. "
+                        f"Focus on sectors, trends, strategies, and market conditions instead. "
+                        f"Make queries realistic, as if typed by a real investor looking for general information.\n\n"
+                        f"QUERIES:"
                     )
+
                     result = query_generator(
                         full_prompt,
                         max_length=100,
                         do_sample=True,
-                        temperature=0.7,
+                        temperature=0.8,
                         num_return_sequences=4,
                         num_beams=4,
                     )
@@ -205,205 +314,250 @@ class SyntheticDatasetGenerator:
 
                 except Exception as e:
                     print(f"Error generating queries with LLM: {e}")
-                    simple_query = (
-                        f"{pattern.lower().replace('queries about ', '')} {company}"
-                    )
+                    simple_query = f"{pattern.lower().replace('queries about ', '')}"
                     generated_queries.append(simple_query)
             else:
-                simple_query = (
-                    f"{pattern.lower().replace('queries about ', '')} {company}"
-                )
+                simple_query = f"{pattern.lower().replace('queries about ', '')}"
                 generated_queries.append(simple_query)
+
             if len(generated_queries) >= num_queries:
                 generated_queries = generated_queries[:num_queries]
                 break
 
+        random.shuffle(generated_queries)
         self.search_queries = generated_queries
         return generated_queries
 
-    def make_data_instance(self):
-        """
-        Create a single data instance with query and annotated document.
 
-        Returns:
-            Dictionary containing the data instance
-        """
-        if not self.search_queries:
-            self.generate_search_queries()
-        query = random.choice(self.search_queries)
-        document_sample = random.sample(self.document_objects, random.randint(5, 30))
-        positive_document, scores = rule_based_annotation_qd(query, document_sample)
-        self.dataset_scores_list.append(scores)
-        return {
-            "id": f"query_{self.iteration_number}_{len(self.dataset_scores_list)}",
-            "positive_document": positive_document,
-            "query": query,
-            "scores": scores,
-        }
-
-
-def thread_function(start_simulation, end_simulation, dataset_size_per_simulation=1000):
+def process_function(chunk_index, chunk_size):
     """
-    Function executed by each thread to generate synthetic datasets.
+    Function executed by each process to generate a chunk of the synthetic dataset.
 
     Args:
-        start_simulation: Starting simulation index
-        end_simulation: Ending simulation index (exclusive)
-        dataset_size_per_simulation: Number of instances to generate per simulation
+        chunk_index: Index of this chunk
+        chunk_size: Number of instances to generate in this chunk
 
     Returns:
-        List of generated datasets
+        Generated dataset chunk
     """
-    results = []
-    for sim_index in range(start_simulation, end_simulation):
-        print(f"Starting simulation {sim_index}")
-        start_time = time.time()
-        generator = SyntheticDatasetGenerator(
-            dataset_size=dataset_size_per_simulation,
-            iteration_number=sim_index,
-        )
-        generator.generate_search_queries(
-            num_queries=max(10, dataset_size_per_simulation // 10)
-        )
+    print(
+        f"Process {os.getpid()} initializing for chunk {chunk_index} with size {chunk_size}"
+    )
 
-        dataset = []
-        for instance_index in range(generator.dataset_size):
-            try:
-                instance = generator.make_data_instance()
+    process_query_generator = None
+    try:
+        model_name = "google/flan-t5-large"
+        device = "cpu"
+        if torch.cuda.is_available():
+            device = 0
+            print(f"Device set to use cuda")
+        else:
+            print(f"Device set to use cpu")
+
+        print(f"Process {os.getpid()} initializing LLM pipeline using {model_name}...")
+        process_query_generator = hf_pipeline(
+            task="text2text-generation",
+            model=model_name,
+            tokenizer=model_name,
+            device=device,
+            max_length=150,
+            do_sample=True,
+            temperature=0.7,
+        )
+    except Exception as e:
+        print(f"Process {os.getpid()} error initializing LLM: {e}")
+
+    print(f"Process {os.getpid()} starting chunk {chunk_index}")
+    start_time = time.time()
+
+    generator = SyntheticDatasetGenerator(
+        dataset_size=chunk_size, iteration_number=chunk_index
+    )
+    if process_query_generator:
+        generator.query_generator = process_query_generator
+    generator.generate_search_queries(num_queries=chunk_size // 2)
+    dataset = []
+    for i in range(chunk_size):
+        try:
+            instance = generator.make_data_instance()
+            if instance:
                 dataset.append(instance)
+            if i > 0 and i % 100 == 0:
                 print(
-                    f"Simulation {sim_index}: Generated instance {instance_index+1}/{generator.dataset_size}"
+                    f"Process {os.getpid()}, Chunk {chunk_index}: Generated {i}/{chunk_size} instances"
                 )
-            except Exception as e:
-                print(f"Error generating instance: {e}")
-                continue
-        os.makedirs(simulations_dir, exist_ok=True)
-        with open(
-            os.path.join(simulations_dir, f"qd_dataset_sim_{sim_index}.json"), "w"
-        ) as f:
-            serializable_dataset = []
-            for item in dataset:
-                serializable_item = {
-                    "id": item["id"],
-                    "query": item["query"],
-                    "positive_document_id": (
-                        item["positive_document"].get("id")
-                        if isinstance(item["positive_document"], dict)
-                        else None
-                    ),
-                    "scores": item["scores"],
-                }
-                serializable_dataset.append(serializable_item)
-            json.dump(serializable_dataset, f, indent=2)
-        del dataset
-        del generator
-        gc.collect()
-    return results
+        except Exception as e:
+            print(f"Error generating instance {i} in chunk {chunk_index}: {e}")
+
+    os.makedirs(simulations_dir, exist_ok=True)
+    with open(
+        os.path.join(simulations_dir, f"qd_dataset_chunk_{chunk_index}.json"), "w"
+    ) as f:
+        serializable_dataset = []
+        for item in dataset:
+            serializable_item = {
+                "id": item["id"],
+                "query": item["query"],
+                "document": item["positive_document"],
+            }
+            serializable_dataset.append(serializable_item)
+        json.dump(serializable_dataset, f, indent=2)
+
+    print(
+        f"Process {os.getpid()} completed chunk {chunk_index} in {time.time() - start_time:.2f} seconds"
+    )
+
+    del dataset
+    del generator
+    gc.collect()
+    return serializable_dataset
 
 
-def run(n_simulations=100, num_workers=10, dataset_size_per_simulation=1000):
+def run(total_dataset_size=10000, num_workers=10, chunk_size=1000):
     """
-    Run the Monte Carlo simulation with multiple threads.
+    Run the dataset generation process using multiple processes.
 
     Args:
-        n_simulations: Total number of simulations to run
-        num_workers: Number of worker threads to use
-        dataset_size_per_simulation: Number of instances to generate per simulation
+        total_dataset_size: Total number of unique instances to generate
+        num_workers: Maximum number of worker processes to use
+        chunk_size: Size of each chunk processed by a worker
+
+    Returns:
+        None
     """
     print(
-        f"Starting Monte Carlo simulation with {n_simulations} simulations using {num_workers} workers"
+        f"Starting dataset generation for {total_dataset_size} unique instances using {num_workers} processes"
     )
-
-    estimated_time_per_sim = 5 * (dataset_size_per_simulation / 1000)
-    total_estimated_time = (estimated_time_per_sim * n_simulations) / num_workers
-    hours, remainder = divmod(total_estimated_time, 3600)
-    minutes, seconds = divmod(remainder, 60)
-
-    print(
-        f"Estimated time to complete: {int(hours)} hours, {int(minutes)} minutes, {int(seconds)} seconds"
-    )
-    print(f"Estimated completion time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
     start_time = time.time()
-    work_chunk_size = max(1, n_simulations // num_workers)
-    all_results = []
-    completed_simulations = 0
-
-    with ThreadPoolExecutor(max_workers=min(num_workers, os.cpu_count())) as executor:
-        futures = []
-        for i in range(0, n_simulations, work_chunk_size):
-            end = min(i + work_chunk_size, n_simulations)
-            futures.append(
-                executor.submit(thread_function, i, end, dataset_size_per_simulation)
-            )
-
-        for future in as_completed(futures):
-            try:
-                results = future.result()
-                all_results.extend(results)
-
-                completed_simulations += 1
-                elapsed_time = time.time() - start_time
-                progress_percent = (completed_simulations / len(futures)) * 100
-                if completed_simulations > 0:
-                    time_per_chunk = elapsed_time / completed_simulations
-                    remaining_chunks = len(futures) - completed_simulations
-                    remaining_time = time_per_chunk * remaining_chunks
-
-                    hours, remainder = divmod(remaining_time, 3600)
-                    minutes, seconds = divmod(remainder, 60)
-
-                    est_completion_time = datetime.now().fromtimestamp(
-                        time.time() + remaining_time
-                    )
-
-                    print(f"Progress: {progress_percent:.1f}% complete")
-                    print(
-                        f"Estimated time remaining: {int(hours)} hours, {int(minutes)} minutes, {int(seconds)} seconds"
-                    )
-                    print(
-                        f"Estimated completion time: {est_completion_time.strftime('%Y-%m-%d %H:%M:%S')}"
-                    )
-            except Exception as e:
-                print(f"Error in thread: {e}")
-
-    with open(os.path.join(simulations_dir, "simulation_stats.json"), "w") as f:
-        json.dump(all_results, f, indent=2)
-
-    print("Aggregating all simulation results...")
+    unique_pairs = set()
     all_instances = []
-    for i in range(n_simulations):
-        try:
-            sim_file = os.path.join(simulations_dir, f"qd_dataset_sim_{i}.json")
-            if os.path.exists(sim_file):
-                with open(sim_file, "r") as f:
-                    instances = json.load(f)
-                    all_instances.extend(instances)
-                    print(f"Added {len(instances)} instances from simulation {i}")
-        except Exception as e:
-            print(f"Error reading simulation {i}: {e}")
+    chunk_index = 0
 
-    aggregated_file = os.path.join(dataset_dir, "aggregated_qd_dataset.json")
+    while len(unique_pairs) < total_dataset_size:
+        remaining = total_dataset_size - len(unique_pairs)
+        current_batch_size = min(remaining * 2, num_workers * chunk_size)
+        current_num_chunks = max(1, (current_batch_size + chunk_size - 1) // chunk_size)
+        current_num_workers = min(num_workers, current_num_chunks)
+
+        print(
+            f"Need {remaining} more unique pairs. Generating batch of {current_batch_size} instances with {current_num_workers} workers"
+        )
+
+        with ProcessPoolExecutor(max_workers=current_num_workers) as executor:
+            futures = [
+                executor.submit(process_function, chunk_index + i, chunk_size)
+                for i in range(current_num_chunks)
+            ]
+
+            completed_chunks = 0
+            for future in as_completed(futures):
+                try:
+                    results = future.result()
+                    completed_chunks += 1
+                    print(
+                        f"Batch progress: {(completed_chunks / len(futures)) * 100:.1f}% complete"
+                    )
+                except Exception as e:
+                    print(f"Error in process: {e}")
+
+        new_pairs_found = 0
+        for i in range(current_num_chunks):
+            try:
+                chunk_file = os.path.join(
+                    simulations_dir, f"qd_dataset_chunk_{chunk_index + i}.json"
+                )
+                if os.path.exists(chunk_file):
+                    with open(chunk_file, "r") as f:
+                        instances = json.load(f)
+                        print(
+                            f"Processing {len(instances)} instances from chunk {chunk_index + i}"
+                        )
+
+                        for instance in instances:
+                            query = instance["query"]
+                            document = instance["document"]
+                            doc_id = (
+                                document.get("id", "")
+                                if isinstance(document, dict)
+                                else ""
+                            )
+                            pair_key = (query, doc_id)
+
+                            if pair_key not in unique_pairs:
+                                unique_pairs.add(pair_key)
+                                new_instance = {
+                                    "query": query,
+                                    "positive_document": document,
+                                }
+                                all_instances.append(new_instance)
+                                new_pairs_found += 1
+
+                                if len(unique_pairs) % 100 == 0:
+                                    print(
+                                        f"Found {len(unique_pairs)}/{total_dataset_size} unique pairs"
+                                    )
+
+                                if len(unique_pairs) >= total_dataset_size:
+                                    break
+
+                    try:
+                        os.remove(chunk_file)
+                    except Exception as e:
+                        print(f"Failed to remove chunk file {chunk_file}: {e}")
+
+                if len(unique_pairs) >= total_dataset_size:
+                    break
+            except Exception as e:
+                print(f"Error reading chunk {chunk_index + i}: {e}")
+
+        print(f"Found {new_pairs_found} new unique pairs in this batch")
+        chunk_index += current_num_chunks
+
+        if new_pairs_found == 0:
+            print(
+                "Warning: No new unique pairs found in this batch. Adjusting generation parameters..."
+            )
+            time.sleep(1)
+
+    final_dataset = all_instances[:total_dataset_size]
+    aggregated_file = os.path.join(dataset_dir, "deduplicated_qd_dataset.json")
     with open(aggregated_file, "w") as f:
-        json.dump(all_instances, f, indent=2)
+        json.dump(final_dataset, f, indent=2)
+
+    training_file = os.path.join(dataset_dir, "training_qd_dataset.json")
+    training_format = [
+        {"query": instance["query"], "document": instance["positive_document"]}
+        for instance in final_dataset
+    ]
+
+    with open(training_file, "w") as f:
+        json.dump(training_format, f, indent=2)
 
     print(
-        f"Wrote aggregated dataset with {len(all_instances)} instances to {aggregated_file}"
+        f"Wrote deduplicated dataset with {len(final_dataset)} instances to {aggregated_file}"
     )
 
-    total_time = time.time() - start_time
-    print(f"All threads completed successfully in {total_time:.2f} seconds")
+    elapsed_time = time.time() - start_time
+    hours, remainder = divmod(elapsed_time, 3600)
+    minutes, seconds = divmod(remainder, 60)
     print(
-        f"Generated {len(all_results)} simulations with a total of {len(all_instances)} instances"
+        f"Dataset generation completed in {int(hours)}h {int(minutes)}m {seconds:.2f}s"
     )
 
 
 def main():
-    """Main function to run the Monte Carlo simulation"""
-    num_worker_threads = os.cpu_count() - 1
-    num_simulations = 10
-    dataset_size_per_simulation = 1
-    run(num_simulations, num_worker_threads, dataset_size_per_simulation)
+    """
+    Main entry point for the Monte Carlo simulation.
+    Parses command line arguments if provided, otherwise uses defaults.
+    """
+    num_workers = os.cpu_count() // 2
+    total_dataset_size = 10000
+    run(
+        total_dataset_size,
+        num_workers=num_workers,
+        chunk_size=total_dataset_size // n_workers,
+    )
 
 
 if __name__ == "__main__":
