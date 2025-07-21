@@ -1,9 +1,7 @@
 import math
 from collections import Counter, defaultdict
 from typing import List, Tuple
-
 import numpy as np
-
 
 def tokenize(string_seq):
     return string_seq.split()
@@ -60,7 +58,6 @@ def compute_idf(inv_idx, n_docs, min_df=10, max_df_ratio=0.95):
     if min_idf < 0:
         for k in idf_values:
             idf_values[k] -= min_idf
-
     return idf_values
 
 
