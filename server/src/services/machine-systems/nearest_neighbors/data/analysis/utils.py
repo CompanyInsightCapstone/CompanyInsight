@@ -152,7 +152,6 @@ SYSTEM_PROMPTS = [
 
 
 patterns = [
-    # General market and sector patterns
     "market trends",
     "sector performance",
     "industry outlook",
@@ -161,16 +160,7 @@ patterns = [
     "market sentiment",
     "market volatility",
     "sector rotation",
-    "bull market",
-    "bear market",
-    "market correction",
-    "recession indicators",
-    "inflation impact",
-    "interest rate effects",
-    "market cycles",
-    # Investment strategy patterns
-    "investment strategies",
-    "portfolio diversification",
+
     "asset allocation",
     "risk management",
     "long term investing",
@@ -184,7 +174,6 @@ patterns = [
     "technical analysis",
     "fundamental analysis",
     "momentum trading",
-    # Financial metrics and analysis
     "financial ratios",
     "valuation metrics",
     "earnings analysis",
@@ -195,7 +184,6 @@ patterns = [
     "return on investment",
     "price to earnings",
     "dividend yield",
-    # Specific sectors
     "technology stocks",
     "healthcare sector",
     "financial sector",
@@ -206,7 +194,6 @@ patterns = [
     "utilities stocks",
     "real estate investment",
     "communication services",
-    # Original patterns (kept but will be used less frequently)
     "stock price",
     "company overview",
     "sector or industry",
@@ -222,7 +209,6 @@ patterns = [
 ]
 
 prompts = [
-    # General prompts that don't focus on specific companies
     "Generate search queries for the pattern: {pattern}. Focus on typical user questions or interests.",
     "Create 5 realistic search queries related to {pattern} that a user might enter.",
     "What would users search for regarding {pattern}? Provide concise queries.",
@@ -233,7 +219,6 @@ prompts = [
     "How would someone research {pattern} in the current market?",
     "What questions would investors have about {pattern}?",
     "Create queries that explore {pattern} across different market conditions.",
-    # Company-specific prompts (kept but will be used less frequently)
     "Create search queries specifically about {company} related to {pattern}.",
     "Generate 5 different ways users might search for information about {company}.",
     "What would an investor type to find {pattern} information about {company}?",
@@ -241,7 +226,7 @@ prompts = [
     "Generate queries that compare {company} with its competitors regarding {pattern}.",
 ]
 
-# Added general query templates that don't focus on specific companies
+
 GENERAL_QUERY_TEMPLATES = [
     "best {sector} stocks to buy",
     "top performing {sector} companies",
@@ -251,14 +236,11 @@ GENERAL_QUERY_TEMPLATES = [
     "{sector} industry trends",
     "undervalued {sector} stocks",
     "high growth {sector} stocks",
-    "{sector} ETFs",
-    "{sector} mutual funds",
     "how to analyze {sector} stocks",
     "{sector} stocks with dividends",
     "best time to buy {sector} stocks",
     "{sector} market leaders",
     "{sector} market share analysis",
-    "investing in {sector} during recession",
     "{sector} stocks for beginners",
     "long term {sector} investments",
     "{sector} stock performance",
@@ -267,7 +249,6 @@ GENERAL_QUERY_TEMPLATES = [
     "{sector} stock valuation",
     "{sector} industry disruption",
     "{sector} future outlook",
-    "{sector} competitive analysis",
 ]
 
 
@@ -275,26 +256,73 @@ COMPANY_QUERY_TEMPLATES = [
     "{company} stock price",
     "{company} stock",
     "{company} financials",
-    "{company} earnings",
-    "{company} news",
     "{company} CEO",
     "{company} products",
     "{company} competitors",
-    "{company} vs competitors",
     "{company} market cap",
     "{company} dividend",
     "{company} forecast",
-    "{company} analyst rating",
-    "{company} quarterly report",
-    "{company} revenue",
-    "{company} profit margin",
-    "{company} PE ratio",
     "{company} stock history",
+    "{company} stock prediction",
+    "{company} stock chart",
+    "{company} earnings",
+    "{company} revenue",
+    "{company} financial health",
+    "{company} market share",
+    "{company} profit margins",
+    "{company} quarterly results",
+    "{company} business model",
+    "{company} growth strategy",
     "buy {company} stock",
     "sell {company} stock",
     "is {company} a good investment",
-    "{company} stock prediction",
-    "{company} stock chart",
-    "{company} latest news",
+    "should I buy {company} stock",
+    "{company} vs competitors",
+    "latest news about {company}",
+    "what are {company} earnings",
+    "{company} stock performance",
     "{company} investor relations",
+    "{company} industry position",
+    "{company} valuation metrics",
+    "{company} price to earnings",
+    "{company} technical analysis",
+    "{company} institutional ownership",
 ]
+
+search_url = "https://en.wikipedia.org/w/api.php"
+
+def sample_system_prompt():
+    return np.random.choice(SYSTEM_PROMPTS)
+
+
+def sample_pattern():
+    return np.random.choice(patterns)
+
+
+def sample_prompt_template():
+    return np.random.choice(prompts)
+
+
+def sample_general_query_template():
+    return np.random.choice(GENERAL_QUERY_TEMPLATES)
+
+
+def sample_company_query_template():
+    return np.random.choice(COMPANY_QUERY_TEMPLATES)
+
+
+def get_sampling_weights(query_type="mixed"):
+    if query_type == "company_heavy":
+        return 0.8, 0.2
+    elif query_type == "balanced":
+        return 0.5, 0.5
+    elif query_type == "general_heavy":
+        return 0.2, 0.8
+    else:
+        return 0.7, 0.3
+
+
+def is_company_name_first(query, company_name):
+    query_lower = query.lower().strip()
+    company_lower = company_name.lower().strip()
+    return query_lower.startswith(company_lower)

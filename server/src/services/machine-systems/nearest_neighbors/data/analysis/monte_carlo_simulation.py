@@ -1,12 +1,14 @@
 import gc
 import json
+import multiprocessing
 import os
 import random
 import sys
+import threading
 import time
 import uuid
 from collections import Counter, defaultdict
-from concurrent.futures import as_completed, ThreadPoolExecutor
+from concurrent.futures import as_completed, ProcessPoolExecutor, ThreadPoolExecutor
 from datetime import datetime
 
 import numpy as np
@@ -14,7 +16,6 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline as hf_pipeline
 from utils import *
 from scoring import *
-
 
 current_dir = config()
 nearest_neighbors_dir = os.path.dirname(os.path.dirname(current_dir))
@@ -39,52 +40,20 @@ doc_norms = compute_doc_norms(inverted_index, idf, n)
 
 
 try:
-    model_name = "mistralai/Mistral-7B-Instruct-v0.2"
+    model_name = "google/flan-t5-large"
     device = 0 if torch.cuda.is_available() else -1
-
-    print(f"Initializing LLM pipeline using {model_name}...")
     query_generator = hf_pipeline(
-        "text-generation",
+        task="text2text-generation",
         model=model_name,
         tokenizer=model_name,
         device=device,
-        max_length=200,
+        max_length=150,
         do_sample=True,
         temperature=0.7,
-        top_p=0.9,
     )
-    print(f"Successfully initialized LLM pipeline using {model_name}")
 except Exception as e:
-    print(f"Error initializing Mistral model: {e}")
-    try:
-        model_name = "google/gemma-7b-it"
-        print(f"Falling back to {model_name}...")
-        query_generator = hf_pipeline(
-            "text-generation",
-            model=model_name,
-            tokenizer=model_name,
-            device=device,
-            max_length=200,
-            do_sample=True,
-            temperature=0.7,
-        )
-        print(f"Successfully initialized LLM pipeline using {model_name}")
-    except Exception as e:
-        print(f"Error initializing Gemma model: {e}")
-        try:
-            model_name = "google/flan-t5-large"
-            print(f"Falling back to {model_name}...")
-            query_generator = hf_pipeline(
-                "text2text-generation",
-                model=model_name,
-                tokenizer=model_name,
-                device=device,
-                max_length=150,
-            )
-            print(f"Successfully initialized LLM pipeline using {model_name}")
-        except Exception as e:
-            print(f"Error initializing all LLM models: {e}")
-            query_generator = None
+    print(f"Error initializing LLM models: {e}")
+    query_generator = None
 
 
 def rule_based_annotation_qd(query, documents):
@@ -94,11 +63,10 @@ def rule_based_annotation_qd(query, documents):
         query (str): The query string.
         documents (list): A list of documents.
     Returns:
-        tuple: (positive_document, scores) - The annotated document with highest relevance score and metadata
+        tuple: (positive_document, scores) - The annotated document randomly selected from top 3 highest relevance scores
     """
     query_lower = query.lower()
-    all_scores = []
-    scores = {}
+    scored_docs = []
     for i, doc in enumerate(documents):
         score = 0.0
         tf_idf_results = index_search(query_lower, inverted_index, idf, doc_norms)
@@ -110,11 +78,26 @@ def rule_based_annotation_qd(query, documents):
                     break
 
         numerical_score = numerical_index_search(query_lower, numerical_index, doc)
-        score += (tf_idf_score) + (numerical_score * 0.5)
-        scores[doc["id"]] = score
-        all_scores.append(score)
-    positive_document = max(documents, key=lambda x: scores.get(x["id"], 0))
-    return positive_document
+        score += (tf_idf_score) * +numerical_score
+
+        company_name = doc.get("name", "").lower()
+        company_symbol = doc.get("symbol", "").lower()
+
+        if company_name and query_lower.startswith(company_name):
+            score += 2.0
+        elif company_symbol and query_lower.startswith(company_symbol):
+            score += 1.5
+        elif company_name and company_name in query_lower.split()[:3]:
+            score += 1.0
+        elif company_symbol and company_symbol in query_lower.split()[:3]:
+            score += 0.8
+
+        scored_docs.append((doc, score))
+
+    scored_docs.sort(key=lambda x: x[1], reverse=True)
+
+    selected_doc = scored_docs[0][0]
+    return selected_doc
 
 
 class SyntheticDatasetGenerator:
@@ -132,6 +115,27 @@ class SyntheticDatasetGenerator:
         self.document_objects = document_objects
         self.search_queries = []
 
+    def make_data_instance(self):
+        """
+        Create a single data instance with query and annotated document.
+
+        Returns:
+            Dictionary containing the data instance
+        """
+        if not self.search_queries:
+            self.generate_search_queries()
+
+        selected_query = random.choice(self.search_queries)
+        positive_document = rule_based_annotation_qd(
+            selected_query, self.document_objects
+        )
+
+        return {
+            "id": str(uuid.uuid4()),
+            "query": selected_query,
+            "positive_document": positive_document,
+        }
+
     def generate_company_specific_queries(self, num_queries=50):
         """
         Generate queries that specifically focus on company names and symbols.
@@ -143,7 +147,6 @@ class SyntheticDatasetGenerator:
             List of company-specific queries
         """
         company_queries = []
-
         selected_companies = (
             random.sample(document_objects, min(len(document_objects), num_queries))
             if len(document_objects) > 10
@@ -174,7 +177,6 @@ class SyntheticDatasetGenerator:
             query = query.strip()
             if query and len(query.split()) <= 15:
                 company_queries.append(query)
-
         return company_queries
 
     def generate_general_sector_queries(self, num_queries=50):
@@ -224,12 +226,10 @@ class SyntheticDatasetGenerator:
 
             sector = random.choice(sectors)
             template = random.choice(GENERAL_QUERY_TEMPLATES)
-
             query = template.format(sector=sector)
             query = query.strip()
             if query and len(query.split()) <= 15:
                 sector_queries.append(query)
-
         return sector_queries
 
     def generate_search_queries(self, num_queries=100):
@@ -328,173 +328,237 @@ class SyntheticDatasetGenerator:
         self.search_queries = generated_queries
         return generated_queries
 
-    def make_data_instance(self):
-        """
-        Create a single data instance with query and annotated document.
 
-        Returns:
-            Dictionary containing the data instance
-        """
-        if not self.search_queries:
-            self.generate_search_queries()
-
-        selected_query = random.choice(self.search_queries)
-        positive_document = rule_based_annotation_qd(
-            selected_query, self.document_objects
-        )
-
-        return {
-            "id": str(uuid.uuid4()),
-            "query": selected_query,
-            "positive_document": positive_document,
-        }
-
-
-def thread_function(start_simulation, end_simulation, dataset_size_per_simulation=1000):
+def process_function(chunk_index, chunk_size):
     """
-    Function executed by each thread to generate synthetic datasets.
+    Function executed by each process to generate a chunk of the synthetic dataset.
 
     Args:
-        start_simulation: Starting simulation index
-        end_simulation: Ending simulation index (exclusive)
-        dataset_size_per_simulation: Number of instances to generate per simulation
+        chunk_index: Index of this chunk
+        chunk_size: Number of instances to generate in this chunk
 
     Returns:
-        List of generated datasets
-    """
-    results = []
-    for sim_index in range(start_simulation, end_simulation):
-        print(f"Starting simulation {sim_index}")
-        start_time = time.time()
-        generator = SyntheticDatasetGenerator(
-            dataset_size=dataset_size_per_simulation,
-            iteration_number=sim_index,
-        )
-        generator.generate_search_queries(
-            num_queries=max(10, dataset_size_per_simulation // 10)
-        )
-
-        dataset = []
-        for instance_index in range(generator.dataset_size):
-            try:
-                instance = generator.make_data_instance()
-                dataset.append(instance)
-                print(
-                    f"Simulation {sim_index}: Generated instance {instance_index+1}/{generator.dataset_size}"
-                )
-            except Exception as e:
-                print(f"Error generating instance: {e}")
-                continue
-        os.makedirs(simulations_dir, exist_ok=True)
-        with open(
-            os.path.join(simulations_dir, f"qd_dataset_sim_{sim_index}.json"), "w"
-        ) as f:
-            serializable_dataset = []
-            for item in dataset:
-                serializable_item = {
-                    "id": item["id"],
-                    "query": item["query"],
-                    "document": item["positive_document"],
-                }
-                serializable_dataset.append(serializable_item)
-            json.dump(serializable_dataset, f, indent=2)
-        del dataset
-        del generator
-        gc.collect()
-    return results
-
-
-def run(n_simulations=100, num_workers=10, dataset_size_per_simulation=1000):
-    """
-    Run the Monte Carlo simulation with multiple threads.
-
-    Args:
-        n_simulations: Total number of simulations to run
-        num_workers: Number of worker threads to use
-        dataset_size_per_simulation: Number of instances to generate per simulation
+        Generated dataset chunk
     """
     print(
-        f"Starting Monte Carlo simulation with {n_simulations} simulations using {num_workers} workers"
+        f"Process {os.getpid()} initializing for chunk {chunk_index} with size {chunk_size}"
+    )
+
+    process_query_generator = None
+    try:
+        model_name = "google/flan-t5-large"
+        device = "cpu"
+        if torch.cuda.is_available():
+            device = 0
+            print(f"Device set to use cuda")
+        else:
+            print(f"Device set to use cpu")
+
+        print(f"Process {os.getpid()} initializing LLM pipeline using {model_name}...")
+        process_query_generator = hf_pipeline(
+            task="text2text-generation",
+            model=model_name,
+            tokenizer=model_name,
+            device=device,
+            max_length=150,
+            do_sample=True,
+            temperature=0.7,
+        )
+    except Exception as e:
+        print(f"Process {os.getpid()} error initializing LLM: {e}")
+
+    print(f"Process {os.getpid()} starting chunk {chunk_index}")
+    start_time = time.time()
+
+    generator = SyntheticDatasetGenerator(
+        dataset_size=chunk_size, iteration_number=chunk_index
+    )
+    if process_query_generator:
+        generator.query_generator = process_query_generator
+    generator.generate_search_queries(num_queries=chunk_size // 2)
+    dataset = []
+    for i in range(chunk_size):
+        try:
+            instance = generator.make_data_instance()
+            if instance:
+                dataset.append(instance)
+            if i > 0 and i % 100 == 0:
+                print(
+                    f"Process {os.getpid()}, Chunk {chunk_index}: Generated {i}/{chunk_size} instances"
+                )
+        except Exception as e:
+            print(f"Error generating instance {i} in chunk {chunk_index}: {e}")
+
+    os.makedirs(simulations_dir, exist_ok=True)
+    with open(
+        os.path.join(simulations_dir, f"qd_dataset_chunk_{chunk_index}.json"), "w"
+    ) as f:
+        serializable_dataset = []
+        for item in dataset:
+            serializable_item = {
+                "id": item["id"],
+                "query": item["query"],
+                "document": item["positive_document"],
+            }
+            serializable_dataset.append(serializable_item)
+        json.dump(serializable_dataset, f, indent=2)
+
+    print(
+        f"Process {os.getpid()} completed chunk {chunk_index} in {time.time() - start_time:.2f} seconds"
+    )
+
+    del dataset
+    del generator
+    gc.collect()
+    return serializable_dataset
+
+
+def run(total_dataset_size=10000, num_workers=10, chunk_size=1000):
+    """
+    Run the dataset generation process using multiple processes.
+
+    Args:
+        total_dataset_size: Total number of unique instances to generate
+        num_workers: Maximum number of worker processes to use
+        chunk_size: Size of each chunk processed by a worker
+
+    Returns:
+        None
+    """
+    print(
+        f"Starting dataset generation for {total_dataset_size} unique instances using {num_workers} processes"
     )
 
     start_time = time.time()
-    work_chunk_size = max(1, n_simulations // num_workers)
-    all_results = []
-    completed_simulations = 0
-
-    with ThreadPoolExecutor(max_workers=min(num_workers, os.cpu_count())) as executor:
-        futures = []
-        for i in range(0, n_simulations, work_chunk_size):
-            end = min(i + work_chunk_size, n_simulations)
-            futures.append(
-                executor.submit(thread_function, i, end, dataset_size_per_simulation)
-            )
-
-        for future in as_completed(futures):
-            try:
-                results = future.result()
-                all_results.extend(results)
-                completed_simulations += 1
-                if completed_simulations > 0:
-                    print(
-                        f"Progress: {(completed_simulations / len(futures)) * 100:.1f}% complete"
-                    )
-
-            except Exception as e:
-                print(f"Error in thread: {e}")
-
-    unique_pairs = {}
-    for i in range(n_simulations):
-        try:
-            sim_file = os.path.join(simulations_dir, f"qd_dataset_sim_{i}.json")
-            if os.path.exists(sim_file):
-                with open(sim_file, "r") as f:
-                    instances = json.load(f)
-                    for instance in instances:
-
-                        query = instance["query"]
-                        doc_id = instance["document"].get("id", "unknown")
-                        pair_key = f"{query}::{doc_id}"
-                        if pair_key not in unique_pairs:
-                            unique_pairs[pair_key] = instance
-                    print(f"Processed {len(instances)} instances from simulation {i}")
-        except Exception as e:
-            print(f"Error reading simulation {i}: {e}")
-
+    unique_pairs = set()
     all_instances = []
-    for idx, (_, instance) in enumerate(unique_pairs.items()):
-        new_instance = {
-            "id": idx,
-            "query": instance["query"],
-            "positive_document": instance["document"],
-        }
-        all_instances.append(new_instance)
+    chunk_index = 0
 
-    print(
-        f"After removing duplicates, found {len(all_instances)} unique query-document pairs"
-    )
+    while len(unique_pairs) < total_dataset_size:
+        remaining = total_dataset_size - len(unique_pairs)
+        current_batch_size = min(remaining * 2, num_workers * chunk_size)
+        current_num_chunks = max(1, (current_batch_size + chunk_size - 1) // chunk_size)
+        current_num_workers = min(num_workers, current_num_chunks)
 
-    aggregated_file = os.path.join(dataset_dir, "aggregated_qd_dataset.json")
+        print(
+            f"Need {remaining} more unique pairs. Generating batch of {current_batch_size} instances with {current_num_workers} workers"
+        )
+
+        with ProcessPoolExecutor(max_workers=current_num_workers) as executor:
+            futures = [
+                executor.submit(process_function, chunk_index + i, chunk_size)
+                for i in range(current_num_chunks)
+            ]
+
+            completed_chunks = 0
+            for future in as_completed(futures):
+                try:
+                    results = future.result()
+                    completed_chunks += 1
+                    print(
+                        f"Batch progress: {(completed_chunks / len(futures)) * 100:.1f}% complete"
+                    )
+                except Exception as e:
+                    print(f"Error in process: {e}")
+
+        new_pairs_found = 0
+        for i in range(current_num_chunks):
+            try:
+                chunk_file = os.path.join(
+                    simulations_dir, f"qd_dataset_chunk_{chunk_index + i}.json"
+                )
+                if os.path.exists(chunk_file):
+                    with open(chunk_file, "r") as f:
+                        instances = json.load(f)
+                        print(
+                            f"Processing {len(instances)} instances from chunk {chunk_index + i}"
+                        )
+
+                        for instance in instances:
+                            query = instance["query"]
+                            document = instance["document"]
+                            doc_id = (
+                                document.get("id", "")
+                                if isinstance(document, dict)
+                                else ""
+                            )
+                            pair_key = (query, doc_id)
+
+                            if pair_key not in unique_pairs:
+                                unique_pairs.add(pair_key)
+                                new_instance = {
+                                    "query": query,
+                                    "positive_document": document,
+                                }
+                                all_instances.append(new_instance)
+                                new_pairs_found += 1
+
+                                if len(unique_pairs) % 100 == 0:
+                                    print(
+                                        f"Found {len(unique_pairs)}/{total_dataset_size} unique pairs"
+                                    )
+
+                                if len(unique_pairs) >= total_dataset_size:
+                                    break
+
+                    try:
+                        os.remove(chunk_file)
+                    except Exception as e:
+                        print(f"Failed to remove chunk file {chunk_file}: {e}")
+
+                if len(unique_pairs) >= total_dataset_size:
+                    break
+            except Exception as e:
+                print(f"Error reading chunk {chunk_index + i}: {e}")
+
+        print(f"Found {new_pairs_found} new unique pairs in this batch")
+        chunk_index += current_num_chunks
+
+        if new_pairs_found == 0:
+            print(
+                "Warning: No new unique pairs found in this batch. Adjusting generation parameters..."
+            )
+            time.sleep(1)
+
+    final_dataset = all_instances[:total_dataset_size]
+    aggregated_file = os.path.join(dataset_dir, "deduplicated_qd_dataset.json")
     with open(aggregated_file, "w") as f:
-        json.dump(all_instances, f, indent=2)
+        json.dump(final_dataset, f, indent=2)
+
+    training_file = os.path.join(dataset_dir, "training_qd_dataset.json")
+    training_format = [
+        {"query": instance["query"], "document": instance["positive_document"]}
+        for instance in final_dataset
+    ]
+
+    with open(training_file, "w") as f:
+        json.dump(training_format, f, indent=2)
 
     print(
-        f"Wrote aggregated dataset with {len(all_instances)} instances to {aggregated_file}"
+        f"Wrote deduplicated dataset with {len(final_dataset)} instances to {aggregated_file}"
     )
 
-    total_time = time.time() - start_time
-    print(f"All threads completed successfully in {total_time:.2f} seconds")
+    elapsed_time = time.time() - start_time
+    hours, remainder = divmod(elapsed_time, 3600)
+    minutes, seconds = divmod(remainder, 60)
     print(
-        f"Generated {len(all_results)} simulations with a total of {len(all_instances)} instances"
+        f"Dataset generation completed in {int(hours)}h {int(minutes)}m {seconds:.2f}s"
     )
 
 
 def main():
-    """Main function to run the Monte Carlo simulation"""
-    num_worker_threads = os.cpu_count()
-    num_simulations = 25
-    dataset_size_per_simulation = 800
-    run(num_simulations, num_worker_threads, dataset_size_per_simulation)
+    """
+    Main entry point for the Monte Carlo simulation.
+    Parses command line arguments if provided, otherwise uses defaults.
+    """
+    num_workers = os.cpu_count() // 2
+    total_dataset_size = 10000
+    run(
+        total_dataset_size,
+        num_workers=num_workers,
+        chunk_size=total_dataset_size // n_workers,
+    )
+
 
 if __name__ == "__main__":
     main()
