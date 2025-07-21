@@ -246,6 +246,8 @@ __marimo__/
 **/dataset/**/*.parquet
 **/data/**/*.parquet
 
+*.pt
+**/parameters/*.pt
 # Monte Carlo simulation generated data
 **/data/qd_simulations/*.json
 **/data/dataset/*.json
@@ -296,3 +298,5 @@ Temporary Items
 .apdisk
 
 .gitignore
+server/src/services/machine_systems/nearest_neighbors/model/parameters/*.pt
+server/src/services/machine_systems/nearest_neighbors/model/parameters/*.pt

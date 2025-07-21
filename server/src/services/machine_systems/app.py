@@ -29,15 +29,25 @@ database = Database()
 searchController = SearchController(database)
 
 
+
 @app.route("/api/advanced-search", methods=["GET"])
 def search():
     try:
         query = request.args.get("query", "")
+        limit = request.args.get("limit", "")
+        if not query:
+            return jsonify({"error": "Query is required"}), 400
+
+        if not limit:
+            return jsonify({"error": "Limit is required"}), 400
+
+        if (len(query) >= 600):
+            return jsonify({"error": "Query is too long, must be below 600 characters"}), 400
+
         results = searchController.search(query)
         return jsonify(results)
     except Exception as e:
         return jsonify({"error": f"Search failed: {str(e)}"}), 500
-
 
 if __name__ == "__main__":
     app.run(port=os.environ["FLASK_SERVER_PORT"], debug=True)

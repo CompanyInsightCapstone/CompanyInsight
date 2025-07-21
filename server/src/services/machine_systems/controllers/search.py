@@ -1,7 +1,6 @@
 from models.database import Database
 from models.company import Company
-from transformers import AutoTokenizer, AutoModel
-
+from nearest_neighbors.model.inference import compute_query_embedding
 
 
 class SearchController:
@@ -9,4 +8,5 @@ class SearchController:
         Company.connect(database)
 
     def search(self, query_text, limit=20):
-        return Company.nearest_neighbors(query_text, limit=limit)
+        query_embeddings = compute_query_embedding(query_text)
+        return Company.query_nearest_neighbors(query_embeddings, limit=limit)

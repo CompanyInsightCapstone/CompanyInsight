@@ -10,11 +10,32 @@ import uuid
 from collections import Counter, defaultdict
 from concurrent.futures import as_completed, ProcessPoolExecutor, ThreadPoolExecutor
 from datetime import datetime
+
+# Add the parent directory to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
+
 import numpy as np
 import torch
+
+from machine_systems.models.database import Database
+from machine_systems.nearest_neighbors.dataset_analysis.scoring import (
+    build_inverted_index,
+    build_numerical_index,
+    compute_doc_norms,
+    compute_idf,
+    index_search,
+    numerical_index_search,
+)
+from machine_systems.nearest_neighbors.dataset_analysis.utils import (
+    COMPANY_QUERY_TEMPLATES,
+    config,
+    GENERAL_QUERY_TEMPLATES,
+    load_company_documents,
+    patterns,
+    prompts,
+    SYSTEM_PROMPTS,
+)
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline as hf_pipeline
-from utils import *
-from scoring import *
 
 current_dir = config()
 nearest_neighbors_dir = os.path.dirname(os.path.dirname(current_dir))
@@ -27,8 +48,6 @@ os.makedirs(data_dir, exist_ok=True)
 os.makedirs(analysis_dir, exist_ok=True)
 os.makedirs(simulations_dir, exist_ok=True)
 os.makedirs(dataset_dir, exist_ok=True)
-
-from models.database import Database
 
 document_objects = load_company_documents()
 n = len(document_objects)
@@ -550,13 +569,33 @@ def main():
     Main entry point for the Monte Carlo simulation.
     Parses command line arguments if provided, otherwise uses defaults.
     """
-    num_workers = os.cpu_count() // 2
-    total_dataset_size = 10000
-    run(
-        total_dataset_size,
-        num_workers=num_workers,
-        chunk_size=total_dataset_size // n_workers,
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        description="Run Monte Carlo simulation for dataset generation"
     )
+    parser.add_argument(
+        "--size", type=int, default=10000, help="Total dataset size to generate"
+    )
+    parser.add_argument(
+        "--workers",
+        type=int,
+        default=max(1, os.cpu_count() // 2),
+        help="Number of worker processes to use",
+    )
+    parser.add_argument(
+        "--chunk",
+        type=int,
+        default=1000,
+        help="Size of each chunk processed by a worker",
+    )
+
+    args = parser.parse_args()
+
+    print(
+        f"Starting simulation with dataset_size={args.size}, workers={args.workers}, chunk_size={args.chunk}"
+    )
+    run(total_dataset_size=args.size, num_workers=args.workers, chunk_size=args.chunk)
 
 
 if __name__ == "__main__":

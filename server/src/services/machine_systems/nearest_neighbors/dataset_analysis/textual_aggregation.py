@@ -10,7 +10,6 @@ current_dir = config()
 data_dir = os.path.join(current_dir, "data")
 analysis_dir = os.path.join(data_dir, "analysis")
 
-
 try:
     from models.database import Database
 except ImportError as e:

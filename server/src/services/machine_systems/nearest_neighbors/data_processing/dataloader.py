@@ -1,13 +1,15 @@
 import json
 import random
+
 import torch
-from nss_model.data_processing.dataset import Dataset
+
+from .datasets import Dataset
 
 
 class Dataloader:
     def __init__(self, batch_size, dataset_path, test_size=0.2):
         self.batch_size = batch_size
-        with open(dataset_path, 'r') as f:
+        with open(dataset_path, "r") as f:
             dataset_data = json.load(f)
 
         random.shuffle(dataset_data)
@@ -31,7 +33,9 @@ class Dataloader:
             shuffle=False,
         )
 
-        print(f"Dataset split into {len(self.train_dataset)} training and {len(self.test_dataset)} testing samples.")
+        print(
+            f"Dataset split into {len(self.train_dataset)} training and {len(self.test_dataset)} testing samples."
+        )
 
     def get_train_dataloader(self):
         return self.train_dataloader

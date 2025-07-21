@@ -1,18 +1,23 @@
 import os
 import sys
 import uuid
+
 import pandas as pd
-from utils import config, load_companies, load_csv, load_parquet
+
+# Add the parent directory to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
+
+from machine_systems.models.database import Database
+from machine_systems.nearest_neighbors.dataset_analysis.utils import (
+    config,
+    load_companies,
+    load_csv,
+    load_parquet,
+)
 
 current_dir = config()
 data_dir = os.path.join(current_dir, "data")
 analysis_dir = os.path.join(data_dir, "analysis")
-
-try:
-    from models.database import Database
-except ImportError as e:
-    print(f"Error importing Database: {e}")
-    sys.exit(1)
 
 
 def calculate_sma(price_data, window=30):

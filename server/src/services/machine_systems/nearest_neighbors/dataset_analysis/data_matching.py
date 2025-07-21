@@ -1,15 +1,27 @@
 import os
 import sys
+
 import kaggle
 import numpy as np
 import pandas as pd
 from kaggle.api.kaggle_api_extended import KaggleApi
-from utils import config, load_companies, load_csv, load_parquet
+
+# Add the parent directory to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
+
+from machine_systems.models.database import Database
+from machine_systems.nearest_neighbors.dataset_analysis.utils import (
+    config,
+    load_companies,
+    load_csv,
+    load_parquet,
+)
+
 current_dir = config()
 data_dir = os.path.join(current_dir, "data")
 analysis_dir = os.path.join(data_dir, "analysis")
 os.makedirs(data_dir, exist_ok=True)
-from models.database import Database
+
 
 def download_dataset(dataset_name):
     """Download dataset from Kaggle and load it into a DataFrame"""
@@ -33,7 +45,9 @@ def initialize_dataset_df():
         parquet_path = os.path.join(data_dir, parquet_files[0])
         return pd.read_parquet(parquet_path)
     else:
-        return download_dataset("code1110/yfinance-stock-price-data-for-numerai-signals")
+        return download_dataset(
+            "code1110/yfinance-stock-price-data-for-numerai-signals"
+        )
 
 
 def process_ticker_symbols(df, companies):
@@ -131,7 +145,6 @@ def update_database_smaller_set():
         return False
 
 
-
 def main():
     """Main function to run the data matching process"""
     df = initialize_dataset_df()
@@ -150,6 +163,7 @@ def main():
     update_database_smaller_set()
 
     print("\nData Matching Complete")
+
 
 if __name__ == "__main__":
     main()

@@ -1,3 +1,5 @@
+from transformers import BertTokenizer
+
 class Tokenizer:
     def __init__(self, tokenizer_name='bert-base-uncased'):
         self.tokenizer = BertTokenizer.from_pretrained(tokenizer_name)

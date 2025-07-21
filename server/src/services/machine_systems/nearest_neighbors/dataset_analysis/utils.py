@@ -78,10 +78,10 @@ def load_companies():
 
 
 def load_company_documents():
+
     """
     Load company documents from database.
     Returns a list of JSON objects with company data.
-    If database connection fails, returns dummy data for testing.
     """
     try:
         print("Successfully imported Database class")
@@ -131,9 +131,7 @@ def load_company_documents():
         return company_list
     except Exception as e:
         print(f"Error loading company documents: {e}")
-        import traceback
 
-        traceback.print_exc()
 
 
 SYSTEM_PROMPTS = [
