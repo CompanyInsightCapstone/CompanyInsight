@@ -26,7 +26,7 @@ def compute_document_embedding(company):
     document = tokenizer(document_string)
 
     document_input_ids = document["input_ids"]
-    document_attention_mask = document["attention_mask"] 
+    document_attention_mask = document["attention_mask"]
 
     numerical_features = [
             company.get(key, 0.0) for key in [
@@ -38,7 +38,7 @@ def compute_document_embedding(company):
             "simpleMovingAverage",
         ]
     ]
-    numerical_features_tensor = torch.tensor([numerical_features], dtype=torch.float)  # Add batch dimension
+    numerical_features_tensor = torch.tensor([numerical_features], dtype=torch.float)
     encoder_input = {
         "document_input_ids": document_input_ids,
         "document_attention_mask": document_attention_mask,

@@ -18,16 +18,14 @@ class Company:
         Returns:
             A dictionary containing the results and count
         """
-        if query_vector is None:
-            return cls.query_without_vector(limit)
-
-        if hasattr(query_vector, 'tolist'):
+        
+        if hasattr(query_vector, "tolist"):
             query_vector = query_vector.tolist()
 
         with cls.database.cursor() as cursor:
             cursor.execute(
                 """
-                SELECT c.*, ce."vector" <-> %s AS distance
+                SELECT c.*, ce."vector" <-> %s::vector AS distance
                 FROM "Company" c
                 JOIN "CompanyEmbeddings" ce ON c.id = ce."companyId"
                 ORDER BY distance
@@ -36,6 +34,6 @@ class Company:
                 (query_vector, limit),
             )
 
-        columns = [desc[0] for desc in cursor.description]
-        results = list(map(lambda row: dict(zip(columns, row)), cursor.fetchall()))
+            columns = [desc[0] for desc in cursor.description]
+            results = list(map(lambda row: dict(zip(columns, row)), cursor.fetchall()))
         return {"data": results, "count": len(results)}

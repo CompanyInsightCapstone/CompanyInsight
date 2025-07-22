@@ -12,7 +12,8 @@ export default function SearchContextProvider({ children }) {
     queryKey: ["advanced-search", searchQuery],
     queryFn: async () => {
       try {
-        const companies = await Companies.advancedSearch(searchQuery);
+        const limit = 20
+        const companies = await Companies.advancedSearch(searchQuery, limit);
         setSearchResults(companies)
         return companies
       } catch (error) {
