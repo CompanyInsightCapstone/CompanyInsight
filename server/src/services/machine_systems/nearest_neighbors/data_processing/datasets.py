@@ -1,7 +1,6 @@
 import torch
 from transformers import BertTokenizer
-
-from .tokenizer import Tokenizer
+from tokenizer import Tokenizer
 
 
 class Dataset(torch.utils.data.Dataset):

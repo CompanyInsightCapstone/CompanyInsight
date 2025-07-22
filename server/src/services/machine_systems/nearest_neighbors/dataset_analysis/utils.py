@@ -1,33 +1,23 @@
 import os
-import sys
 
 import numpy as np
 import pandas as pd
 from dotenv import load_dotenv
+from machine_systems.models.database import Database
 
 
-def config(custom_path=None):
+def config():
     """
-    Set up the environment by loading environment variables and adding paths to sys.path.
+    Set up the environment by loading environment variables.
 
-    Args:
-        custom_path (str, optional): Custom path to the root directory. If None,
-                                     will calculate based on current file location.
+    Returns:
+        str: The current directory path
     """
     current_dir = os.path.dirname(os.path.abspath(__file__))
-
-    if custom_path:
-        machine_systems_dir = os.path.abspath(custom_path)
-    else:
-        machine_systems_dir = os.path.abspath(
-            os.path.join(current_dir, "..", "..", "..")
-        )
-
+    machine_systems_dir = os.path.abspath(os.path.join(current_dir, "..", "..", ".."))
     env_path = os.path.join(machine_systems_dir, ".env")
     load_dotenv(env_path)
 
-    if machine_systems_dir not in sys.path:
-        sys.path.append(machine_systems_dir)
     return current_dir
 
 
@@ -35,8 +25,6 @@ current_dir = config()
 data_dir = os.path.join(current_dir, "data")
 analysis_dir = os.path.join(data_dir, "analysis")
 os.makedirs(data_dir, exist_ok=True)
-
-from models.database import Database
 
 
 def load_csv(file_path):
@@ -78,7 +66,6 @@ def load_companies():
 
 
 def load_company_documents():
-
     """
     Load company documents from database.
     Returns a list of JSON objects with company data.
@@ -131,7 +118,7 @@ def load_company_documents():
         return company_list
     except Exception as e:
         print(f"Error loading company documents: {e}")
-
+        return []  # Return an empty list instead of None
 
 
 SYSTEM_PROMPTS = [
@@ -158,7 +145,6 @@ patterns = [
     "market sentiment",
     "market volatility",
     "sector rotation",
-
     "asset allocation",
     "risk management",
     "long term investing",
@@ -288,6 +274,7 @@ COMPANY_QUERY_TEMPLATES = [
 ]
 
 search_url = "https://en.wikipedia.org/w/api.php"
+
 
 def sample_system_prompt():
     return np.random.choice(SYSTEM_PROMPTS)

@@ -1,10 +1,7 @@
 import json
 import random
-
 import torch
-
-from .datasets import Dataset
-
+from datasets import Dataset
 
 class Dataloader:
     def __init__(self, batch_size, dataset_path, test_size=0.2):
