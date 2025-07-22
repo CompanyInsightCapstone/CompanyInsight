@@ -10,18 +10,19 @@ export const METHOD_ENUM = {
 };
 
 export const API_ENDPOINTS = {
-  CHECK_SESSION: "/check-session",
-  LOGIN: "/login",
-  SIGNUP: "/signup",
-  LOGOUT: "/logout",
-  COMPANIES: "/api/companies",
-  COMPANIES_FILTER: "/api/companies/filter",
-  COMPANY_DETAILS: "/api/companies",
-  COMPANY_DOWNLOAD: "/api/companies/download",
-  COMPANY_TIME_SERIES: "/api/companies/time-series",
-  USER_SAVED_COMPANIES: "/api/user/companies/save",
-  USER_SETTINGS: "/api/user/settings",
-  ADVANCED_SEARCH: "/api/advanced-search",
+  CHECK_SESSION: SERVER_ADDRESS + "/check-session",
+  LOGIN: SERVER_ADDRESS + "/login",
+  SIGNUP: SERVER_ADDRESS + "/signup",
+  LOGOUT: SERVER_ADDRESS + "/logout",
+  COMPANIES: SERVER_ADDRESS + "/api/companies",
+  COMPANIES_FILTER: SERVER_ADDRESS +"/api/companies/filter",
+  COMPANY_DETAILS: SERVER_ADDRESS + "/api/companies",
+  COMPANY_DOWNLOAD: SERVER_ADDRESS + "/api/companies/download",
+  COMPANY_TIME_SERIES: SERVER_ADDRESS + "/api/companies/time-series",
+  USER_SAVED_COMPANIES: SERVER_ADDRESS + "/api/user/companies/save",
+  USER_SETTINGS: SERVER_ADDRESS + "/api/user/settings",
+  ADVANCED_SEARCH: FLASK_ADDRESS  + "/api/advanced-search",
+  USER_RECOMMENDATIONS: FLASK_ADDRESS  + "/api/user/recommendations",
 };
 
 // https://stackoverflow.com/questions/75988682/debounce-in-javascript
@@ -54,12 +55,7 @@ export function throttle(func, wait) {
  * @returns {string} Complete URL with query parameters
  */
 export const formatUrl = (endpoint, params = null, pathParam = null, isFlask = false) => {
-  let url = ""
-  if (isFlask) {
-    url = `${FLASK_ADDRESS}${endpoint}`;
-  } else {
-    url = `${SERVER_ADDRESS}${endpoint}`;
-  }
+  let url = endpoint
   if (pathParam !== null) {
     url += `/${pathParam}`;
   }
