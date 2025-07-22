@@ -84,9 +84,9 @@ const Companies = {
     return response.data;
   },
 
-  async advancedSearch(query) {
+  async advancedSearch(query, limit) {
     const response = await formatRequest(
-      formatUrl(API_ENDPOINTS.ADVANCED_SEARCH, { query}, null , true),
+      formatUrl(API_ENDPOINTS.ADVANCED_SEARCH, { query, limit }, null , true),
       METHOD_ENUM.GET,
     );
     return response.data

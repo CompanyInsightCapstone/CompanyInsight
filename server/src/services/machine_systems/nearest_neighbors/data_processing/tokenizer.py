@@ -1,4 +1,4 @@
-from transformers import BertTokenizer
+from transformers import (BertTokenizer, BertConfig)
 
 class Tokenizer:
     def __init__(self, tokenizer_name='bert-base-uncased'):
