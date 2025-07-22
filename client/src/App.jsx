@@ -33,7 +33,7 @@ export default function App() {
         <Route path="/user-settings" element={<ProtectedUserSettings />} />
 
         <Route path="/search" element={<ProtectedSearch />} />
-         <Route path="/recommendations" element={<ProtectedRecommendations />} />
+        <Route path="/recommendations" element={<ProtectedRecommendations />} />
       </Routes>
     </Router>
   );

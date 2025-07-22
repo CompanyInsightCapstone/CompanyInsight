@@ -1,4 +1,4 @@
-import { createContext, useState, useContext} from "react";
+import { createContext, useState, useContext } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { UserContext } from "../contexts/UserContext";
 
@@ -8,8 +8,7 @@ export const RecommendationContext = createContext();
 
 export default function RecommendationContextProvider({ children }) {
   const [companies, setCompanies] = useState([]);
-  const  { user } = useContext(UserContext);
-
+  const { user } = useContext(UserContext);
 
   useQuery({
     queryKey: ["recommendations"],
@@ -20,21 +19,19 @@ export default function RecommendationContextProvider({ children }) {
       return companies;
     },
     retry: false,
-    enabled: !!(user.id),
+    enabled: !!user.id,
     refetchOnWindowFocus: false,
     onSuccess: (data) => {
-        setCompanies(data);
-    }
+      setCompanies(data);
+    },
   });
 
   const RecommendationContextData = {
-      companies
+    companies,
   };
 
   return (
-    <RecommendationContext.Provider
-      value={{RecommendationContextData}}
-    >
+    <RecommendationContext.Provider value={{ RecommendationContextData }}>
       {children}
     </RecommendationContext.Provider>
   );

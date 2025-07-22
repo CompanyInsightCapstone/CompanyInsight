@@ -79,7 +79,7 @@ const User = {
       formatUrl(API_ENDPOINTS.USER_RECOMMENDATIONS, { user_id }),
       METHOD_ENUM.GET,
     );
-  }
+  },
 };
 
 export default User;

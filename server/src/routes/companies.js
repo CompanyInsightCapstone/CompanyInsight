@@ -119,7 +119,9 @@ router.get("/api/companies", async (req, res, next) => {
       pages: pages,
       pageSize: limit || PAGE_SIZE,
       blockSize: BLOCK_SIZE,
+      hasMore: pages.length < limit,
     });
+
   } catch (error) {
     next(new CompaniesError("Error retrieving companies", 500));
   }
@@ -162,15 +164,13 @@ router.get("/api/companies/filter", async (req, res, next) => {
       statusCode = 404;
     }
 
-    // if (page.length < limit) {
-    //   statusCode = 202;
-    // }
 
     res.status(statusCode).json({
       currentPageNumber: pageId,
       pages: pages,
       pageSize: limit || PAGE_SIZE,
       blockSize: BLOCK_SIZE,
+      hasMore: pages.length < limit,
     });
   } catch (error) {
     next(new CompaniesError("Error filtering companies", 500));
