@@ -50,7 +50,7 @@ export default function Header() {
         <Link className="back-link" to="/search">
           VIEW SEARCH
         </Link>
-         <Link className="back-link" to="/recommendations">
+        <Link className="back-link" to="/recommendations">
           VIEW Recommendations
         </Link>
       </div>

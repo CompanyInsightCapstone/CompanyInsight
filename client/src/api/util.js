@@ -15,14 +15,14 @@ export const API_ENDPOINTS = {
   SIGNUP: SERVER_ADDRESS + "/signup",
   LOGOUT: SERVER_ADDRESS + "/logout",
   COMPANIES: SERVER_ADDRESS + "/api/companies",
-  COMPANIES_FILTER: SERVER_ADDRESS +"/api/companies/filter",
+  COMPANIES_FILTER: SERVER_ADDRESS + "/api/companies/filter",
   COMPANY_DETAILS: SERVER_ADDRESS + "/api/companies",
   COMPANY_DOWNLOAD: SERVER_ADDRESS + "/api/companies/download",
   COMPANY_TIME_SERIES: SERVER_ADDRESS + "/api/companies/time-series",
   USER_SAVED_COMPANIES: SERVER_ADDRESS + "/api/user/companies/save",
   USER_SETTINGS: SERVER_ADDRESS + "/api/user/settings",
-  ADVANCED_SEARCH: FLASK_ADDRESS  + "/api/advanced-search",
-  USER_RECOMMENDATIONS: FLASK_ADDRESS  + "/api/user/recommendations",
+  ADVANCED_SEARCH: FLASK_ADDRESS + "/api/advanced-search",
+  USER_RECOMMENDATIONS: FLASK_ADDRESS + "/api/user/recommendations",
 };
 
 // https://stackoverflow.com/questions/75988682/debounce-in-javascript
@@ -54,8 +54,13 @@ export function throttle(func, wait) {
  * @param {string|number} pathParam - Optional path parameter to append to endpoint
  * @returns {string} Complete URL with query parameters
  */
-export const formatUrl = (endpoint, params = null, pathParam = null, isFlask = false) => {
-  let url = endpoint
+export const formatUrl = (
+  endpoint,
+  params = null,
+  pathParam = null,
+  isFlask = false,
+) => {
+  let url = endpoint;
   if (pathParam !== null) {
     url += `/${pathParam}`;
   }

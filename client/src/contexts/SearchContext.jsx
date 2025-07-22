@@ -12,10 +12,10 @@ export default function SearchContextProvider({ children }) {
     queryKey: ["advanced-search", searchQuery],
     queryFn: async () => {
       try {
-        const limit = 20
+        const limit = 20;
         const companies = await Companies.advancedSearch(searchQuery, limit);
-        setSearchResults(companies)
-        return companies
+        setSearchResults(companies);
+        return companies;
       } catch (error) {
         return [];
       }
@@ -23,7 +23,6 @@ export default function SearchContextProvider({ children }) {
     enabled: !!(searchQuery !== ""),
     retry: false,
     refetchOnWindowFocus: false,
-
   });
 
   const SearchResultsContextData = {

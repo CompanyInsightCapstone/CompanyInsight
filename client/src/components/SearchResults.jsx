@@ -8,19 +8,19 @@ export default function SearchResults() {
 
   return (
     <>
-      <div className ="search-results">
+      <div className="search-results">
         {SearchResultsContextData.searchResults &&
           SearchResultsContextData.searchResults.length > 0 && (
             <>
               <h2>Search Results</h2>
               <section className="list-container">
-              {SearchResultsContextData.searchResults.map((result) => {
-                return <CompanyItem key={result.id} company={result} />;
-              })}
+                {SearchResultsContextData.searchResults.map((result) => {
+                  return <CompanyItem key={result.id} company={result} />;
+                })}
               </section>
             </>
           )}
-        </div>
+      </div>
     </>
   );
 }
