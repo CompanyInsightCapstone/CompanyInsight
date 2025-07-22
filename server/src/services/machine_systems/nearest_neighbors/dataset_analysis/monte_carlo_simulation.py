@@ -11,7 +11,6 @@ from collections import Counter, defaultdict
 from concurrent.futures import as_completed, ProcessPoolExecutor, ThreadPoolExecutor
 from datetime import datetime
 
-# Add the parent directory to the Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 
 import numpy as np

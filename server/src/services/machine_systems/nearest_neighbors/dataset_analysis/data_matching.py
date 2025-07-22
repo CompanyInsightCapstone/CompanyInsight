@@ -1,12 +1,11 @@
 import os
 import sys
-
 import kaggle
 import numpy as np
 import pandas as pd
 from kaggle.api.kaggle_api_extended import KaggleApi
 
-# Add the parent directory to the Python path
+
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 
 from machine_systems.models.database import Database

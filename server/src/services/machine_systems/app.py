@@ -1,20 +1,14 @@
 import os
-
-from controllers.search import SearchController
-
 from dotenv import load_dotenv
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from models.database import Database
-
+from controllers.search import SearchController
 
 load_dotenv()
-
 os.environ["ROOT_PATH"] = os.path.abspath(os.path.join("..", os.curdir))
 current_directory = os.path.dirname(os.path.abspath(__file__))
-
 app = Flask(__name__)
-
 
 CORS(
     app,
@@ -24,11 +18,8 @@ CORS(
     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 )
 
-
 database = Database()
-searchController = SearchController(database)
-
-
+searchController = SearchController(database=database)
 
 @app.route("/api/advanced-search", methods=["GET"])
 def search():
@@ -41,7 +32,7 @@ def search():
         if not limit:
             return jsonify({"error": "Limit is required"}), 400
 
-        if (len(query) >= 600):
+        if (len(query) >= 400):
             return jsonify({"error": "Query is too long, must be below 600 characters"}), 400
 
         results = searchController.search(query)

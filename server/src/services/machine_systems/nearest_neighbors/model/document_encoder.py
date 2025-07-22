@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+
 from .components.ffnn import FFNN
 from .components.transformer import Transformer
 
