@@ -4,7 +4,7 @@ import WatchlistButton from "./WatchlistButton";
 
 export default function CompanyItem({ company }) {
   const companyNumericals = company.CompanyNumericals[0]
-  console.log(company);
+
   return (
     <article className="list-item">
       <h2 className="list-item-header">{company.name} </h2>
