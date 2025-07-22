@@ -73,6 +73,13 @@ const User = {
       settings,
     );
   },
+
+  async recommendations(user_id) {
+    return await formatRequest(
+      formatUrl(API_ENDPOINTS.USER_RECOMMENDATIONS, { user_id }),
+      METHOD_ENUM.GET,
+    );
+  }
 };
 
 export default User;

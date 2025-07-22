@@ -1,8 +1,9 @@
 import os
 
+from controllers.recommendation import RecommendationController
 from controllers.search import SearchController
 from dotenv import load_dotenv
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, session
 from flask_cors import CORS
 from models.database import Database
 
@@ -20,7 +21,8 @@ CORS(
 )
 
 database = Database()
-searchController = SearchController(database=database)
+search_controller = SearchController(database=database)
+recommendation_conroller = RecommendationController(database=database)
 
 
 @app.route("/api/advanced-search", methods=["GET"])
@@ -40,11 +42,20 @@ def search():
                 400,
             )
 
-        results = searchController.search(query)
+        results = search_controller.search(query)
         return jsonify(results)
     except Exception as e:
         return jsonify({"error": f"Search failed: {str(e)}"}), 500
 
+
+@app.route("/api/user/recommendations", methods=["GET"])
+def recommendations():
+    try:
+        user_id = request.args.get("user_id")
+        results = recommendation_conroller.recommendations(user_id)
+        return jsonify(results)
+    except Exception as e:
+        return jsonify({"error": f"Serving recommendations failed: {str(e)}"}), 500
 
 if __name__ == "__main__":
     port = os.environ.get("FLASK_SERVER_PORT")

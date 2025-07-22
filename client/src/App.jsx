@@ -8,12 +8,14 @@ import Home from "./pages/Home";
 import Watchlist from "./pages/Watchlist";
 import Search from "./pages/Search";
 import UserSettings from "./pages/UserSettings";
+import Recommendations from "./pages/Recommendations";
 
 const ProtectedHome = WithAuth(Home);
 const ProtectedDetails = WithAuth(CompanyDetails);
 const ProtectedWatchlist = WithAuth(Watchlist);
 const ProtectedUserSettings = WithAuth(UserSettings);
 const ProtectedSearch = WithAuth(Search);
+const ProtectedRecommendations = WithAuth(Recommendations);
 
 export default function App() {
   return (
@@ -29,7 +31,9 @@ export default function App() {
           element={<ProtectedDetails />}
         />
         <Route path="/user-settings" element={<ProtectedUserSettings />} />
+
         <Route path="/search" element={<ProtectedSearch />} />
+         <Route path="/recommendations" element={<ProtectedRecommendations />} />
       </Routes>
     </Router>
   );
