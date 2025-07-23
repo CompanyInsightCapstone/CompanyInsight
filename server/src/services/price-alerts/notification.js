@@ -5,7 +5,7 @@ const Subscriber = require("./subscriber");
 const Emailer = require("./lib/emailer");
 const { SUCCESS, FAILURE, LOGGER_TYPE } = require("../../utilities/constants");
 const serviceParameters = require("./config.json");
-
+const process = require("process");
 const formatEmailSubject = (symbol, percentage) =>
   `Company Insights: ${symbol} has changed by ${percentage}%`;
 
@@ -42,7 +42,7 @@ async function percentDropMailerCallback(emailer, decodedMessage) {
       SELECT DISTINCT u.email, u.id as "userId", usc."percentChangeThreshold", usc."previousPrice" FROM "User" u
       JOIN "Watchlist" usc ON u.id = usc."userId"
       WHERE usc."companyId" = $1 AND usc."lastNotifiedTime" IS NULL OR DATE(usc."lastNotifiedTime") <> CURRENT_DATE
-      
+
     `;
 
     const mailingParams = [decodedMessage.companyId];
@@ -102,8 +102,18 @@ async function percentDropMailerCallback(emailer, decodedMessage) {
 class StockPriceNotificationService {
   constructor(stageName) {
     this.stageName = stageName;
-    this.publisherStage = cache.redisModule.createClient();
-    this.subscriberStage = cache.redisModule.createClient();
+    this.publisherStage = cache.redisModule.createClient({
+      socket: {
+        host: process.env.REDIS_HOST,
+        port: process.env.REDIS_PORT,
+      },
+    });
+    this.subscriberStage = cache.redisModule.createClient({
+      socket: {
+        host: process.env.REDIS_HOST,
+        port: process.env.REDIS_PORT,
+      },
+    });
     this.timeInterval = serviceParameters.timeInterval;
     this.refreshQueueInterval = serviceParameters.refreshQueueInterval;
     this.iteration = 0;

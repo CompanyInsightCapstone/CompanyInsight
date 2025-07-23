@@ -8,8 +8,9 @@ const process = require("process");
 class Websocket {
   constructor(port, callbacks) {
     this.callbacks = callbacks;
+    console.log("WebSocket host:", process.env.WEBSOCKET_HOST || "0.0.0.0");
     this.server = new ws.WebSocketServer({
-      host: process.env.WEBSOCKET_HOST,
+      host: process.env.WEBSOCKET_HOST || "0.0.0.0",
       port: port,
       perMessageDeflate: {
         zlibDeflateOptions: {

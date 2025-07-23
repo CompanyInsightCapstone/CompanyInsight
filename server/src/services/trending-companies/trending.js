@@ -1,6 +1,8 @@
 const Websocket = require("./lib/socket");
 const cache = require("../../utilities/RedisClient");
 const process = require("process");
+const dotenv = require("dotenv");
+dotenv.config();
 const {
   SUCCESS,
   FAILURE,
@@ -30,10 +32,12 @@ class TrendingCompaniesService {
         return eventMessage;
       },
     };
+    console.log("Starting websocket server")
     this.socket = new Websocket(
       process.env.VITE_TRENDING_COMPANIES_WEBSOCKET_PORT || 8081,
       this.callbacks,
     );
+    console.log("Socket obj=", JSON.stringify(this.socket))
     this.socket.receiveMessages();
   }
 
