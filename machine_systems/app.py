@@ -1,5 +1,4 @@
 import os
-
 from controllers.recommendation import RecommendationController
 from controllers.search import SearchController
 from dotenv import load_dotenv
@@ -7,11 +6,8 @@ from flask import Flask, jsonify, request, session
 from flask_cors import CORS
 from models.database import Database
 
-load_dotenv()
-os.environ["ROOT_PATH"] = os.path.abspath(os.path.join("..", os.curdir))
 current_directory = os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__)
-
 CORS(
     app,
     supports_credentials=True,
@@ -57,6 +53,6 @@ def recommendations():
     except Exception as e:
         return jsonify({"error": f"Serving recommendations failed: {str(e)}"}), 500
 
+
 if __name__ == "__main__":
-    port = os.environ.get("FLASK_SERVER_PORT")
-    app.run(port=port, debug=True)
+    app.run(host="0.0.0.0", port= os.environ["SERVER_PORT"], debug=True)
