@@ -5,13 +5,17 @@ const {
   LOGGER_TYPE,
 } = require("../../../utilities/constants");
 const process = require("process");
+const http = require("http");
+const express = require("express");
+
 class Websocket {
-  constructor(port, callbacks) {
+  constructor(callbacks) {
     this.callbacks = callbacks;
-    console.log("WebSocket host:", process.env.WEBSOCKET_HOST || "0.0.0.0");
+    this.port = process.env.VITE_TRENDING_COMPANIES_WEBSOCKET_PORT || 8081;
+    this.app = express();
+    this.httpServer = http.createServer(this.app);
     this.server = new ws.WebSocketServer({
-      host: process.env.WEBSOCKET_HOST || "0.0.0.0",
-      port: port,
+      noServer: true,
       perMessageDeflate: {
         zlibDeflateOptions: {
           chunkSize: 1024,
@@ -27,6 +31,19 @@ class Websocket {
         concurrencyLimit: 10,
         threshold: 1024,
       },
+      verifyClient: () => {
+        return true;
+      },
+    });
+
+    this.httpServer.on('upgrade', (request, socket, head) => {
+      this.server.handleUpgrade(request, socket, head, (ws) => {
+        this.server.emit('connection', ws, request);
+      });
+    });
+
+    this.httpServer.listen(this.port, process.env.WEBSOCKET_HOST || "0.0.0.0", () => {
+      console.log(`WebSocket server is running on port ${this.port}`);
     });
   }
 
@@ -58,5 +75,7 @@ class Websocket {
     });
   }
 }
+
+
 
 module.exports = Websocket;
