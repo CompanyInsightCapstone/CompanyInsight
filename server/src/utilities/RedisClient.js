@@ -7,11 +7,12 @@ const {
   LOGGER_TYPE,
 } = require("./constants");
 dotenv.config();
+const process = require("process");
 
 const redisClient = redis.createClient({
   socket: {
-    host: "localhost",
-    port: 6379,
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT,
   },
 });
 

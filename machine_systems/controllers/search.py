@@ -1,11 +1,9 @@
 import os
 import sys
-
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from models.database import *
 from models.company import *
 from nearest_neighbors.model.inference import compute_query_embedding
-
 
 class SearchController:
     def __init__(self, database):

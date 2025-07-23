@@ -20,7 +20,6 @@ database = Database()
 search_controller = SearchController(database=database)
 recommendation_conroller = RecommendationController(database=database)
 
-
 @app.route("/api/advanced-search", methods=["GET"])
 def search():
     try:
@@ -28,31 +27,31 @@ def search():
         limit = request.args.get("limit", "")
         if not query:
             return jsonify({"error": "Query is required"}), 400
-
         if not limit:
             return jsonify({"error": "Limit is required"}), 400
-
         if len(query) >= 400:
             return (
                 jsonify({"error": "Query is too long, must be below 600 characters"}),
                 400,
             )
-
-        results = search_controller.search(query)
-        return jsonify(results)
+        results = search_controller.search(query, limit)
+        return jsonify({"data": results, "count": len(results)})
     except Exception as e:
         return jsonify({"error": f"Search failed: {str(e)}"}), 500
-
 
 @app.route("/api/user/recommendations", methods=["GET"])
 def recommendations():
     try:
         user_id = request.args.get("user_id")
-        results = recommendation_conroller.recommendations(user_id)
-        return jsonify(results)
+        limit = request.args.get("limit")
+        if not user_id:
+            return jsonify({"error": "User ID is required"}), 400
+        if not limit:
+            return jsonify({"error": "Limit is required"}), 400
+        results = recommendation_conroller.recommendations(user_id, limit=limit)
+        return jsonify({"data": results, "count": len(results)})
     except Exception as e:
         return jsonify({"error": f"Serving recommendations failed: {str(e)}"}), 500
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port= os.environ["SERVER_PORT"], debug=True)

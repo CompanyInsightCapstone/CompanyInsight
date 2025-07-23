@@ -4,11 +4,12 @@ const {
   SUCCESS,
   LOGGER_TYPE,
 } = require("../../../utilities/constants");
-
+const process = require("process");
 class Websocket {
   constructor(port, callbacks) {
     this.callbacks = callbacks;
     this.server = new ws.WebSocketServer({
+      host: process.env.WEBSOCKET_HOST,
       port: port,
       perMessageDeflate: {
         zlibDeflateOptions: {
