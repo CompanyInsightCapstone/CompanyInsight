@@ -1,44 +1,56 @@
+/*
+ * List styling for company catalog
+ * Inspired by:
+ * - https://dribbble.com/shots/19649340-Stock-Market-Dashboard
+ * - https://www.tradingview.com/
+ * - https://material.io/design/components/cards.html
+ * - https://tailwindcss.com/docs/responsive-design
+ */
+
 .list-typography {
   text-align: center;
   font-size: 1.5rem;
   font-weight: 700;
+  color: var(--text-light);
+  margin-bottom: 20px;
 }
 
 .list-loading {
   text-align: center;
   font-size: 1.5rem;
   font-weight: 700;
-  color: #7f8c8d;
+  color: var(--accent);
   margin: 40px 0;
 }
 
 .list-empty-state {
-  background-color: #f9f9f9;
+  background-color: var(--primary-light);
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   margin: 40px auto;
   max-width: 600px;
   padding: 30px;
   text-align: center;
+  border-left: 4px solid var(--accent);
 }
 
 .list-empty-state h3 {
-  color: #2c3e50;
+  color: var(--text-light);
   font-size: 24px;
   margin-bottom: 15px;
 }
 
 .list-empty-state p {
-  color: #7f8c8d;
+  color: var(--text-muted);
   font-size: 16px;
   line-height: 1.5;
 }
 
 .list-error {
-  background-color: #ffebee;
-  border-left: 4px solid #e74c3c;
+  background-color: rgba(255, 61, 0, 0.1);
+  border-left: 4px solid var(--danger);
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   margin: 40px auto;
   max-width: 600px;
   padding: 30px;
@@ -46,22 +58,49 @@
 }
 
 .list-error h3 {
-  color: #c0392b;
+  color: var(--danger);
   font-size: 24px;
   margin-bottom: 15px;
 }
 
 .list-error p {
-  color: #7f8c8d;
+  color: var(--text-muted);
   font-size: 16px;
   line-height: 1.5;
 }
 
 .list-container {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 15px;
-  grid-template-columns: repeat(5, 1fr);
   margin: 15px 0;
   width: 100%;
   max-width: 100%;
+}
+
+/* Catalog grid layout for larger screens */
+@media (min-width: 768px) {
+  .list-container {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 20px;
+  }
+}
+
+@media (min-width: 992px) {
+  .list-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1200px) {
+  .list-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.list-end {
+  margin-top: 20px;
+  border-top: 1px solid var(--border-color);
+  padding-top: 20px;
 }

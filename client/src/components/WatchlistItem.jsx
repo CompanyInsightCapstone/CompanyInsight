@@ -5,39 +5,54 @@ export default function WatchlistItem({ savedCompany, callbacks }) {
     <article key={savedCompany.id} className="list-item">
       <h3 className="list-item-header">{savedCompany.company.name}</h3>
       <p className="list-item-symbol">{savedCompany.company.symbol}</p>
-      <p className="list-item-typography">
-        Current Threshold {savedCompany.percentChangeThreshold}
-      </p>
-      <form
-        onSubmit={(event) => callbacks.handleSubmit(event, savedCompany.id)}
-      >
-        <label>Change Price Drop Threshold?</label>
-        <input
-          type="number"
-          name="priceDropThreshold"
-          defaultValue={savedCompany.priceDropThreshold}
-          min="0"
-          max="100"
-          step="0.1"
-        />
-        <button
-          type="submit"
-          disabled={callbacks.updateThresholdMutation.isPending}
-        >
-          {callbacks.updateThresholdMutation.isPending
-            ? "Updating..."
-            : "Submit"}
-        </button>
-      </form>
-      {callbacks.updateThresholdMutation.isError && (
-        <p style={{ color: "red" }}>
-          Failed to update threshold. Please try again.
+
+      <div className="list-item-info-container">
+        <p className="list-item-typography">
+          <span className="field-label">Current Threshold:</span> {savedCompany.percentChangeThreshold}%
         </p>
-      )}
-      <WatchlistButton
-        companyId={savedCompany.companyId}
-        companySymbol={savedCompany.companySymbol}
-      />
+      </div>
+
+      <div className="watchlist-form-container">
+        <form
+          className="threshold-form"
+          onSubmit={(event) => callbacks.handleSubmit(event, savedCompany.id)}
+        >
+          <label className="threshold-label">Change Price Drop Threshold</label>
+          <div className="threshold-input-group">
+            <input
+              type="number"
+              name="priceDropThreshold"
+              className="threshold-input"
+              defaultValue={savedCompany.priceDropThreshold}
+              min="0"
+              max="100"
+              step="0.1"
+            />
+            <button
+              type="submit"
+              className="threshold-button"
+              disabled={callbacks.updateThresholdMutation.isPending}
+            >
+              {callbacks.updateThresholdMutation.isPending
+                ? "Updating..."
+                : "Update"}
+            </button>
+          </div>
+        </form>
+
+        {callbacks.updateThresholdMutation.isError && (
+          <p className="threshold-error">
+            Failed to update threshold. Please try again.
+          </p>
+        )}
+      </div>
+
+      <div className="list-item-actions">
+        <WatchlistButton
+          companyId={savedCompany.companyId}
+          companySymbol={savedCompany.companySymbol}
+        />
+      </div>
     </article>
   );
 }

@@ -1,59 +1,50 @@
-import { Link } from "react-router-dom";
-import { useLocation } from "react-router-dom";
-import { UserContext } from "../contexts/UserContext";
-import { useContext } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 import "../styles/Header.css";
 
 export default function Header() {
-  const { user } = useContext(UserContext);
-
   const location = useLocation();
+  const [isResponsive, setIsResponsive] = useState(false);
 
-  const showHomeLink = () => {
-    return location.pathname === "/login" ||
-      location.pathname === "/signup" ||
-      location.pathname == "/" ? null : (
-      <Link to="/" className="back-link">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="header-icon"
-        >
-          <path d="M19 12H5M12 19l-7-7 7-7" />
-        </svg>
-        Back To Home
-      </Link>
-    );
+  useEffect(() => {
+    setIsResponsive(false);
+  }, [location.pathname]);
+
+  const toggleHamburgerNav = () => {
+    setIsResponsive(!isResponsive);
+  };
+
+
+  const isActive = (path) => {
+    return (path === "/" && location.pathname === "/") ||  path !== "/" && location.pathname.startsWith(path)
   };
 
   return (
     <header className="header">
-      <div className="h1-container">
-        <h1 className="header-title">CompanyInsights </h1>
-        {user && <p className="header-user">Welcome back, {user.username}</p>}
-      </div>
-      <div className="header-controls">
-        {showHomeLink()}
-        <Link className="back-link" to="/watchlist">
-          VIEW WATCHLIST
-        </Link>
-        <Link className="back-link" to="/user-settings">
-          VIEW SETTINGS
-        </Link>
-        <Link className="back-link" to="/search">
-          VIEW SEARCH
-        </Link>
-        <Link className="back-link" to="/recommendations">
-          VIEW Recommendations
-        </Link>
-      </div>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
+      <h1 className="header-title">CompanyInsights</h1>
+      <nav className={`navigation ${isResponsive ? "responsive" : ""}`}>
+        <ul>
+          <li className="header-link">
+            <Link to="/" className={isActive("/") ? "active" : ""}>Home</Link>
+          </li>
+          <li>
+            <Link to="/watchlist" className={isActive("/watchlist") ? "active" : ""}>Watchlist</Link>
+          </li>
+          <li>
+            <Link to="/user-settings" className={isActive("/user-settings") ? "active" : ""}>Settings</Link>
+          </li>
+          <li>
+            <Link to="/search" className={isActive("/search") ? "active" : ""}>Search</Link>
+          </li>
+          <li>
+            <Link to="/recommendations" className={isActive("/recommendations") ? "active" : ""}>Recommendations</Link>
+          </li>
+        </ul>
+        <button className="icon" onClick={toggleHamburgerNav}>
+          <i className="fa fa-bars"></i>
+        </button>
+      </nav>
     </header>
   );
 }

@@ -1,10 +1,19 @@
+/*
+ * Item styling for company cards
+ * Inspired by:
+ * - https://dribbble.com/shots/19649340-Stock-Market-Dashboard
+ * - https://www.tradingview.com/
+ * - https://material.io/design/color/dark-theme.html
+ */
+
 .list-item {
-  background-color: #ffffff;
+  background-color: #232d3f;
   border-radius: 8px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
   cursor: pointer;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
   height: 100%;
   overflow: hidden;
   padding: 15px;
@@ -13,15 +22,17 @@
     transform 0.2s ease,
     box-shadow 0.2s ease;
   width: 100%;
+  border-left: 4px solid var(--accent);
 }
 
 .list-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  background-color: #2c3a4f;
 }
 
 .list-item-header {
-  color: #2c3e50;
+  color: #ffffff;
   display: -webkit-box;
   font-size: 18px;
   font-weight: 600;
@@ -29,42 +40,178 @@
   line-height: 1.2;
   margin: 0 0 10px 0;
   overflow: hidden;
-  text-align: center;
   text-overflow: ellipsis;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
+  width: 100%;
 }
 
 .list-item-symbol {
-  color: #3498db;
+  color: var(--accent);
   font-size: 16px;
   font-weight: 600;
   margin: 0 0 10px 0;
-  text-align: center;
+  width: 100%;
+}
+
+.list-item-info-container {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: space-between;
 }
 
 .list-item-typography {
-  color: #7f8c8d;
+  color: #e0e0e0;
   font-size: 14px;
-  margin: 5px 0;
-  text-align: center;
+  margin: 5px 10px 5px 0;
+  width: calc(50% - 10px);
+  text-align: left;
+}
+
+.field-label {
+  font-weight: 700;
+  color: var(--accent-light);
+}
+
+.list-item-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-top: 15px;
 }
 
 .list-item-link {
-  background-color: #3498db;
+  background-color: var(--accent);
   border-radius: 4px;
-  color: white;
+  color: #000;
   display: block;
   font-size: 14px;
   font-weight: 600;
-  margin: 15px auto 5px;
   padding: 8px 16px;
   text-align: center;
   text-decoration: none;
   transition: background-color 0.2s;
-  width: fit-content;
 }
 
 .list-item-link:hover {
-  background-color: #2980b9;
+  background-color: var(--accent-dark);
+  color: #fff;
+}
+
+.stock-indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+.stock-up {
+  background-color: var(--success);
+}
+
+.stock-down {
+  background-color: var(--danger);
+}
+
+.stock-neutral {
+  background-color: #888;
+}
+
+.watchlist-button {
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 16px;
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.watchlist-add {
+  background-color: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+}
+
+.watchlist-add:hover {
+  background-color: rgba(0, 200, 83, 0.1);
+}
+
+.watchlist-remove {
+  background-color: transparent;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+}
+
+.watchlist-remove:hover {
+  background-color: rgba(255, 61, 0, 0.1);
+}
+
+
+.watchlist-form-container {
+  width: 100%;
+  margin: 15px 0;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+}
+
+.threshold-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.threshold-label {
+  color: var(--text-light);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.threshold-input-group {
+  display: flex;
+  gap: 10px;
+}
+
+.threshold-input {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-light);
+}
+
+.threshold-button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  background-color: var(--accent);
+  color: #000;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.threshold-button:hover {
+  background-color: var(--accent-dark);
+  color: #fff;
+}
+
+.threshold-button:disabled {
+  background-color: #555;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+.threshold-error {
+  color: var(--danger);
+  font-size: 14px;
+  margin-top: 8px;
 }

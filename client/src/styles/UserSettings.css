@@ -1,0 +1,152 @@
+/*
+ * Settings page styling
+ * Inspired by:
+ * - https://ui.shadcn.com/docs/components/switch
+ * - https://tailwindcss.com/docs/customizing-colors
+ * - https://material.io/design/color/dark-theme.html
+ */
+
+.settings-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.settings-card {
+  background-color: #232d3f;
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+  padding: 20px;
+  margin-bottom: 20px;
+  border-left: 4px solid var(--accent);
+}
+
+.settings-card-title {
+  color: var(--text-light);
+  font-size: 18px;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.settings-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.settings-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.settings-label {
+  color: var(--accent-light);
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.settings-description {
+  color: var(--text-light);
+  font-size: 14px;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.settings-control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toggle-container {
+  display: flex;
+  align-items: center;
+}
+
+.toggle-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-label {
+  position: relative;
+  display: inline-block;
+  width: 120px;
+  height: 34px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 34px;
+  cursor: pointer;
+  padding: 0 10px 0 45px;
+  line-height: 34px;
+  color: var(--text-light);
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.toggle-label:before {
+  content: "";
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  left: 4px;
+  bottom: 4px;
+  background-color: var(--text-light);
+  transition: all 0.3s;
+}
+
+.toggle-input:checked + .toggle-label {
+  background-color: var(--accent);
+  color: #000;
+  font-weight: 600;
+}
+
+.toggle-input:checked + .toggle-label:before {
+  transform: translateX(26px);
+}
+
+.settings-button {
+  padding: 10px 20px;
+  border-radius: 4px;
+  border: none;
+  background-color: var(--accent);
+  color: #000;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  align-self: flex-start;
+}
+
+.settings-button:hover {
+  background-color: var(--accent-dark);
+  color: #fff;
+}
+
+.settings-success {
+  padding: 10px;
+  background-color: rgba(0, 200, 83, 0.1);
+  border-left: 4px solid var(--accent);
+  color: var(--accent-light);
+  border-radius: 4px;
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+@media (min-width: 768px) {
+  .settings-form-group {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .settings-label {
+    width: 150px;
+    padding-top: 5px;
+  }
+
+  .settings-control-group {
+    flex: 1;
+  }
+}

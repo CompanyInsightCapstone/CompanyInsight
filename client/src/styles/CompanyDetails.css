@@ -1,39 +1,116 @@
+/*
+ * Company Details styling
+ * Inspired by:
+ * - https://dribbble.com/shots/19649340-Stock-Market-Dashboard
+ * - https://www.tradingview.com/
+ * - https://material.io/design/color/dark-theme.html
+ */
+
 .company-details {
-  background-color: #ffffff;
+  background-color: #232d3f;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
   margin: 20px auto;
   max-width: 1000px;
   padding: 30px;
+  border-left: 4px solid var(--accent);
 }
 
 .company-details-loading {
-  color: #7f8c8d;
+  color: var(--accent);
   font-size: 18px;
   margin: 40px auto;
   text-align: center;
 }
 
 .company-details-title {
-  border-bottom: 1px solid #e0e0e0;
-  color: #2c3e50;
+  border-bottom: 2px solid var(--accent);
+  color: var(--text-light);
   font-size: 24px;
   font-weight: 700;
   margin-bottom: 20px;
   padding-bottom: 15px;
+  display: inline-block;
 }
 
 .company-details-info {
-  color: #34495e;
+  color: var(--text-light);
   font-size: 16px;
   line-height: 1.6;
   margin-bottom: 10px;
   padding: 5px 0;
 }
 
+.company-details-info strong {
+  color: var(--accent-light);
+  font-weight: 700;
+}
+
+.company-details-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 10px;
+}
+
+@media (min-width: 768px) {
+  .company-details-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 992px) {
+  .company-details-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.company-details-section {
+  margin-top: 30px;
+}
+
+.company-details-subtitle {
+  color: var(--text-light);
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 10px;
+}
+
 .company-details-description {
-  background-color: #f9f9f9;
-  border-left: 4px solid #3498db;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-left: 4px solid var(--accent);
   margin: 15px 0;
-  padding: 10px 15px;
+  padding: 15px;
+  border-radius: 4px;
+  color: var(--text-light);
+}
+
+.company-details button {
+  padding: 10px 20px;
+  border-radius: 4px;
+  border: none;
+  background-color: var(--accent);
+  color: #000;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 20px;
+}
+
+.company-details button:hover {
+  background-color: var(--accent-dark);
+  color: #fff;
+}
+
+.company-details button:disabled {
+  background-color: #555;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+.overview {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-color);
 }
