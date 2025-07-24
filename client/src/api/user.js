@@ -76,7 +76,7 @@ const User = {
 
   async recommendations(user_id) {
     return await formatRequest(
-      formatUrl(API_ENDPOINTS.USER_RECOMMENDATIONS, { user_id }),
+      formatUrl(API_ENDPOINTS.USER_RECOMMENDATIONS, { user_id, limit: 20 }),
       METHOD_ENUM.GET,
     );
   },

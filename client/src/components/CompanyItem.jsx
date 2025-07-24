@@ -1,10 +1,8 @@
 import { Link } from "react-router";
-import { UserContext } from "../contexts/UserContext";
 import WatchlistButton from "./WatchlistButton";
 
 export default function CompanyItem({ company }) {
   const companyNumericals = company.CompanyNumericals[0]
-
   return (
     <article className="list-item">
       <h2 className="list-item-header">{company.name} </h2>
@@ -13,7 +11,7 @@ export default function CompanyItem({ company }) {
       <p className="list-item-typography">Asset Type: {company.assetType}</p>
       <p className="list-item-typography">IPO Date: {company.ipoDate}</p>
       <p className="list-item-typography">Company Status: {company.status}</p>
-      <p  className="list-item-typography">lastUpdated: {companyNumericals.lastUpdated}</p>
+      <p className="list-item-typography">lastUpdated: {companyNumericals.lastUpdated}</p>
       <p className="list-item-typography"> Open: {companyNumericals.open} </p>
       <p className="list-item-typography">High: {companyNumericals.high}</p>
       <p className="list-item-typography">Low: {companyNumericals.low}</p>

@@ -24,7 +24,7 @@
   },
   "scripts": {
     "dev": "concurrently \"node --watch index.js\" \"node src/services/price-alerts/notification.js\" \"node src/services/trending-companies/trending.js\"",
-    "start": "npx prisma migrate deploy && node index.js",
+    "start": "npx prisma migrate deploy && npx prisma generate && concurrently \"node index.js\" \"node src/services/price-alerts/notification.js\" \"node src/services/trending-companies/trending.js\"",
     "build": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:reset": "prisma migrate reset --force",

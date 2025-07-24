@@ -1,7 +1,6 @@
 import { createContext, useState, useContext } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { UserContext } from "../contexts/UserContext";
-
 import User from "../api/user";
 
 export const RecommendationContext = createContext();
@@ -21,9 +20,6 @@ export default function RecommendationContextProvider({ children }) {
     retry: false,
     enabled: !!user.id,
     refetchOnWindowFocus: false,
-    onSuccess: (data) => {
-      setCompanies(data);
-    },
   });
 
   const RecommendationContextData = {

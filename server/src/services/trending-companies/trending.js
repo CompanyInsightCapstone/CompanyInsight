@@ -1,6 +1,8 @@
 const Websocket = require("./lib/socket");
 const cache = require("../../utilities/RedisClient");
-const process = require("process");
+const dotenv = require("dotenv");
+const database = require("../../utilities/database");
+dotenv.config();
 const {
   SUCCESS,
   FAILURE,
@@ -30,11 +32,7 @@ class TrendingCompaniesService {
         return eventMessage;
       },
     };
-    this.socket = new Websocket(
-      process.env.VITE_TRENDING_COMPANIES_WEBSOCKET_PORT || 8081,
-      this.callbacks,
-    );
-    this.socket.receiveMessages();
+    this.socket = new Websocket(this.callbacks);
   }
 
   async send() {
@@ -139,8 +137,36 @@ class TrendingCompaniesService {
     }
   }
 
+  async initialize() {
+    try {
+      const sortedSetCount = await cache.redisClient.zCard(this.topKName);
+      if (sortedSetCount > 0) {
+        return SUCCESS("Trending data already initialized", LOGGER_TYPE.TRENDING);
+      }
+      const watchlistEntries = await database.executeQuery(
+          "SELECT DISTINCT \"companyId\", \"companySymbol\" FROM \"Watchlist\""
+      );
+      const companyCounts = {};
+      watchlistEntries.forEach(entry => {
+          const key = JSON.stringify({
+            companyId: entry.companyId,
+            companySymbol: entry.companySymbol
+          });
+          companyCounts[key] = (companyCounts[key] || 0) + 1;
+      });
+      if (Object.keys(companyCounts).length > 0) {
+        for (const [key, count] of Object.entries(companyCounts)) {
+          await cache.redisClient.zAdd(this.topKName, {score: count, value: key});
+        }
+      }
+    } catch (error) {
+      return FAILURE("Failed to initialize trending data", error, LOGGER_TYPE.TRENDING);
+    }
+  }
+
   async run() {
     SUCCESS("Starting trending companies service", LOGGER_TYPE.TRENDING);
+    await this.initialize();
     await this.update();
     await this.send();
     setInterval(() => this.update(), this.refreshInterval);

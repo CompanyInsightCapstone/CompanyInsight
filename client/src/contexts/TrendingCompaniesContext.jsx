@@ -4,7 +4,6 @@ import { TrendingCompaniesWebsocket } from "../api/socket";
 
 export const TrendingCompaniesContext = createContext();
 
-const TRENDING_COMPANIES_CACHE_KEY = "trending-companies-cache";
 
 export default function TrendingCompaniesContextProvider({ children }) {
   const [trendingCompanies, setTrendingCompanies] = useState([]);

@@ -300,3 +300,14 @@ Temporary Items
 .gitignore
 server/src/services/machine_systems/nearest_neighbors/model/parameters/*.pt
 server/src/services/machine_systems/nearest_neighbors/model/parameters/*.pt
+
+# Docker files
+# docker-compose.yml is now safe to commit since it uses environment variables
+
+# Database files
+postgres/data/pgdata/
+postgres/data/*.sql
+postgres/data/*.dump
+postgres/data/*.bak
+postgres/data/*.gz
+/Users/dwainanderson/codepath/CompanyInsight/postgres/data/init/local_db_dump.sql

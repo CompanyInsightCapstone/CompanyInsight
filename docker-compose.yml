@@ -1,0 +1,93 @@
+services:
+  postgres:
+    image: "pgvector/pgvector:pg17"
+    environment:
+        - POSTGRES_USER=${POSTGRES_USER}
+        - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+        - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+        - ./postgres/data/pgdata:/var/lib/postgresql/data
+        - ./postgres/data/init:/docker-entrypoint-initdb.d
+        - ./postgres/data/dbcopyfiles:/dbcopyfiles
+    ports:
+        - "5432:5432"
+  redis:
+    image: redis:alpine
+    ports:
+        - "${REDIS_PORT}:${REDIS_PORT}"
+    volumes:
+        - redis-data:/data
+    command: redis-server --appendonly yes --save 60 1
+  client:
+    build:
+      context: .
+      dockerfile: ./client/Dockerfile
+    ports:
+      - "5173:5173"
+    environment:
+      - PORT=5173
+      - VITE_SERVER_ADDRESS=${VITE_SERVER_ADDRESS}
+      - VITE_FLASK_ADDRESS=${VITE_FLASK_ADDRESS}
+      - VITE_WEBSOCKET_SERVER_ADDRESS=${VITE_WEBSOCKET_SERVER_ADDRESS}
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./client:/usr/src/app
+      - client_node_modules:/usr/src/app/node_modules
+
+  server:
+    build:
+      context: .
+      dockerfile: ./server/Dockerfile
+    ports:
+      - "${PORT}:${PORT}"
+      - "${WEBSOCKET_PORT}:${WEBSOCKET_PORT}"
+    environment:
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_PORT=${DATABASE_PORT}
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - WEBSOCKET_HOST=${WEBSOCKET_HOST}
+      - VITE_TRENDING_COMPANIES_WEBSOCKET_PORT=${VITE_TRENDING_COMPANIES_WEBSOCKET_PORT}
+      - WEBSOCKET_PORT=${WEBSOCKET_PORT}
+      - VITE_FINNHUB_API_KEY=${VITE_FINNHUB_API_KEY}
+      - VITE_ALPHA_VANTAGE_API_KEY=${VITE_ALPHA_VANTAGE_API_KEY}
+      - VITE_POLYGON_API_KEY=${VITE_POLYGON_API_KEY}
+      - VITE_CI_EMAIL_ADDRESS=${VITE_CI_EMAIL_ADDRESS}
+      - VITE_CI_EMAIL_APP_PASS=${VITE_CI_EMAIL_APP_PASS}
+      - VITE_PYTHON_SERVER_PORT=${VITE_PYTHON_SERVER_PORT}
+      - PORT=${PORT}
+    depends_on:
+      - postgres
+      - redis
+
+    volumes:
+      - ./server:/usr/src/app
+      - /usr/src/app/node_modules
+
+  machine-systems:
+    build:
+      context: .
+      dockerfile: ./machine_systems/Dockerfile
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+    environment:
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_PORT=${DATABASE_PORT}
+      - SERVER_PORT=${SERVER_PORT}
+    depends_on:
+      - postgres
+    volumes:
+      - ./machine_systems:/usr/src/app
+
+
+volumes:
+  redis-data:
+  client_node_modules:

@@ -22,7 +22,7 @@ export class TrendingCompaniesWebsocket {
       this.callbacks.onStatusChange(this.connectionStatus);
     };
 
-    this.socket.onerror = () => {
+    this.socket.onerror = (error) => {
       this.connectionStatus = CONNECTION_STATUS_ENUM.ERROR;
       this.callbacks.onStatusChange(this.connectionStatus);
     };
