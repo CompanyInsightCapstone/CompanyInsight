@@ -310,4 +310,4 @@ postgres/data/*.sql
 postgres/data/*.dump
 postgres/data/*.bak
 postgres/data/*.gz
-/Users/dwainanderson/codepath/CompanyInsight/postgres/data/init/local_db_dump.sql
+**/local_db_dump.sql
