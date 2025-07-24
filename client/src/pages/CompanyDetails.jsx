@@ -80,14 +80,14 @@ export default function CompanyDetails() {
 
       {companyDetails && (
         <section className="company-details">
-          <h1 className="company-details-title">NAME: {companyDetails.name}</h1>
+          <h1 className="company-details-title">{companyDetails.name}</h1>
           {isTimeSeriesLoading && (
             <div className="chart-loading">Loading chart data...</div>
           )}
 
           {timeSeriesData.length > 0 && (
             <div className="chart-container">
-              <h2>Stock Price Chart ({resultsCount} data points)</h2>
+              <h2>Stock Price Chart (n = {resultsCount} )</h2>
               <CandleStickGraph
                 configPlot={{
                   data: timeSeriesData,
@@ -96,46 +96,59 @@ export default function CompanyDetails() {
               />
             </div>
           )}
-          <p className="company-details-info">
-            TICKER: {companyDetails.ticker}
-          </p>
-          <p className="company-details-info">
-            MARKET: {companyDetails.market}
-          </p>
-          <p className="company-details-info">
-            LOCALE: {companyDetails.locale}
-          </p>
-          <p className="company-details-info">
-            PRIMARY EXCHANGE: {companyDetails.primary_exchange}
-          </p>
-          <p className="company-details-info">TYPE: {companyDetails.type}</p>
-          <p className="company-details-info">
-            ACTIVE: {companyDetails.active ? "Yes" : "No"}
-          </p>
-          <p className="company-details-info">
-            CURRENCY: {companyDetails.currency_name}
-          </p>
-          <p className="company-details-info">CIK: {companyDetails.cik}</p>
-          <p className="company-details-info">
-            COMPOSITE FIGI: {companyDetails.composite_figi}
-          </p>
-          <p className="company-details-info">
-            SHARE CLASS FIGI: {companyDetails.share_class_figi}
-          </p>
-          <p className="company-details-info">
-            TICKER ROOT: {companyDetails.ticker_root}
-          </p>
-          <p className="company-details-info">
-            LIST DATE: {companyDetails.list_date}
-          </p>
-          <p className="company-details-info">
-            ROUND LOT: {companyDetails.round_lot}
-          </p>
+          <div className="company-details-grid">
+            <p className="company-details-info">
+              <strong>Ticker:</strong> {companyDetails.ticker}
+            </p>
+            <p className="company-details-info">
+              <strong>Market:</strong> {companyDetails.market}
+            </p>
+            <p className="company-details-info">
+              <strong>Locale:</strong> {companyDetails.locale}
+            </p>
+            <p className="company-details-info">
+              <strong>Primary Exchange:</strong> {companyDetails.primary_exchange}
+            </p>
+            <p className="company-details-info">
+              <strong>Type:</strong> {companyDetails.type}
+            </p>
+            <p className="company-details-info">
+              <strong>Active:</strong> {companyDetails.active ? "Yes" : "No"}
+            </p>
+            <p className="company-details-info">
+              <strong>Currency:</strong> {companyDetails.currency_name}
+            </p>
+            <p className="company-details-info">
+              <strong>List Date:</strong> {companyDetails.list_date}
+            </p>
+          </div>
+
+          <div className="company-details-section">
+            <h3 className="company-details-subtitle">Additional Information</h3>
+            <div className="company-details-grid">
+              <p className="company-details-info">
+                <strong>CIK:</strong> {companyDetails.cik || "N/A"}
+              </p>
+              <p className="company-details-info">
+                <strong>Composite FIGI:</strong> {companyDetails.composite_figi || "N/A"}
+              </p>
+              <p className="company-details-info">
+                <strong>Share Class FIGI:</strong> {companyDetails.share_class_figi || "N/A"}
+              </p>
+              <p className="company-details-info">
+                <strong>Ticker Root:</strong> {companyDetails.ticker_root || "N/A"}
+              </p>
+              <p className="company-details-info">
+                <strong>Round Lot:</strong> {companyDetails.round_lot || "N/A"}
+              </p>
+            </div>
+          </div>
 
           {companyDetails.description && (
             <section className="overview">
-              <p className="company-details-info company-details-description">
-                DESCRIPTION: {companyDetails.description}
+              <h3 className="company-details-subtitle">Company Overview</h3>
+              <p className="company-details-description">
+                {companyDetails.description}
               </p>
             </section>
           )}

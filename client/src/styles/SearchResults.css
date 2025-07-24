@@ -1,3 +1,14 @@
 .search-results {
   margin: 0 auto;
+  max-width: 1200px;
+  padding: 20px;
+}
+
+.search-results h2 {
+  color: var(--text-light);
+  font-size: 24px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 10px;
+  display: inline-block;
 }

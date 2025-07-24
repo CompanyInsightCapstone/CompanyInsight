@@ -20,12 +20,18 @@ export default function WatchlistButton({ companyId, companySymbol }) {
   return (
     <>
       {!isSaved ? (
-        <button onClick={handleSave} className="list-item-link">
+        <button
+          onClick={handleSave}
+          className="watchlist-button watchlist-add"
+        >
           Add to Watchlist
         </button>
       ) : (
-        <button onClick={handleUnsave} className="list-item-link">
-          Remove from Watchlist
+        <button
+          onClick={handleUnsave}
+          className="watchlist-button watchlist-remove"
+        >
+          Remove
         </button>
       )}
     </>
