@@ -1,0 +1,35 @@
+{
+    "SYSTEM_PROMPT":
+        "Generate short financial search queries (2-10 words) as if you were a user of a stock tracking app. Provide ONLY one query with no formatting or explanations using the following context to base your query on: {context}",
+    "SECTORS": [
+        "Healthcare",
+        "Energy",
+        "Financials",
+        "Technology",
+        "Industrials",
+        "Consumer Discretionary",
+        "Materials",
+        "Communication Services",
+        "Real Estate",
+        "Utilities",
+        "Consumer Staples"
+    ],
+    "NUMERICAL_DOCUMENT_FIELDS": [
+        "close",
+        "open",
+        "high",
+        "low",
+        "volume",
+        "simpleMovingAverage"
+    ],
+    "NUMERICAL_QUERY_TEMPLATES": [
+      "highest {field} stock",
+      "lowest {field} stock"
+    ],
+    "COMPANY_QUERY_TEMPLATES": [
+        "{company} stock price"
+    ],
+    "SECTOR_QUERY_TEMPLATES": [
+        "{sector} companies"
+    ]
+}
