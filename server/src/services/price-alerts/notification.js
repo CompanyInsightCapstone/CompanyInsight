@@ -6,6 +6,7 @@ const Emailer = require("./lib/emailer");
 const { SUCCESS, FAILURE, LOGGER_TYPE } = require("../../utilities/constants");
 const serviceParameters = require("./config.json");
 const process = require("process");
+
 const formatEmailSubject = (symbol, percentage) =>
   `Company Insights: ${symbol} has changed by ${percentage}%`;
 
@@ -37,14 +38,12 @@ async function percentDropMailerCallback(emailer, decodedMessage) {
         new Error("Missing or invalid stock price data"),
       );
     }
-
     const mailingQuery = `
       SELECT DISTINCT u.email, u.id as "userId", usc."percentChangeThreshold", usc."previousPrice" FROM "User" u
       JOIN "Watchlist" usc ON u.id = usc."userId"
       WHERE usc."companyId" = $1 AND usc."lastNotifiedTime" IS NULL OR DATE(usc."lastNotifiedTime") <> CURRENT_DATE
 
     `;
-
     const mailingParams = [decodedMessage.companyId];
     const userMailingList = await database.executeQuery(
       mailingQuery,
@@ -52,13 +51,11 @@ async function percentDropMailerCallback(emailer, decodedMessage) {
     );
     let emailsSent = 0;
     let emailsNotSent = 0;
-
     userMailingList.forEach(async (user) => {
       if (!user.previousPrice) {
         emailsNotSent++;
         return;
       }
-
       const delta = 100 * (decodedMessage.data.c / user.previousPrice - 1);
       const deltaPercent = Math.abs(delta);
       if (delta > 0 || deltaPercent < user.percentChangeThreshold) {
@@ -76,7 +73,6 @@ async function percentDropMailerCallback(emailer, decodedMessage) {
         ),
       );
       emailsSent++;
-
       const updateQuery = `UPDATE "Watchlist" SET "previousPrice" = $1, "lastNotifiedTime" = $2 WHERE "companyId" = $3 AND "userId" = $4`;
       const updateParams = [
         decodedMessage.data.c,
@@ -208,6 +204,7 @@ class StockPriceNotificationService {
 const main = () => {
   const stageName = "StockPriceNotifications";
   const service = new StockPriceNotificationService(stageName);
+  console.log(`Starting ${stageName} service...`);
   service.run();
 };
 

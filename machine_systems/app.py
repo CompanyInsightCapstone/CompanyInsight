@@ -24,7 +24,7 @@ recommendation_conroller = RecommendationController(database=database)
 def search():
     try:
         query = request.args.get("query", "")
-        limit = request.args.get("limit", "")
+        limit = int(request.args.get("limit", "0"))
         if not query:
             return jsonify({"error": "Query is required"}), 400
         if not limit:
@@ -43,7 +43,8 @@ def search():
 def recommendations():
     try:
         user_id = request.args.get("user_id")
-        limit = request.args.get("limit")
+        limit = int(request.args.get("limit", "0"))
+
         if not user_id:
             return jsonify({"error": "User ID is required"}), 400
         if not limit:

@@ -14,6 +14,10 @@ class RecommendationController:
         User.connect(database)
 
     def recommendations(self, user_id, limit=5):
+        """
+        Serve the user a set of recommendations based on the companies on their watchlist.
+        If the user has no watchlist, query the nearest neighbors of a random vector.
+        """
         company_recommendations = []
         watchlists = User.watchlist(user_id)
         if not watchlists:
@@ -27,5 +31,6 @@ class RecommendationController:
             most_similiar_companies = Company.company_nearest_neighbors(company_vector, limit=5)
             for most_similiar_company in most_similiar_companies:
                 if not (most_similiar_company.get("symbol") in watchlist_symbols):
-                    company_recommendation.append(most_similiar_company)
-        return random.sample(company_recommendation, 5)
+                    company_recommendations.append(most_similiar_company)
+        sample_upper_bound = min(len(company_recommendations), limit)
+        return random.sample(company_recommendations, sample_upper_bound)

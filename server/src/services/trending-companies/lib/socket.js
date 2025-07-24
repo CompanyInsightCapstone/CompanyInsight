@@ -2,11 +2,13 @@ const ws = require("ws");
 const {
   WEBSOCKET_MESSAGE_TYPE,
   SUCCESS,
+  FAILURE
   LOGGER_TYPE,
 } = require("../../../utilities/constants");
 const process = require("process");
 const http = require("http");
 const express = require("express");
+const { formatRequest } = require("../../../../../client/src/api/util");
 
 class Websocket {
   constructor(callbacks) {
@@ -42,9 +44,8 @@ class Websocket {
       });
     });
 
-    this.httpServer.listen(this.port, process.env.WEBSOCKET_HOST || "0.0.0.0", () => {
-      console.log(`WebSocket server is running on port ${this.port}`);
-    });
+    this.httpServer.listen(this.port, process.env.WEBSOCKET_HOST || "0.0.0.0", () => {});
+    this.receiveMessages();
   }
 
   sendMessage(data) {
@@ -57,21 +58,36 @@ class Websocket {
   }
 
   receiveMessages() {
-    this.server.on("connection", (client) => {
+    this.server.on("connection", (client, request) => {
       client.on("message", (data) => {
-        const message = JSON.parse(data);
-        switch (message.type) {
-          case WEBSOCKET_MESSAGE_TYPE.REQUEST_TRENDING_COMPANIES:
-            client.send(
-              JSON.stringify(this.callbacks.onTrendingCompaniesRequest()),
-            );
-            break;
-          case WEBSOCKET_MESSAGE_TYPE.PING:
-            client.send(JSON.stringify({ type: WEBSOCKET_MESSAGE_TYPE.PONG }));
-            break;
+        try {
+          const message = JSON.parse(data);
+          switch (message.type) {
+            case WEBSOCKET_MESSAGE_TYPE.REQUEST_TRENDING_COMPANIES:
+              client.send(JSON.stringify(this.callbacks.onTrendingCompaniesRequest()));
+              break;
+            case WEBSOCKET_MESSAGE_TYPE.PING:
+              client.send(JSON.stringify({ type: WEBSOCKET_MESSAGE_TYPE.PONG }));
+              break;
+            default:
+          }
+          SUCCESS(`Message received from client: ${data}`, LOGGER_TYPE.TRENDING);
+        } catch (error) {
+          FAILURE(`Error parsing message: ${error.message}`, error, LOGGER_TYPE.TRENDING);
         }
-        SUCCESS(`Message received from client: ${data}`, LOGGER_TYPE.TRENDING);
       });
+
+      client.on("error", (error) => {
+        FAILURE(`Error: ${error.message}`, error, LOGGER_TYPE.TRENDING);
+      });
+
+      client.on("close", (code, reason) => {
+        SUCCESS(`WebSocket connection closed: ${code} - ${reason}`, LOGGER_TYPE.TRENDING);
+      });
+    });
+
+    this.server.on("error", (error) => {
+      FAILURE(`WebSocket server error: ${error.message}`, error, LOGGER_TYPE.TRENDING);
     });
   }
 }
