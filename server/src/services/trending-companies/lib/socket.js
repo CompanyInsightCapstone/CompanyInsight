@@ -2,13 +2,12 @@ const ws = require("ws");
 const {
   WEBSOCKET_MESSAGE_TYPE,
   SUCCESS,
-  FAILURE
+  FAILURE,
   LOGGER_TYPE,
 } = require("../../../utilities/constants");
 const process = require("process");
 const http = require("http");
 const express = require("express");
-const { formatRequest } = require("../../../../../client/src/api/util");
 
 class Websocket {
   constructor(callbacks) {
