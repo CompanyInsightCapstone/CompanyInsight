@@ -79,10 +79,25 @@ class RandomWalker:
         query_data = dict(self.subgraph.nodes(data=True))[query_node]
         positive_data = dict(self.subgraph.nodes(data=True))[positive_node]
         negative_data = dict(self.subgraph.nodes(data=True))[negative_node]
+        query = None
+        if "data" in query_data and hasattr(query_data["data"], "query"):
+            query = query_data["data"].query
+        else:
+            # Try different ways to get the query
+            query = (query_data.get("data", {}).get("query", None) or
+                    query_data.get("query", None) or
+                    str(query_node))
+        positive_doc = positive_data.get("data", {}).get("document", positive_data)
+        if isinstance(positive_doc, dict) and "document" in positive_doc:
+            positive_doc = positive_doc["document"]
+
+        negative_doc = negative_data.get("data", {}).get("document", negative_data)
+        if isinstance(negative_doc, dict) and "document" in negative_doc:
+            negative_doc = negative_doc["document"]
         triplet = {
-            "query": query_data.get("text", str(query_node)),
-            "positive_document": positive_data,
-            "negative_document": negative_data,
+            "query": query,
+            "positive_document": positive_doc,
+            "negative_document": negative_doc,
             "query_positive_similarity": positive_similarity,
             "query_negative_similarity": negative_similarity,
         }
@@ -135,5 +150,7 @@ class RandomWalker:
             print(f"RandomWalker starting on subgraph with {self.node_set_size} nodes")
             num_entries = self.random_sample()
             print(f"RandomWalker finished: Generated {num_entries} query-document entries")
+            return num_entries
         except Exception as e:
             print(f"Error in RandomWalker: {e}")
+            return 0

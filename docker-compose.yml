@@ -86,8 +86,7 @@ services:
       - postgres
     volumes:
       - ./machine_systems:/usr/src/app
-
-
+      
 volumes:
   redis-data:
   client_node_modules:
