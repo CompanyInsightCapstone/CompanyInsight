@@ -80,7 +80,7 @@ class Company:
                     c.id, c.symbol, c.name, c.exchange, c."assetType", c."ipoDate", c."delistingDate", c.status,
                     cd.id as details_id, cd.description,
                     cn.id as numericals_id, cn."lastUpdated" as lastUpdated, cn."rawClose", cn.close, cn.open, cn.high, cn.low, cn.volume, cn."simpleMovingAverage",
-                    (1 - (ce."vector" <=> %s::vector)) AS cosine_similarity
+                    ((ce."vector" <#> %s::vector) * -1) AS cosine_similarity
                 FROM "Company" c
                 JOIN "CompanyEmbeddings" ce ON c.id = ce."companyId"
                 LEFT JOIN "CompanyDetails" cd ON cd."companyId" = c.id
@@ -117,7 +117,7 @@ class Company:
                     c.id, c.symbol, c.name, c.exchange, c."assetType", c."ipoDate", c."delistingDate", c.status,
                     cd.id as details_id, cd.description,
                     cn.id as numericals_id, cn."lastUpdated" as lastUpdated, cn."rawClose", cn.close, cn.open, cn.high, cn.low, cn.volume, cn."simpleMovingAverage",
-                    (1 - (ce."vector" <=> %s::vector)) AS cosine_similarity
+                    ((ce."vector" <#> %s::vector) * -1) AS cosine_similarity
                 FROM "Company" c
                 JOIN "CompanyEmbeddings" ce ON c.id = ce."companyId"
                 LEFT JOIN "CompanyDetails" cd ON cd."companyId" = c.id

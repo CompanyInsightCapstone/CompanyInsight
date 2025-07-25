@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 from .components.ffnn import FFNN
 from .components.transformer import Transformer
@@ -25,10 +26,10 @@ class DocumentEncoder(nn.Module):
             "input_ids": inputs["document_input_ids"],
             "attention_mask": inputs["document_attention_mask"],
         }
+        ffn_input = inputs["document_numerical_features"]
         document_textual = self.transformer(transformer_input)
-        document_numerical = self.ffnn(inputs["document_numerical_features"])
-
+        document_numerical = self.ffnn(ffn_input)
         combined = torch.cat([document_textual, document_numerical], dim=-1)
         document_embedding = self.projection(combined)
-
+        document_embedding = F.normalize(document_embedding, p=2, dim=1)
         return document_embedding

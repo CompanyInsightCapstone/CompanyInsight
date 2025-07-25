@@ -60,10 +60,12 @@ services:
       - VITE_CI_EMAIL_ADDRESS=${VITE_CI_EMAIL_ADDRESS}
       - VITE_CI_EMAIL_APP_PASS=${VITE_CI_EMAIL_APP_PASS}
       - VITE_PYTHON_SERVER_PORT=${VITE_PYTHON_SERVER_PORT}
-      - PORT=${PORT}
+      - PORT=${NODE_PORT}
     depends_on:
       - postgres
       - redis
+
+    restart: always
 
     volumes:
       - ./server:/usr/src/app
@@ -86,7 +88,7 @@ services:
       - postgres
     volumes:
       - ./machine_systems:/usr/src/app
-      
+
 volumes:
   redis-data:
   client_node_modules:
