@@ -110,13 +110,11 @@ class MonteCarloSimulation:
             sector_count += 1
             if sector_count % 5 == 0:
                 print(f"Processed {sector_count}/{total_sectors} sector queries ({sector_count/total_sectors*100:.1f}%)")
-
         print(f"Completed sector queries processing. Time elapsed: {time.time() - sector_start_time:.2f}s")
         print(f"Processing numerical field queries...")
         numerical_start_time = time.time()
         numerical_fields = self.query_generation_data.get("NUMERICAL_DOCUMENT_FIELDS", [])
         numerical_templates = self.query_generation_data.get("NUMERICAL_QUERY_TEMPLATES", [])
-
         numerical_count = 0
         total_numerical = len(numerical_fields) * len(numerical_templates)
         field_template_pairs = list(itertools.product(numerical_fields, numerical_templates))
@@ -133,7 +131,6 @@ class MonteCarloSimulation:
             else:
                 positive_doc = result_list[0]
                 negative_doc = result_list[-1] if len(result_list) > 1 else None
-
             triplet = self.make_triplet_entry(query, positive_doc, negative_doc)
             self.shared_buffer.add(triplet)
             numerical_count += 1

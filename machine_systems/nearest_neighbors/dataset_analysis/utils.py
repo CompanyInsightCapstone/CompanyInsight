@@ -1,39 +1,49 @@
 import importlib.util
 import os
+import sys
 
-import numpy as np
 import pandas as pd
 from dotenv import load_dotenv
+
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
-possible_paths = [
-    os.path.join("/usr/src/app/models", "database.py"),
-    os.path.abspath(os.path.join(current_dir, "..", "..", "models", "database.py")),
-    os.path.abspath(
-        os.path.join(current_dir, "..", "..", "..", "models", "database.py")
-    ),
-]
 
-database_module = None
-for path in possible_paths:
-    if os.path.exists(path):
-        try:
-            print(f"Trying to import Database from: {path}")
-            spec = importlib.util.spec_from_file_location("database", path)
-            database_module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(database_module)
-            print(f"Successfully imported Database from: {path}")
-            break
-        except Exception as e:
-            print(f"Failed to import from {path}: {e}")
+# Dynamic import of Database class
+def import_database():
+    """
+    Dynamically import the Database class from one of several possible locations.
+    This handles different environments (local development vs Docker).
 
-if database_module is None:
+    Returns:
+        Database class
+    """
+    possible_paths = [
+        os.path.join("/usr/src/app/models", "database.py"),  # Docker path
+        os.path.abspath(
+            os.path.join(current_dir, "..", "..", "models", "database.py")
+        ),  # Local relative path
+        os.path.abspath(
+            os.path.join(current_dir, "..", "..", "..", "models", "database.py")
+        ),  # Alternative local path
+    ]
+
+    for path in possible_paths:
+        if os.path.exists(path):
+            try:
+                print(f"Trying to import Database from: {path}")
+                spec = importlib.util.spec_from_file_location("database", path)
+                database_module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(database_module)
+                print(f"Successfully imported Database from: {path}")
+                return database_module.Database
+            except Exception as e:
+                print(f"Failed to import from {path}: {e}")
+
     raise ImportError(
         "Could not find or import the Database class from any of the expected locations"
     )
 
-
-Database = database_module.Database
+Database = import_database()
 
 
 def config():
@@ -152,39 +162,3 @@ def load_company_documents():
 
 
 search_url = "https://en.wikipedia.org/w/api.php"
-
-def sample_system_prompt():
-    return np.random.choice(SYSTEM_PROMPTS)
-
-
-def sample_pattern():
-    return np.random.choice(patterns)
-
-
-def sample_prompt_template():
-    return np.random.choice(prompts)
-
-
-def sample_general_query_template():
-    return np.random.choice(GENERAL_QUERY_TEMPLATES)
-
-
-def sample_company_query_template():
-    return np.random.choice(COMPANY_QUERY_TEMPLATES)
-
-
-def get_sampling_weights(query_type="mixed"):
-    if query_type == "company_heavy":
-        return 0.8, 0.2
-    elif query_type == "balanced":
-        return 0.5, 0.5
-    elif query_type == "general_heavy":
-        return 0.2, 0.8
-    else:
-        return 0.7, 0.3
-
-
-def is_company_name_first(query, company_name):
-    query_lower = query.lower().strip()
-    company_lower = company_name.lower().strip()
-    return query_lower.startswith(company_lower)
