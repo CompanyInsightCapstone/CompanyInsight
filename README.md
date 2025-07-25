@@ -44,18 +44,15 @@
 ### Clone the Repository
 
 ```bash
-# Clone the repository with Git LFS
 git clone https://github.com/yourusername/CompanyInsight.git
 cd CompanyInsight
-
-# Pull LFS files (PostgreSQL data dumps and model weights)
 git lfs pull
 ```
 
 ### Configuration
 
 Create an .env file in the project root with the following variables:
-# Database Configuration
+
 POSTGRES_USER=
 POSTGRES_PASSWORD=
 POSTGRES_DB=
@@ -65,28 +62,22 @@ DATABASE_PASSWORD=
 DATABASE_NAME=
 DATABASE_PORT=
 DATABASE_URL=
-
-# Redis Configuration
 REDIS_HOST=
 REDIS_PORT=
-
-# WebSocket Configuration
 WEBSOCKET_HOST=
-WEBSOCKET_PORT=
-VITE_TRENDING_COMPANIES_WEBSOCKET_PORT=
-
+NODEJS_WEBSOCKET_PORT=
+TRENDING_COMPANIES_WEBSOCKET_PORT=
 VITE_FINNHUB_API_KEY=
 VITE_ALPHA_VANTAGE_API_KEY=
 VITE_POLYGON_API_KEY=
 
-# Email Configuration
 VITE_CI_EMAIL_ADDRESS=
 VITE_CI_EMAIL_APP_PASS=
 
 # Service Ports
-PORT=3001
-VITE_PYTHON_SERVER_PORT=8082
-SERVER_PORT=8888
+NODEJS_SERVER_PORT=3001
+FLASK_SERVER_PORT=8082
+MACHINE_LEARNING_SERVER_PORT=8888
 
 # Service URLs
 VITE_SERVER_ADDRESS=

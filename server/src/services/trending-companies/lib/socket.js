@@ -12,7 +12,7 @@ const express = require("express");
 class Websocket {
   constructor(callbacks) {
     this.callbacks = callbacks;
-    this.port = process.env.VITE_TRENDING_COMPANIES_WEBSOCKET_PORT || 8081;
+    this.port = process.env.TRENDING_COMPANIES_WEBSOCKET_PORT || 8081;
     this.app = express();
     this.httpServer = http.createServer(this.app);
     this.server = new ws.WebSocketServer({
@@ -43,7 +43,9 @@ class Websocket {
       });
     });
 
-    this.httpServer.listen(this.port, process.env.WEBSOCKET_HOST || "0.0.0.0", () => {});
+    this.httpServer.listen(this.port, process.env.WEBSOCKET_HOST || "0.0.0.0", () => {
+      console.log(`WebSocket server listening on port ${this.port}`);
+    });
     this.receiveMessages();
   }
 
