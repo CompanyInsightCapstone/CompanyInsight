@@ -43,9 +43,8 @@ export default function TrendingCompanyChart({ company, rank }) {
   return (
     <div className="trending-chart-container">
       <h3>
-        #{rank} {company.companySymbol}
+        #{rank} {company.companySymbol}, Watched by {company.score} users
       </h3>
-      <p>Watched by {company.score} users</p>
 
       {isLoading && <div className="chart-loading">Loading chart...</div>}
 

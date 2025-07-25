@@ -12,8 +12,8 @@ export default function RecommendationResults() {
         {RecommendationContextData.companies &&
           RecommendationContextData.companies.length > 0 && (
             <>
-            <div class="tooltip"><h2>We recommend these companies to you.</h2>
-              <span class="tooltiptext">
+            <div className="tooltip"><h2>We recommend these companies to you.</h2>
+              <span className="tooltiptext">
                 <p>
                 These companies are similiar to companies from those in your watchlist,
                 if your watchlist is empty, we serve you randomized companies.

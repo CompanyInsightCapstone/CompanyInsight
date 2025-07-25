@@ -1,11 +1,3 @@
-/*
-  Warnings:
-
-  - You are about to drop the column `savedAt` on the `Watchlist` table. All the data in the column will be lost.
-  - You are about to drop the column `unsavedAt` on the `Watchlist` table. All the data in the column will be lost.
-
-*/
--- AlterTable
-ALTER TABLE "Watchlist" DROP COLUMN "savedAt",
-DROP COLUMN "unsavedAt",
-ADD COLUMN     "lastNotifiedTime" TIMESTAMP(3);
+version https://git-lfs.github.com/spec/v1
+oid sha256:b33615893dbba5934d02d8c9080d5c9af46ca69b77b04b00795583854b972387
+size 384

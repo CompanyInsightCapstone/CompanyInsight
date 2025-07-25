@@ -1,13 +1,3 @@
--- CreateTable
-CREATE TABLE "Company" (
-    "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL,
-    "symbol" TEXT NOT NULL,
-    "exchange" TEXT NOT NULL,
-    "assetType" TEXT NOT NULL,
-    "ipoDate" TIMESTAMP(3) NOT NULL,
-    "delistingDate" TIMESTAMP(3) NOT NULL,
-    "status" TEXT NOT NULL,
-
-    CONSTRAINT "Company_pkey" PRIMARY KEY ("id")
-);
+version https://git-lfs.github.com/spec/v1
+oid sha256:5e8f93b827a4ad0a9c307a560660cce243670a96ec51f54b3fddb3c297225591
+size 342

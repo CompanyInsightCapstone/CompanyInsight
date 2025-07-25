@@ -1,8 +1,3 @@
-/*
-  Warnings:
-
-  - A unique constraint covering the columns `[username]` on the table `User` will be added. If there are existing duplicate values, this will fail.
-
-*/
--- CreateIndex
-CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
+version https://git-lfs.github.com/spec/v1
+oid sha256:1631f0f1814517bc8a49334c981271e8dfc87ce6a780aaf4f680a6170545c848
+size 247

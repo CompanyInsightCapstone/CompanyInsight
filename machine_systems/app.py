@@ -1,4 +1,5 @@
 import os
+
 from controllers.recommendation import RecommendationController
 from controllers.search import SearchController
 from dotenv import load_dotenv
@@ -20,6 +21,7 @@ database = Database()
 search_controller = SearchController(database=database)
 recommendation_conroller = RecommendationController(database=database)
 
+
 @app.route("/api/advanced-search", methods=["GET"])
 def search():
     try:
@@ -40,6 +42,7 @@ def search():
     except Exception as e:
         return jsonify({"error": f"Search failed: {str(e)}"}), 500
 
+
 @app.route("/api/user/recommendations", methods=["GET"])
 def recommendations():
     try:
@@ -55,5 +58,6 @@ def recommendations():
     except Exception as e:
         return jsonify({"error": f"Serving recommendations failed: {str(e)}"}), 500
 
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port= os.environ["SERVER_PORT"], debug=True)
+    app.run(host="0.0.0.0", port=os.environ["MACHINE_LEARNING_SERVER_PORT"], debug=True)

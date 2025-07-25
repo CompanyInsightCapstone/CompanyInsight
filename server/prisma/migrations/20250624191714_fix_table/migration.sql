@@ -1,16 +1,3 @@
--- CreateTable
-CREATE TABLE "User" (
-    "id" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "username" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
-
-    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
-);
-
--- CreateIndex
-CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
-
--- CreateIndex
-CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+version https://git-lfs.github.com/spec/v1
+oid sha256:31fb3862e755eee2dd2d537edb72d640618815955a305e8fee8dac5b3f5610bc
+size 415

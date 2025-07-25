@@ -1,9 +1,3 @@
-/*
-  Warnings:
-
-  - Made the column `delistingDate` on table `Company` required. This step will fail if there are existing NULL values in that column.
-
-*/
--- AlterTable
-ALTER TABLE "Company" ALTER COLUMN "delistingDate" SET NOT NULL,
-ALTER COLUMN "delistingDate" SET DEFAULT 'N/A';
+version https://git-lfs.github.com/spec/v1
+oid sha256:8394631f6cb75f1e597c95860fa47b8ea8c4edec143fd9bc05b94549ee62ea26
+size 282

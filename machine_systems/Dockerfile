@@ -3,5 +3,6 @@ WORKDIR /usr/src/app
 COPY machine_systems/requirements.txt .
 RUN pip install -r ./requirements.txt
 COPY machine_systems .
+# Use MACHINE_LEARNING_SERVER_PORT environment variable at runtime
 EXPOSE 8888
 CMD [ "python", "./app.py" ]

@@ -246,8 +246,7 @@ __marimo__/
 **/dataset/**/*.parquet
 **/data/**/*.parquet
 
-*.pt
-**/parameters/*.pt
+# Model weights are now tracked with Git LFS
 # Monte Carlo simulation generated data
 **/data/qd_simulations/*.json
 **/data/dataset/*.json
@@ -298,16 +297,12 @@ Temporary Items
 .apdisk
 
 .gitignore
-server/src/services/machine_systems/nearest_neighbors/model/parameters/*.pt
-server/src/services/machine_systems/nearest_neighbors/model/parameters/*.pt
+# Model weights are now tracked with Git LFS
 
 # Docker files
 # docker-compose.yml is now safe to commit since it uses environment variables
 
 # Database files
 postgres/data/pgdata/
-postgres/data/*.sql
-postgres/data/*.dump
-postgres/data/*.bak
-postgres/data/*.gz
-**/local_db_dump.sql
+# PostgreSQL data dumps are now tracked with Git LFS
+# **/local_db_dump.sql

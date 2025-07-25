@@ -20,7 +20,7 @@ const {
 
 const { redisClient } = require("./src/utilities/RedisClient");
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.NODEJS_SERVER_PORT || 3001;
 
 server.use(
   cors({
