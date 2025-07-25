@@ -13,3 +13,5 @@ transformers
 tqdm
 joblib
 scikit-learn
+fuzzywuzzy
+python-Levenshtein
