@@ -1,11 +1,3 @@
--- DropForeignKey
-ALTER TABLE "UserSettings" DROP CONSTRAINT "UserSettings_userId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Watchlist" DROP CONSTRAINT "Watchlist_userId_fkey";
-
--- AddForeignKey
-ALTER TABLE "UserSettings" ADD CONSTRAINT "UserSettings_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "Watchlist" ADD CONSTRAINT "Watchlist_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+version https://git-lfs.github.com/spec/v1
+oid sha256:14bb0c64913e6bfcde7ed71d36d07630f3dd4aab94b452698effe0f4b510bbe1
+size 509

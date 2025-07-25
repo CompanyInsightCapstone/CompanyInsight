@@ -1,8 +1,3 @@
--- AlterTable
-ALTER TABLE "Company" ALTER COLUMN "exchange" DROP NOT NULL,
-ALTER COLUMN "assetType" DROP NOT NULL,
-ALTER COLUMN "ipoDate" DROP NOT NULL,
-ALTER COLUMN "ipoDate" SET DATA TYPE TEXT,
-ALTER COLUMN "delistingDate" DROP NOT NULL,
-ALTER COLUMN "delistingDate" SET DATA TYPE TEXT,
-ALTER COLUMN "status" DROP NOT NULL;
+version https://git-lfs.github.com/spec/v1
+oid sha256:c9f000a8c8c8ac54de8fdb556b8b0fc3b7dea946a851156cccb4652522c994f2
+size 326

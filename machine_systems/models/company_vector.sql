@@ -1,13 +1,3 @@
-CREATE TABLE IF NOT EXISTS "CompanyEmbeddings" (
-    "id" TEXT NOT NULL,
-    "companyId" TEXT NOT NULL,
-    "companySymbol" TEXT NOT NULL,
-    "vector" vector(768),
-    "lastUpdated" TIMESTAMP(3)
-);
-
-CREATE UNIQUE INDEX "CompanyEmbeddings_id_key" ON "CompanyEmbeddings"("id");
-
-ALTER TABLE "CompanyEmbeddings" ADD CONSTRAINT "CompanyEmbeddings_companyId_companySymbol_fkey" FOREIGN KEY ("companyId", "companySymbol") REFERENCES "Company"("id", "symbol") ON DELETE RESTRICT ON UPDATE CASCADE;
-
-CREATE INDEX IF NOT EXISTS vector_idx ON "CompanyEmbeddings" USING hnsw (vector vector_cosine_ops);
+version https://git-lfs.github.com/spec/v1
+oid sha256:2654cdd63a660ec048136de138f2fdeb7588ea951409e0238ced1890f2a26ce0
+size 593
