@@ -8,9 +8,8 @@ from typing import Any, Dict, Optional
 # https://superfastpython.com/multiprocessing-pipe-in-python/
 
 class ProcessBuffer:
-
-    def __init__(self, manager: Optional[mp.Manager] = None):
-        self._manager = manager or mp.Manager()
+    def __init__(self):
+        self._manager = mp.Manager()
         self.recv_pipe, self.send_pipe = mp.Pipe(duplex=False)
         self.lock = self._manager.Lock()
         self.done_flag = self._manager.Value("b", False)
