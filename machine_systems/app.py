@@ -34,6 +34,7 @@ def search():
                 jsonify({"error": "Query is too long, must be below 600 characters"}),
                 400,
             )
+
         results = search_controller.search(query, limit)
         return jsonify({"data": results, "count": len(results)})
     except Exception as e:

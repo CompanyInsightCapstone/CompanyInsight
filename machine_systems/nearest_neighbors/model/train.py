@@ -34,7 +34,6 @@ class Trainer:
                 for k in batch_data.keys():
                     batch_data[k] = batch_data[k].to(self.device)
                 query_emb = self.query_encoder(batch_data)
-                query_emb = F.normalize(query_emb, p=2, dim=1)
                 pos_batch = {
                     "document_input_ids": batch_data["positive_document_input_ids"],
                     "document_attention_mask": batch_data["positive_document_attention_mask"],
@@ -47,8 +46,6 @@ class Trainer:
                 }
                 pos_doc_emb = self.document_encoder(pos_batch)
                 neg_doc_emb = self.document_encoder(neg_batch)
-                pos_doc_emb = F.normalize(pos_doc_emb, p=2, dim=1)
-                neg_doc_emb = F.normalize(neg_doc_emb, p=2, dim=1)
                 loss, _ = self.compute_triplet_loss(query_emb, pos_doc_emb, neg_doc_emb)
                 self.optimizer.zero_grad()
                 loss.backward()
@@ -81,65 +78,73 @@ class Trainer:
             "accuracy": accuracy
         }
 
-    def evaluate(self, dataloader, thresholds=None):
-        if thresholds is None:
-            thresholds = [0.5]
+    def evaluate(self, dataloader):
+        """
+        Evaluate the model by comparing positive and negative document similarities.
+        This method focuses on whether positive documents have higher similarity scores
+        than negative documents for each query.
+        """
         self.query_encoder.eval()
         self.document_encoder.eval()
         all_query_embs = []
         all_pos_doc_embs = []
         all_neg_doc_embs = []
+
         with torch.no_grad():
             for batch_data in tqdm(dataloader, desc="Evaluating"):
                 for k in batch_data.keys():
-                    print(k)
                     batch_data[k] = batch_data[k].to(self.device)
                 q_emb = self.query_encoder(batch_data)
-                q_emb = F.normalize(q_emb, p=2, dim=1)
                 all_query_embs.append(q_emb.cpu())
                 pos_batch = {
                     "document_input_ids": batch_data["positive_document_input_ids"],
                     "document_attention_mask": batch_data["positive_document_attention_mask"],
                     "document_numerical_features": batch_data["positive_numerical_features"]
                 }
+                pos_d_emb = self.document_encoder(pos_batch)
+                all_pos_doc_embs.append(pos_d_emb.cpu())
                 neg_batch = {
                     "document_input_ids": batch_data["negative_document_input_ids"],
                     "document_attention_mask": batch_data["negative_document_attention_mask"],
                     "document_numerical_features": batch_data["negative_numerical_features"]
                 }
-                pos_d_emb = self.document_encoder(pos_batch)
                 neg_d_emb = self.document_encoder(neg_batch)
-                pos_d_emb = F.normalize(pos_d_emb, p=2, dim=1)
-                neg_d_emb = F.normalize(neg_d_emb, p=2, dim=1)
-                all_pos_doc_embs.append(pos_d_emb.cpu())
                 all_neg_doc_embs.append(neg_d_emb.cpu())
         all_query_embs = torch.cat(all_query_embs, dim=0)
         all_pos_doc_embs = torch.cat(all_pos_doc_embs, dim=0)
         all_neg_doc_embs = torch.cat(all_neg_doc_embs, dim=0)
         pos_sims = torch.sum(all_query_embs * all_pos_doc_embs, dim=1)
         neg_sims = torch.sum(all_query_embs * all_neg_doc_embs, dim=1)
-        all_sims = torch.cat([pos_sims, neg_sims])
-        all_labels = torch.cat([torch.ones_like(pos_sims), torch.zeros_like(neg_sims)])
-        metrics_by_threshold = {}
-        for threshold in thresholds:
-            metrics = self.calculate_metrics(all_sims, all_labels, threshold)
-            metrics_by_threshold[threshold] = metrics
         triplet_accuracy = (pos_sims > neg_sims).float().mean().item()
+        sim_diffs = pos_sims - neg_sims
+        avg_sim_diff = sim_diffs.mean().item()
+        median_sim_diff = sim_diffs.median().item()
+        min_sim_diff = sim_diffs.min().item()
+        max_sim_diff = sim_diffs.max().item()
+        positive_diffs = (sim_diffs > 0).sum().item()
+        zero_diffs = (sim_diffs == 0).sum().item()
+        negative_diffs = (sim_diffs < 0).sum().item()
+
         print(f"Evaluation results:")
         print(f"Average positive similarity: {pos_sims.mean().item():.4f}")
         print(f"Average negative similarity: {neg_sims.mean().item():.4f}")
-        print(f"Triplet accuracy: {triplet_accuracy:.4f}")
-        for threshold, metrics in metrics_by_threshold.items():
-            print(f"Metrics at threshold {threshold}:")
-            print(f"  Precision: {metrics['precision']:.4f}")
-            print(f"  Recall: {metrics['recall']:.4f}")
-            print(f"  F1 Score: {metrics['f1']:.4f}")
-            print(f"  Accuracy: {metrics['accuracy']:.4f}")
+        print(f"Triplet accuracy (pos_sim > neg_sim): {triplet_accuracy:.4f}")
+        print(f"Similarity difference statistics:")
+        print(f"  Average difference: {avg_sim_diff:.4f}")
+        print(f"  Median difference: {median_sim_diff:.4f}")
+        print(f"  Min difference: {min_sim_diff:.4f}")
+        print(f"  Max difference: {max_sim_diff:.4f}")
+        print(f"  Positive differences: {positive_diffs} ({positive_diffs/len(sim_diffs):.2%})")
+        print(f"  Zero differences: {zero_diffs} ({zero_diffs/len(sim_diffs):.2%})")
+        print(f"  Negative differences: {negative_diffs} ({negative_diffs/len(sim_diffs):.2%})")
+
         return {
             "pos_sims": pos_sims,
             "neg_sims": neg_sims,
+            "sim_diffs": sim_diffs,
             "triplet_accuracy": triplet_accuracy,
-            "metrics_by_threshold": metrics_by_threshold
+            "avg_sim_diff": avg_sim_diff,
+            "positive_diffs_percentage": positive_diffs/len(sim_diffs)
         }
 
     def save(self, query_path, document_path):

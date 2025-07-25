@@ -25,12 +25,14 @@ class RecommendationController:
             random_vector = np.random.rand(output_dim)
             return Company.company_nearest_neighbors(random_vector, limit=5)
         watchlist_symbols = set()
+        company_recommendations_set = set()
         for company in watchlists:
             watchlist_symbols.add(company.get("symbol"))
             company_vector = company.get("vector")
             most_similiar_companies = Company.company_nearest_neighbors(company_vector, limit=5)
             for most_similiar_company in most_similiar_companies:
-                if not (most_similiar_company.get("symbol") in watchlist_symbols):
+                if not (most_similiar_company.get("symbol") in watchlist_symbols) and not (most_similiar_company.get("symbol") in company_recommendations_set):
                     company_recommendations.append(most_similiar_company)
+                    company_recommendations_set.add(most_similiar_company.get("symbol"))
         sample_upper_bound = min(len(company_recommendations), limit)
         return random.sample(company_recommendations, sample_upper_bound)

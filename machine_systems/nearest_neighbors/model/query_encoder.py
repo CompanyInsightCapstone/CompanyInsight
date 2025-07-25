@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from .components.transformer import Transformer
 from .components.ffnn import FFNN
 
@@ -16,4 +17,5 @@ class QueryEncoder(nn.Module):
         }
         transformer_output = self.transformer(transformer_input)
         query_embedding = self.projection(transformer_output)
+        query_embedding = F.normalize(query_embedding, p=2, dim=1)
         return query_embedding
