@@ -20,10 +20,41 @@
 
 ## How to run:
 
+### Prerequisites
 
-Install Docker Compose
+1. **Git LFS**: This project uses Git Large File Storage (LFS) for managing large files like PostgreSQL data dumps and model weights.
+   ```bash
+   # Install Git LFS
+   brew install git-lfs  # macOS with Homebrew
+   # or
+   apt-get install git-lfs  # Ubuntu/Debian
+   # or
+   yum install git-lfs  # CentOS/RHEL
 
-Create an .env file like this:
+   # Initialize Git LFS
+   git lfs install
+   ```
+
+2. **Docker and Docker Compose**: Required to run the application containers.
+   ```bash
+   # Install Docker Desktop (includes Docker Compose) from:
+   # https://www.docker.com/products/docker-desktop
+   ```
+
+### Clone the Repository
+
+```bash
+# Clone the repository with Git LFS
+git clone https://github.com/yourusername/CompanyInsight.git
+cd CompanyInsight
+
+# Pull LFS files (PostgreSQL data dumps and model weights)
+git lfs pull
+```
+
+### Configuration
+
+Create an .env file in the project root with the following variables:
 # Database Configuration
 POSTGRES_USER=
 POSTGRES_PASSWORD=
@@ -62,5 +93,27 @@ VITE_SERVER_ADDRESS=
 VITE_FLASK_ADDRESS=
 VITE_WEBSOCKET_SERVER_ADDRESS=
 
+### Running the Application
 
-Run docker compose up.
+```bash
+# Start all services using Docker Compose
+docker compose up
+```
+
+This will start the following services:
+- PostgreSQL database with pre-loaded data
+- Redis for caching and pub/sub
+- Node.js backend server
+- React frontend client
+- Python machine learning services
+
+The application will be available at http://localhost:3000
+
+### Working with Large Files
+
+This project uses Git LFS to track the following file types:
+- PostgreSQL data dumps (*.sql, *.dump, *.bak, *.gz)
+- Model weights (*.pt)
+- Dataset files (*.csv, *.parquet)
+
+When you pull changes from the repository, Git LFS will automatically download these large files.
