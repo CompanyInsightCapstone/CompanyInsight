@@ -1,601 +1,209 @@
-import gc
-import json
-import multiprocessing
-import os
-import random
 import sys
-import threading
+import os
+import json
 import time
-import uuid
-from collections import Counter, defaultdict
-from concurrent.futures import as_completed, ProcessPoolExecutor, ThreadPoolExecutor
-from datetime import datetime
+import random
+import multiprocessing as mp
+import networkx as nx
+import itertools
+from utils import load_company_documents
+from lib.disk_writer import DiskWriter
+from lib.process_buffer import ProcessBuffer
+from lib.random_walker import RandomWalker
+from lib.query_generation import QueryGeneration
+from lib.scoring import SimilarityScoring
+from dataclasses import dataclass, field
+from typing import Dict, Any, List
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
-
-import numpy as np
-import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline as hf_pipeline
-
-from ...models.database import Database
-from .scoring import (
-    build_inverted_index,
-    build_numerical_index,
-    compute_doc_norms,
-    compute_idf,
-    index_search,
-    numerical_index_search,
-)
-from .utils import (
-    COMPANY_QUERY_TEMPLATES,
-    config,
-    GENERAL_QUERY_TEMPLATES,
-    load_company_documents,
-    patterns,
-    prompts,
-    SYSTEM_PROMPTS,
-)
-
-current_dir = config()
-nearest_neighbors_dir = os.path.dirname(os.path.dirname(current_dir))
-data_dir = os.path.join(nearest_neighbors_dir, "data")
-analysis_dir = os.path.join(data_dir, "analysis")
-simulations_dir = os.path.join(data_dir, "qd_simulations")
-dataset_dir = os.path.join(data_dir, "dataset")
-
-os.makedirs(data_dir, exist_ok=True)
-os.makedirs(analysis_dir, exist_ok=True)
-os.makedirs(simulations_dir, exist_ok=True)
-os.makedirs(dataset_dir, exist_ok=True)
-
-document_objects = load_company_documents()
-n = len(document_objects)
-inverted_index = build_inverted_index(document_objects)
-idf = compute_idf(inverted_index, n)
-numerical_index = build_numerical_index(document_objects)
-doc_norms = compute_doc_norms(inverted_index, idf, n)
+QUERY_COLOR = "white"
+DOCUMENT_COLOR = "blue"
 
 
-try:
-    model_name = "google/flan-t5-large"
-    device = 0 if torch.cuda.is_available() else -1
-    query_generator = hf_pipeline(
-        task="text2text-generation",
-        model=model_name,
-        tokenizer=model_name,
-        device=device,
-        max_length=150,
-        do_sample=True,
-        temperature=0.7,
-    )
-except Exception as e:
-    print(f"Error initializing LLM models: {e}")
-    query_generator = None
+@dataclass
+class QueryNodeData:
+    query: str
+    color: int
 
 
-def rule_based_annotation_qd(query, documents):
-    """
-    Rule-based annotation for query-document pairs with index-based search.
-    Args:
-        query (str): The query string.
-        documents (list): A list of documents.
-    Returns:
-        tuple: (positive_document, scores) - The annotated document randomly selected from top 3 highest relevance scores
-    """
-    query_lower = query.lower()
-    scored_docs = []
-    for i, doc in enumerate(documents):
-        score = 0.0
-        tf_idf_results = index_search(query_lower, inverted_index, idf, doc_norms)
-        tf_idf_score = 0.0
-        if tf_idf_results:
-            for result_score, result_idx in tf_idf_results:
-                if result_idx == i:
-                    tf_idf_score = result_score
-                    break
-
-        numerical_score = numerical_index_search(query_lower, numerical_index, doc)
-        score += (tf_idf_score) * +numerical_score
-
-        company_name = doc.get("name", "").lower()
-        company_symbol = doc.get("symbol", "").lower()
-
-        if company_name and query_lower.startswith(company_name):
-            score += 2.0
-        elif company_symbol and query_lower.startswith(company_symbol):
-            score += 1.5
-        elif company_name and company_name in query_lower.split()[:3]:
-            score += 1.0
-        elif company_symbol and company_symbol in query_lower.split()[:3]:
-            score += 0.8
-
-        scored_docs.append((doc, score))
-
-    scored_docs.sort(key=lambda x: x[1], reverse=True)
-
-    selected_doc = scored_docs[0][0]
-    return selected_doc
+@dataclass
+class DocumentNodeData:
+    document: Dict[str, Any]
+    color: int
 
 
-class SyntheticDatasetGenerator:
-    def __init__(self, dataset_size, iteration_number):
-        """
-        Initialize the synthetic dataset generator.
+class MonteCarloSimulation:
+    def __init__(self, documents, output_path, num_processes=4, batch_size=8):
+        self.documents = documents
+        self.output_path = output_path
+        self.num_processes = num_processes
+        self.batch_size = batch_size
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        query_data_path = os.path.join(current_dir, "lib", "query_generation_data.json")
+        self.query_generation_data = json.load(open(query_data_path, "r"))
+        self.query_generation = QueryGeneration(self.query_generation_data["SYSTEM_PROMPT"])
+        self.scoring = SimilarityScoring(self.documents)
+        self.shared_buffer = ProcessBuffer()
+        self.writer_worker = DiskWriter(self.shared_buffer, output_path, batch_size=batch_size)
+        self.graph = None
+        self.subgraphs = [None] * (self.num_processes - 1)
 
-        Args:
-            dataset_size: Number of data instances to generate
-            iteration_number: Current iteration number for tracking
-            document_objects: List of document objects to use for annotation
-        """
-        self.dataset_size = dataset_size
-        self.iteration_number = iteration_number
-        self.document_objects = document_objects
-        self.search_queries = []
-
-    def make_data_instance(self):
-        """
-        Create a single data instance with query and annotated document.
-
-        Returns:
-            Dictionary containing the data instance
-        """
-        if not self.search_queries:
-            self.generate_search_queries()
-
-        selected_query = random.choice(self.search_queries)
-        positive_document = rule_based_annotation_qd(
-            selected_query, self.document_objects
-        )
-
+    def make_triplet_entry(self, query, positive_document, negative_document):
         return {
-            "id": str(uuid.uuid4()),
-            "query": selected_query,
+            "query": query,
             "positive_document": positive_document,
+            "negative_document": negative_document
         }
 
-    def generate_company_specific_queries(self, num_queries=50):
-        """
-        Generate queries that specifically focus on company names and symbols.
-
-        Args:
-            num_queries: Number of company-specific queries to generate
-
-        Returns:
-            List of company-specific queries
-        """
-        company_queries = []
-        selected_companies = (
-            random.sample(document_objects, min(len(document_objects), num_queries))
-            if len(document_objects) > 10
-            else document_objects
-        )
-
-        for company in selected_companies:
-            if len(company_queries) >= num_queries:
-                break
-
-            company_name = company.get("name", "")
-            company_symbol = company.get("symbol", "")
-
-            if not company_name or not company_symbol:
+    def run_simulation(self, num_samples=10000):
+        print(f"Starting Monte Carlo simulation to generate {num_samples} samples...")
+        start_time = time.time()
+        self.graph = nx.Graph()
+        print(f"Processing company queries...")
+        company_query_templates = self.query_generation_data.get("COMPANY_QUERY_TEMPLATES", [])
+        sample_size = min(250, len(self.documents))
+        sampled_documents = random.sample(self.documents, sample_size)
+        company_count = 0
+        total_companies = len(sampled_documents) * len(company_query_templates)
+        company_template_pairs = list(itertools.product(company_query_templates, sampled_documents))
+        for idx, (query_template, document) in enumerate(company_template_pairs):
+            company_name = document.get("name", "")
+            if not company_name:
                 continue
+            context = query_template.format(company=company_name)
+            query = self.query_generation.generate(context)
+            all_docs = self.documents
+            neg_doc_idx = random.randint(0, len(all_docs) - 1)
+            while all_docs[neg_doc_idx].get("id") == document.get("id"):
+                neg_doc_idx = (neg_doc_idx + 1) % len(all_docs)
+            neg_document = all_docs[neg_doc_idx]
+            triplet = self.make_triplet_entry(query, document, neg_document)
+            self.shared_buffer.add(triplet)
+            company_count += 1
+            if company_count % 10 == 0:
+                print(f"Processed {company_count}/{total_companies} company queries ({company_count/total_companies*100:.1f}%)")
+        print(f"Completed company queries processing. Time elapsed: {time.time() - start_time:.2f}s")
+        print(f"Processing sector queries...")
+        sector_start_time = time.time()
+        sector_query_templates = self.query_generation_data.get("SECTOR_QUERY_TEMPLATES", [])
+        sectors = self.query_generation_data.get("SECTORS", [])
+        sector_count = 0
+        total_sectors = len(sectors) * len(sector_query_templates)
+        sector_template_pairs = list(itertools.product(sectors, sector_query_templates))
+        for idx, (sector, query_template) in enumerate(sector_template_pairs):
+            context = query_template.format(sector=sector)
+            query = self.query_generation.generate(context)
+            query_node = f"query_{len(self.graph.nodes())}"
+            self.graph.add_node(query_node, data=QueryNodeData(query=query, color=QUERY_COLOR))
+            similarity_data = {"score_type": "SECTOR", "query": query, "key_type": ""}
+            result_list = self.scoring.scores(similarity_data)
+            top_k = min(5, len(result_list))
+            for i in range(top_k):
+                doc = result_list[i]
+                doc_idx = next((idx for idx, d in enumerate(self.documents) if d.get("id") == doc.get("id")), -1)
+                if doc_idx >= 0:
+                    doc_node = f"doc_{doc_idx}"
+                    if not self.graph.has_node(doc_node):
+                        self.graph.add_node(doc_node, data=DocumentNodeData(document=doc, color=DOCUMENT_COLOR))
+                    similarity = 1.0 - (i / top_k)
+                    self.graph.add_edge(query_node, doc_node, weight=similarity)
 
-            company_identifier = random.choice(
-                [
-                    company_name,
-                    company_symbol,
-                    f"{company_name} ({company_symbol})",
-                    company_symbol,
-                ]
-            )
+            sector_count += 1
+            if sector_count % 5 == 0:
+                print(f"Processed {sector_count}/{total_sectors} sector queries ({sector_count/total_sectors*100:.1f}%)")
 
-            template = random.choice(COMPANY_QUERY_TEMPLATES)
-            query = template.format(company=company_identifier)
-            query = query.strip()
-            if query and len(query.split()) <= 15:
-                company_queries.append(query)
-        return company_queries
+        print(f"Completed sector queries processing. Time elapsed: {time.time() - sector_start_time:.2f}s")
+        print(f"Processing numerical field queries...")
+        numerical_start_time = time.time()
+        numerical_fields = self.query_generation_data.get("NUMERICAL_DOCUMENT_FIELDS", [])
+        numerical_templates = self.query_generation_data.get("NUMERICAL_QUERY_TEMPLATES", [])
 
-    def generate_general_sector_queries(self, num_queries=50):
-        """
-        Generate queries that focus on sectors and general investment topics without specific company names.
-
-        Args:
-            num_queries: Number of general sector queries to generate
-
-        Returns:
-            List of general sector queries
-        """
-        sector_queries = []
-        sectors = [
-            "technology",
-            "healthcare",
-            "financial",
-            "energy",
-            "consumer",
-            "industrial",
-            "utilities",
-            "real estate",
-            "communication",
-            "materials",
-            "retail",
-            "automotive",
-            "pharmaceutical",
-            "banking",
-            "insurance",
-            "media",
-            "entertainment",
-            "telecom",
-            "semiconductor",
-            "software",
-            "hardware",
-            "biotech",
-            "fintech",
-            "renewable energy",
-            "oil and gas",
-            "mining",
-            "agriculture",
-        ]
-
-        for _ in range(num_queries):
-            if len(sector_queries) >= num_queries:
-                break
-
-            sector = random.choice(sectors)
-            template = random.choice(GENERAL_QUERY_TEMPLATES)
-            query = template.format(sector=sector)
-            query = query.strip()
-            if query and len(query.split()) <= 15:
-                sector_queries.append(query)
-        return sector_queries
-
-    def generate_search_queries(self, num_queries=100):
-        """
-        Generate synthetic search queries using patterns and company names.
-        Uses LLM if available, otherwise falls back to simple pattern-based generation.
-
-        This enhanced version balances between:
-        - LLM-generated general queries (most common)
-        - Sector-based template queries (second most common)
-        - Company-specific template queries (limited to 10% or less)
-
-        Args:
-            num_queries: Number of queries to generate
-
-        Returns:
-            List of generated search queries
-        """
-        generated_queries = []
-        company_specific_count = int(num_queries * 0.1)
-        sector_based_count = int(num_queries * 0.4)
-        general_count = num_queries - company_specific_count - sector_based_count
-        company_queries = self.generate_company_specific_queries(company_specific_count)
-        generated_queries.extend(company_queries)
-        sector_queries = self.generate_general_sector_queries(sector_based_count)
-        generated_queries.extend(sector_queries)
-        batch_size = 5 if query_generator else 1
-        num_batches = (general_count + batch_size - 1) // batch_size
-
-        for batch in range(num_batches):
-            if len(generated_queries) >= num_queries:
-                break
-
-            pattern = random.choice(patterns)
-
-            prompt_template = (
-                random.choice(prompts[:10])
-                if len(prompts) >= 10
-                else random.choice(prompts)
-            )
-            system_prompt = random.choice(SYSTEM_PROMPTS)
-            formatted_prompt = prompt_template.format(pattern=pattern, company="")
-            if query_generator:
-                try:
-
-                    full_prompt = (
-                        f"{system_prompt}\n\n"
-                        f"TASK: {formatted_prompt}\n\n"
-                        f"IMPORTANT: Generate general investment queries that DON'T mention specific company names. "
-                        f"Focus on sectors, trends, strategies, and market conditions instead. "
-                        f"Make queries realistic, as if typed by a real investor looking for general information.\n\n"
-                        f"QUERIES:"
-                    )
-
-                    result = query_generator(
-                        full_prompt,
-                        max_length=100,
-                        do_sample=True,
-                        temperature=0.8,
-                        num_return_sequences=4,
-                        num_beams=4,
-                    )
-
-                    for output in result:
-                        generated_text = output["generated_text"].strip()
-                        queries = [
-                            q.strip() for q in generated_text.split("\n") if q.strip()
-                        ]
-                        for query in queries:
-                            clean_query = query.strip()
-                            clean_query = clean_query.lstrip("0123456789.- *•").strip()
-                            clean_query = clean_query.strip("\"'").strip()
-
-                            if clean_query and len(clean_query.split()) <= 15:
-                                generated_queries.append(clean_query)
-
-                                if len(generated_queries) >= num_queries:
-                                    break
-
-                        if len(generated_queries) >= num_queries:
-                            break
-
-                except Exception as e:
-                    print(f"Error generating queries with LLM: {e}")
-                    simple_query = f"{pattern.lower().replace('queries about ', '')}"
-                    generated_queries.append(simple_query)
+        numerical_count = 0
+        total_numerical = len(numerical_fields) * len(numerical_templates)
+        field_template_pairs = list(itertools.product(numerical_fields, numerical_templates))
+        for idx, (field, template) in enumerate(field_template_pairs):
+            context = template.format(field=field)
+            query = self.query_generation.generate(context)
+            similarity_data = {"score_type": "EXTREMA", "query": query, "key_type": field}
+            result_list = self.scoring.scores(similarity_data)
+            if not result_list:
+                continue
+            if "high" in template.lower():
+                positive_doc = result_list[-1]
+                negative_doc = result_list[0] if len(result_list) > 1 else None
             else:
-                simple_query = f"{pattern.lower().replace('queries about ', '')}"
-                generated_queries.append(simple_query)
+                positive_doc = result_list[0]
+                negative_doc = result_list[-1] if len(result_list) > 1 else None
 
-            if len(generated_queries) >= num_queries:
-                generated_queries = generated_queries[:num_queries]
-                break
-
-        random.shuffle(generated_queries)
-        self.search_queries = generated_queries
-        return generated_queries
-
-
-def process_function(chunk_index, chunk_size):
-    """
-    Function executed by each process to generate a chunk of the synthetic dataset.
-
-    Args:
-        chunk_index: Index of this chunk
-        chunk_size: Number of instances to generate in this chunk
-
-    Returns:
-        Generated dataset chunk
-    """
-    print(
-        f"Process {os.getpid()} initializing for chunk {chunk_index} with size {chunk_size}"
-    )
-
-    process_query_generator = None
-    try:
-        model_name = "google/flan-t5-large"
-        device = "cpu"
-        if torch.cuda.is_available():
-            device = 0
-            print(f"Device set to use cuda")
-        else:
-            print(f"Device set to use cpu")
-
-        print(f"Process {os.getpid()} initializing LLM pipeline using {model_name}...")
-        process_query_generator = hf_pipeline(
-            task="text2text-generation",
-            model=model_name,
-            tokenizer=model_name,
-            device=device,
-            max_length=150,
-            do_sample=True,
-            temperature=0.7,
-        )
-    except Exception as e:
-        print(f"Process {os.getpid()} error initializing LLM: {e}")
-
-    print(f"Process {os.getpid()} starting chunk {chunk_index}")
-    start_time = time.time()
-
-    generator = SyntheticDatasetGenerator(
-        dataset_size=chunk_size, iteration_number=chunk_index
-    )
-    if process_query_generator:
-        generator.query_generator = process_query_generator
-    generator.generate_search_queries(num_queries=chunk_size // 2)
-    dataset = []
-    for i in range(chunk_size):
-        try:
-            instance = generator.make_data_instance()
-            if instance:
-                dataset.append(instance)
-            if i > 0 and i % 100 == 0:
-                print(
-                    f"Process {os.getpid()}, Chunk {chunk_index}: Generated {i}/{chunk_size} instances"
-                )
-        except Exception as e:
-            print(f"Error generating instance {i} in chunk {chunk_index}: {e}")
-
-    os.makedirs(simulations_dir, exist_ok=True)
-    with open(
-        os.path.join(simulations_dir, f"qd_dataset_chunk_{chunk_index}.json"), "w"
-    ) as f:
-        serializable_dataset = []
-        for item in dataset:
-            serializable_item = {
-                "id": item["id"],
-                "query": item["query"],
-                "document": item["positive_document"],
-            }
-            serializable_dataset.append(serializable_item)
-        json.dump(serializable_dataset, f, indent=2)
-
-    print(
-        f"Process {os.getpid()} completed chunk {chunk_index} in {time.time() - start_time:.2f} seconds"
-    )
-
-    del dataset
-    del generator
-    gc.collect()
-    return serializable_dataset
-
-
-def run(total_dataset_size=10000, num_workers=10, chunk_size=1000):
-    """
-    Run the dataset generation process using multiple processes.
-
-    Args:
-        total_dataset_size: Total number of unique instances to generate
-        num_workers: Maximum number of worker processes to use
-        chunk_size: Size of each chunk processed by a worker
-
-    Returns:
-        None
-    """
-    print(
-        f"Starting dataset generation for {total_dataset_size} unique instances using {num_workers} processes"
-    )
-
-    start_time = time.time()
-    unique_pairs = set()
-    all_instances = []
-    chunk_index = 0
-
-    while len(unique_pairs) < total_dataset_size:
-        remaining = total_dataset_size - len(unique_pairs)
-        current_batch_size = min(remaining * 2, num_workers * chunk_size)
-        current_num_chunks = max(1, (current_batch_size + chunk_size - 1) // chunk_size)
-        current_num_workers = min(num_workers, current_num_chunks)
-
-        print(
-            f"Need {remaining} more unique pairs. Generating batch of {current_batch_size} instances with {current_num_workers} workers"
-        )
-
-        with ProcessPoolExecutor(max_workers=current_num_workers) as executor:
-            futures = [
-                executor.submit(process_function, chunk_index + i, chunk_size)
-                for i in range(current_num_chunks)
-            ]
-
-            completed_chunks = 0
-            for future in as_completed(futures):
-                try:
-                    results = future.result()
-                    completed_chunks += 1
-                    print(
-                        f"Batch progress: {(completed_chunks / len(futures)) * 100:.1f}% complete"
-                    )
-                except Exception as e:
-                    print(f"Error in process: {e}")
-
-        new_pairs_found = 0
-        for i in range(current_num_chunks):
-            try:
-                chunk_file = os.path.join(
-                    simulations_dir, f"qd_dataset_chunk_{chunk_index + i}.json"
-                )
-                if os.path.exists(chunk_file):
-                    with open(chunk_file, "r") as f:
-                        instances = json.load(f)
-                        print(
-                            f"Processing {len(instances)} instances from chunk {chunk_index + i}"
-                        )
-
-                        for instance in instances:
-                            query = instance["query"]
-                            document = instance["document"]
-                            doc_id = (
-                                document.get("id", "")
-                                if isinstance(document, dict)
-                                else ""
-                            )
-                            pair_key = (query, doc_id)
-
-                            if pair_key not in unique_pairs:
-                                unique_pairs.add(pair_key)
-                                new_instance = {
-                                    "query": query,
-                                    "positive_document": document,
-                                }
-                                all_instances.append(new_instance)
-                                new_pairs_found += 1
-
-                                if len(unique_pairs) % 100 == 0:
-                                    print(
-                                        f"Found {len(unique_pairs)}/{total_dataset_size} unique pairs"
-                                    )
-
-                                if len(unique_pairs) >= total_dataset_size:
-                                    break
-
-                    try:
-                        os.remove(chunk_file)
-                    except Exception as e:
-                        print(f"Failed to remove chunk file {chunk_file}: {e}")
-
-                if len(unique_pairs) >= total_dataset_size:
-                    break
-            except Exception as e:
-                print(f"Error reading chunk {chunk_index + i}: {e}")
-
-        print(f"Found {new_pairs_found} new unique pairs in this batch")
-        chunk_index += current_num_chunks
-
-        if new_pairs_found == 0:
-            print(
-                "Warning: No new unique pairs found in this batch. Adjusting generation parameters..."
+            triplet = self.make_triplet_entry(query, positive_doc, negative_doc)
+            self.shared_buffer.add(triplet)
+            numerical_count += 1
+            if numerical_count % 5 == 0:
+                print(f"Processed {numerical_count}/{total_numerical} numerical queries ({numerical_count/total_numerical*100:.1f}%)")
+        print(f"Completed numerical queries processing. Time elapsed: {time.time() - numerical_start_time:.2f}s")
+        print(f"Graph built with {len(self.graph.nodes())} nodes and {len(self.graph.edges())} edges")
+        if self.num_processes > 1:
+            self.subgraphs = self._split_graph(self.graph, self.num_processes - 1)
+        print(f"Starting walker and writer processes...")
+        walker_start_time = time.time()
+        samples_per_process = num_samples // self.num_processes
+        writer_process = mp.Process(target=self._run_writer)
+        writer_process.start()
+        walker_processes = []
+        for i in range(self.num_processes - 1):
+            p = mp.Process(
+                target=self._run_walker,
+                args=(samples_per_process, i)
             )
-            time.sleep(1)
+            p.start()
+            walker_processes.append(p)
+            print(f"Started walker process {i+1}/{self.num_processes-1}")
+        for p in walker_processes:
+            p.join()
+        print(f"All walker processes completed. Time elapsed: {time.time() - walker_start_time:.2f}s")
+        self.shared_buffer.mark_done()
+        writer_process.join()
+        print(f"Monte Carlo simulation completed. Generated {num_samples} samples.")
+        print(f"Total simulation time: {time.time() - start_time:.2f}s")
 
-    final_dataset = all_instances[:total_dataset_size]
-    aggregated_file = os.path.join(dataset_dir, "deduplicated_qd_dataset.json")
-    with open(aggregated_file, "w") as f:
-        json.dump(final_dataset, f, indent=2)
+    def _split_graph(self, graph, num_parts):
+        if len(graph.nodes()) < num_parts:
+            return [graph] * num_parts
+        subgraphs = []
+        nodes = list(graph.nodes())
+        nodes_per_part = len(nodes) // num_parts
+        for i in range(num_parts):
+            start_idx = i * nodes_per_part
+            end_idx = (i + 1) * nodes_per_part if i < num_parts - 1 else len(nodes)
+            part_nodes = nodes[start_idx:end_idx]
+            subgraph = graph.subgraph(part_nodes).copy()
+            subgraphs.append(subgraph)
+        return subgraphs
 
-    training_file = os.path.join(dataset_dir, "training_qd_dataset.json")
-    training_format = [
-        {"query": instance["query"], "document": instance["positive_document"]}
-        for instance in final_dataset
-    ]
+    def _run_walker(self, num_samples, process_id):
+        try:
+            graph_to_use = self.subgraphs[process_id] if process_id < len(self.subgraphs) else self.graph
+            walker = RandomWalker(graph_to_use, self.shared_buffer)
+            walker.run()
+        except Exception as e:
+            print(f"Error in Walker Process {process_id}: {e}")
 
-    with open(training_file, "w") as f:
-        json.dump(training_format, f, indent=2)
-
-    print(
-        f"Wrote deduplicated dataset with {len(final_dataset)} instances to {aggregated_file}"
-    )
-
-    elapsed_time = time.time() - start_time
-    hours, remainder = divmod(elapsed_time, 3600)
-    minutes, seconds = divmod(remainder, 60)
-    print(
-        f"Dataset generation completed in {int(hours)}h {int(minutes)}m {seconds:.2f}s"
-    )
+    def _run_writer(self):
+        """Run the DiskWriter process."""
+        self.writer_worker.run()
 
 
 def main():
-    """
-    Main entry point for the Monte Carlo simulation.
-    Parses command line arguments if provided, otherwise uses defaults.
-    """
-    import argparse
-
-    parser = argparse.ArgumentParser(
-        description="Run Monte Carlo simulation for dataset generation"
-    )
-    parser.add_argument(
-        "--size", type=int, default=10000, help="Total dataset size to generate"
-    )
-    parser.add_argument(
-        "--workers",
-        type=int,
-        default=max(1, os.cpu_count() // 2),
-        help="Number of worker processes to use",
-    )
-    parser.add_argument(
-        "--chunk",
-        type=int,
-        default=1000,
-        help="Size of each chunk processed by a worker",
-    )
-
-    args = parser.parse_args()
-
-    print(
-        f"Starting simulation with dataset_size={args.size}, workers={args.workers}, chunk_size={args.chunk}"
-    )
-    run(total_dataset_size=args.size, num_workers=args.workers, chunk_size=args.chunk)
-
+    documents = load_company_documents()
+    output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "simulation_output")
+    num_workers = os.cpu_count() // 2
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    output_file = os.path.join(output_dir, f"simulation_results_{int(time.time())}.json")
+    start_time = time.time()
+    simulation = MonteCarloSimulation(documents, output_file, num_workers, batch_size=16)
+    simulation.run_simulation(num_samples=10000)
+    end_time = time.time()
+    print(f"Simulation took {end_time - start_time:.2f} seconds")
 
 if __name__ == "__main__":
     main()

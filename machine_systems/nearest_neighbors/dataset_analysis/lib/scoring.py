@@ -22,8 +22,11 @@ load_company_documents = utils.load_company_documents
 class SingularValueDecompositionEmbedding(TfidfVectorizer):
     def __init__(self, documents_descriptions: List[str]):
         self.documents_descriptions = documents_descriptions
+        doc_count = len(documents_descriptions)
+        min_df = 1 if doc_count < 10 else (2 if doc_count < 50 else min(5, max(1, int(doc_count * 0.01))))
+
         super(SingularValueDecompositionEmbedding, self).__init__(
-            max_features=5000, stop_words="english", max_df=0.9, min_df=5
+            max_features=5000, stop_words="english", max_df=0.95, min_df=min_df
         )
         self.num_principle_components = 100
         self.svd_call = TruncatedSVD(
@@ -73,13 +76,6 @@ class SimilarityScoring:
         self.extreme_values_sorted = self.precompute_sorted_numerical_fields()
         self.SVD = SingularValueDecompositionEmbedding([d["description"] for d in documents])
 
-        if self.SVD.svd_matrix.shape[0] > 0:
-            self.top_svd_terms = self.SVD.top_svd_terms(self.SVD.svd_matrix[0])
-            print(self.top_svd_terms)
-        else:
-            print("Warning: SVD matrix is empty")
-            self.top_svd_terms = []
-
     def precompute_sorted_numerical_fields(self):
         result = {}
         for key in self.numerical_keys:
@@ -107,4 +103,3 @@ class SimilarityScoring:
                 return self.query_text_search(data["query"])
             case _:
                 return []
-
