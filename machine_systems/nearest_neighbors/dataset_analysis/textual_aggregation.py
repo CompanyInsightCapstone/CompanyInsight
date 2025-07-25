@@ -3,16 +3,13 @@ import re
 import sys
 import time
 import uuid
-
 import requests
-from utils import config, load_companies, search_url
-
+from utils import config, load_companies, search_url, import_database
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
+Database = import_database()
 current_dir = config()
 data_dir = os.path.join(current_dir, "data")
 analysis_dir = os.path.join(data_dir, "analysis")
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
-from ...models.database import Database
 
 
 def fetch(url, params=None, max_retries=10):

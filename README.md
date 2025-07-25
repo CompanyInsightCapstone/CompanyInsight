@@ -10,12 +10,10 @@
 
 **Project Plan**: [doc]<https://docs.google.com/document/d/15rwUIoVR1oY_xlnUEMSVxcbv79kGLldLMp3ayuju8No/edit?tab=t.0>
 
-**Wireframes**: [here]<add a link to wire frames>
-<img src="OR_INSERT_INLINE_YOUR_WIREFRAME_IMAGE_URL" width=600>
 
 ## Demo Video
 
-[TBD](<insert link in Week 9!>)
+[TBD](https://www.loom.com/share/de30b34140384a8d95e84d1cc6db66f9)
 
 
 ## How to run:
@@ -53,6 +51,8 @@ git lfs pull
 
 Create an .env file in the project root with the following variables:
 
+```
+# Database Configuration
 POSTGRES_USER=
 POSTGRES_PASSWORD=
 POSTGRES_DB=
@@ -62,15 +62,22 @@ DATABASE_PASSWORD=
 DATABASE_NAME=
 DATABASE_PORT=
 DATABASE_URL=
+
+# Redis Configuration
 REDIS_HOST=
 REDIS_PORT=
+
+# WebSocket Configuration
 WEBSOCKET_HOST=
 NODEJS_WEBSOCKET_PORT=
 TRENDING_COMPANIES_WEBSOCKET_PORT=
+
+# API Keys
 VITE_FINNHUB_API_KEY=
 VITE_ALPHA_VANTAGE_API_KEY=
 VITE_POLYGON_API_KEY=
 
+# Email Configuration
 VITE_CI_EMAIL_ADDRESS=
 VITE_CI_EMAIL_APP_PASS=
 
@@ -83,6 +90,7 @@ MACHINE_LEARNING_SERVER_PORT=8888
 VITE_SERVER_ADDRESS=
 VITE_FLASK_ADDRESS=
 VITE_WEBSOCKET_SERVER_ADDRESS=
+```
 
 ### Running the Application
 

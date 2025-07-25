@@ -1,14 +1,15 @@
+import importlib.util
+import os
+import numpy as np
+import pandas as pd
+from dotenv import load_dotenv
+from utils import config, load_companies, load_csv, load_parquet, import_database
+Database = import_database()
 import os
 import sys
 import uuid
-
 import pandas as pd
-
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
-
-from ...models.database import Database
-from .utils import config, load_companies, load_csv, load_parquet
-
 current_dir = config()
 data_dir = os.path.join(current_dir, "data")
 analysis_dir = os.path.join(data_dir, "analysis")
@@ -106,4 +107,9 @@ def populate_numericals_table():
 
 
 if __name__ == "__main__":
-    populate_numericals_table()
+
+
+
+
+    # populate_numericals_table()
+    print("errs not found")

@@ -16,3 +16,4 @@ scikit-learn
 fuzzywuzzy
 python-Levenshtein
 matplotlib
+kaggle
