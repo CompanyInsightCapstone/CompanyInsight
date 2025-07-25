@@ -10,12 +10,10 @@
 
 **Project Plan**: [doc]<https://docs.google.com/document/d/15rwUIoVR1oY_xlnUEMSVxcbv79kGLldLMp3ayuju8No/edit?tab=t.0>
 
-**Wireframes**: [here]<add a link to wire frames>
-<img src="OR_INSERT_INLINE_YOUR_WIREFRAME_IMAGE_URL" width=600>
 
 ## Demo Video
 
-[TBD](<insert link in Week 9!>)
+[TBD](https://www.loom.com/share/de30b34140384a8d95e84d1cc6db66f9)
 
 
 ## How to run:
