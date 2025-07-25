@@ -3,18 +3,17 @@ import re
 import sys
 import time
 import uuid
+
 import requests
-from utils import config, load_companies
+from utils import config, load_companies, search_url
 
 current_dir = config()
 data_dir = os.path.join(current_dir, "data")
 analysis_dir = os.path.join(data_dir, "analysis")
 
-try:
-    from models.database import Database
-except ImportError as e:
-    print(f"Error importing Database: {e}")
-    sys.exit(1)
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
+from ...models.database import Database
+
 
 def fetch(url, params=None, max_retries=10):
     contact_info = os.environ.get("CONTACT_INFO")
@@ -218,6 +217,7 @@ def populate_details_table():
         f"Completed: {processed_count} companies processed with {success_count} successes and {error_count} errors"
     )
     db.commit()
+
 
 if __name__ == "__main__":
     populate_details_table()

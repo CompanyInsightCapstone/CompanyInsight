@@ -15,9 +15,10 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../.
 
 import numpy as np
 import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline as hf_pipeline
 
-from machine_systems.models.database import Database
-from machine_systems.nearest_neighbors.dataset_analysis.scoring import (
+from ...models.database import Database
+from .scoring import (
     build_inverted_index,
     build_numerical_index,
     compute_doc_norms,
@@ -25,7 +26,7 @@ from machine_systems.nearest_neighbors.dataset_analysis.scoring import (
     index_search,
     numerical_index_search,
 )
-from machine_systems.nearest_neighbors.dataset_analysis.utils import (
+from .utils import (
     COMPANY_QUERY_TEMPLATES,
     config,
     GENERAL_QUERY_TEMPLATES,
@@ -34,7 +35,6 @@ from machine_systems.nearest_neighbors.dataset_analysis.utils import (
     prompts,
     SYSTEM_PROMPTS,
 )
-from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline as hf_pipeline
 
 current_dir = config()
 nearest_neighbors_dir = os.path.dirname(os.path.dirname(current_dir))

@@ -12,3 +12,4 @@ torch
 transformers
 tqdm
 joblib
+scikit-learn

@@ -1,9 +1,39 @@
+import importlib.util
 import os
 
 import numpy as np
 import pandas as pd
 from dotenv import load_dotenv
-from machine_systems.models.database import Database
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+possible_paths = [
+    os.path.join("/usr/src/app/models", "database.py"),
+    os.path.abspath(os.path.join(current_dir, "..", "..", "models", "database.py")),
+    os.path.abspath(
+        os.path.join(current_dir, "..", "..", "..", "models", "database.py")
+    ),
+]
+
+database_module = None
+for path in possible_paths:
+    if os.path.exists(path):
+        try:
+            print(f"Trying to import Database from: {path}")
+            spec = importlib.util.spec_from_file_location("database", path)
+            database_module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(database_module)
+            print(f"Successfully imported Database from: {path}")
+            break
+        except Exception as e:
+            print(f"Failed to import from {path}: {e}")
+
+if database_module is None:
+    raise ImportError(
+        "Could not find or import the Database class from any of the expected locations"
+    )
+
+
+Database = database_module.Database
 
 
 def config():
@@ -122,7 +152,6 @@ def load_company_documents():
 
 
 search_url = "https://en.wikipedia.org/w/api.php"
-
 
 def sample_system_prompt():
     return np.random.choice(SYSTEM_PROMPTS)

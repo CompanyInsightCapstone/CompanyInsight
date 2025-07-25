@@ -1,5 +1,6 @@
 import os
 import sys
+
 import kaggle
 import numpy as np
 import pandas as pd
@@ -8,13 +9,8 @@ from kaggle.api.kaggle_api_extended import KaggleApi
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
 
-from machine_systems.models.database import Database
-from machine_systems.nearest_neighbors.dataset_analysis.utils import (
-    config,
-    load_companies,
-    load_csv,
-    load_parquet,
-)
+from ...models.database import Database
+from .utils import config, load_companies, load_csv, load_parquet
 
 current_dir = config()
 data_dir = os.path.join(current_dir, "data")
