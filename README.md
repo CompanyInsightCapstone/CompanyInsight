@@ -42,7 +42,7 @@
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/CompanyInsight.git
+git clone https://github.com/CompanyInsightCapstone/CompanyInsight.git
 cd CompanyInsight
 git lfs pull
 ```
@@ -106,7 +106,7 @@ This will start the following services:
 - React frontend client
 - Python machine learning services
 
-The application will be available at http://localhost:3000
+The application will be available at http://localhost:5713/
 
 ### Working with Large Files
 
