@@ -60,7 +60,7 @@ class MonteCarloSimulation:
         self.graph = nx.Graph()
         print(f"Processing company queries...")
         company_query_templates = self.query_generation_data.get("COMPANY_QUERY_TEMPLATES", [])
-        sample_size = min(250, len(self.documents))
+        sample_size = min(2000, len(self.documents))
         sampled_documents = random.sample(self.documents, sample_size)
         company_count = 0
         total_companies = len(sampled_documents) * len(company_query_templates)
@@ -192,7 +192,7 @@ class MonteCarloSimulation:
 def main():
     documents = load_company_documents()
     output_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "simulation_output")
-    num_workers = os.cpu_count() // 2
+    num_workers = os.cpu_count() - 2
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     output_file = os.path.join(output_dir, f"simulation_results_{int(time.time())}.json")
